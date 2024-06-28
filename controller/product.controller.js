@@ -41,6 +41,7 @@ export const SaveProduct = async (req, res) => {
     if (req.body.innerQty) {
       req.body.innerQty = JSON.parse(req.body.innerQty);
     }
+
     const product = await Product.create(req.body);
     await addProductInWarehouse1(req.body, product.warehouse, product);
     return product
@@ -144,6 +145,9 @@ export const UpdateProduct = async (req, res, next) => {
         .status(404)
         .json({ error: "product not found", status: false });
     } else {
+      if (req.body.innerQty) {
+        req.body.innerQty = JSON.parse(req.body.innerQty);
+      }
       const updatedProduct = req.body;
       const product = await Product.findByIdAndUpdate(
         productId,
