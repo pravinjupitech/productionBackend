@@ -1,4 +1,4 @@
-import ExcelJS from "exceljs"
+import ExcelJS from "exceljs";
 import axios from "axios";
 import { Product } from "../model/product.model.js";
 import { Warehouse } from "../model/warehouse.model.js";
@@ -38,9 +38,18 @@ export const SaveProduct = async (req, res) => {
       // req.body.thumbnail = thumb;
       req.body.Product_image = images;
     }
+    if (req.body.innerQty) {
+      req.body.innerQty = JSON.parse(req.body.innerQty);
+    }
     const product = await Product.create(req.body);
-    await addProductInWarehouse1(req.body, product.warehouse, product)
-    return product ? res.status(200).json({ message: "product save successfully", status: true }) : res.status(400).json({ message: "something went wrong", status: false });
+    await addProductInWarehouse1(req.body, product.warehouse, product);
+    return product
+      ? res
+          .status(200)
+          .json({ message: "product save successfully", status: true })
+      : res
+          .status(400)
+          .json({ message: "something went wrong", status: false });
   } catch (error) {
     console.error(error);
     return res.status(500).json({ error: "Internal Server Error" });
@@ -54,21 +63,33 @@ export const ViewProduct = async (req, res, next) => {
     // if (!adminDetail.length > 0) {
     //   return res.status(404).json({ error: "Product Not Found", status: false })
     // }
-    const product = await Product.find({ database: database, status: 'Active', purchaseStatus: true }).sort({ sortorder: -1 }).populate({ path: "warehouse", model: "warehouse" });
-    return res.status(200).json({ Product: product, status: true })
+    const product = await Product.find({
+      database: database,
+      status: "Active",
+      purchaseStatus: true,
+    })
+      .sort({ sortorder: -1 })
+      .populate({ path: "warehouse", model: "warehouse" });
+    return res.status(200).json({ Product: product, status: true });
   } catch (err) {
     console.log(err);
-    return res.status(500).json({ error: "Internal Server Error", status: false });
+    return res
+      .status(500)
+      .json({ error: "Internal Server Error", status: false });
   }
 };
 export const ViewProductForPurchase = async (req, res, next) => {
   try {
     const database = req.params.database;
-    const product = await Product.find({ database: database, status: 'Active' }).sort({ sortorder: -1 }).populate({ path: "warehouse", model: "warehouse" });
-    return res.status(200).json({ Product: product, status: true })
+    const product = await Product.find({ database: database, status: "Active" })
+      .sort({ sortorder: -1 })
+      .populate({ path: "warehouse", model: "warehouse" });
+    return res.status(200).json({ Product: product, status: true });
   } catch (err) {
     console.log(err);
-    return res.status(500).json({ error: "Internal Server Error", status: false });
+    return res
+      .status(500)
+      .json({ error: "Internal Server Error", status: false });
   }
 };
 
@@ -76,11 +97,15 @@ export const ViewProductById = async (req, res, next) => {
   try {
     let product = await Product.findById({ _id: req.params.id }).sort({
       sortorder: -1,
-    })
-    return product ? res.status(200).json({ Product: product, status: true }) : res.status(404).json({ error: "Not Found", status: false });
+    });
+    return product
+      ? res.status(200).json({ Product: product, status: true })
+      : res.status(404).json({ error: "Not Found", status: false });
   } catch (err) {
     console.log(err);
-    return res.status(500).json({ error: "Internal Server Error", status: false });
+    return res
+      .status(500)
+      .json({ error: "Internal Server Error", status: false });
   }
 };
 export const DeleteProduct = async (req, res, next) => {
@@ -91,10 +116,12 @@ export const DeleteProduct = async (req, res, next) => {
     }
     product.status = "Deactive";
     await product.save();
-    return res.status(200).json({ message: "delete successful", status: true })
+    return res.status(200).json({ message: "delete successful", status: true });
   } catch (err) {
     console.log(err);
-    return res.status(500).json({ error: "Internal server error", status: false });
+    return res
+      .status(500)
+      .json({ error: "Internal server error", status: false });
   }
 };
 export const UpdateProduct = async (req, res, next) => {
@@ -113,19 +140,29 @@ export const UpdateProduct = async (req, res, next) => {
     const productId = req.params.id;
     const existingProduct = await Product.findById(productId);
     if (!existingProduct) {
-      return res.status(404).json({ error: "product not found", status: false });
+      return res
+        .status(404)
+        .json({ error: "product not found", status: false });
     } else {
       const updatedProduct = req.body;
-      const product = await Product.findByIdAndUpdate(productId, updatedProduct, { new: true });
+      const product = await Product.findByIdAndUpdate(
+        productId,
+        updatedProduct,
+        { new: true }
+      );
       // if (req.body.warehouse) {
       //   const warehouse = { productId: product._id, unitType: product.unitType, currentStock: product.qty, transferQty: product.qty, price: product.Product_MRP, totalPrice: (product.Product_MRP * product.qty), Size: req.body.unitQty }
       //   await addProductInWarehouse(warehouse, req.body.warehouse)
       // }
-      return res.status(200).json({ message: "Product Updated Successfully", status: true });
+      return res
+        .status(200)
+        .json({ message: "Product Updated Successfully", status: true });
     }
   } catch (err) {
     console.error(err);
-    return res.status(500).json({ error: "Internal Server Error", status: false });
+    return res
+      .status(500)
+      .json({ error: "Internal Server Error", status: false });
   }
 };
 
@@ -138,21 +175,29 @@ export const StockAlert = async (req, res) => {
       if (!productItems || productItems.length === 0) {
         continue;
       }
-      const productIdsInWarehouse = productItems.map(product => product.productId);
+      const productIdsInWarehouse = productItems.map(
+        (product) => product.productId
+      );
       if (!productIdsInWarehouse || productIdsInWarehouse.length === 0) {
         continue;
       }
-      const products = await Product.find({ _id: { $in: productIdsInWarehouse } }).populate({ path: "partyId", model: "customer" });
+      const products = await Product.find({
+        _id: { $in: productIdsInWarehouse },
+      }).populate({ path: "partyId", model: "customer" });
       if (!products || products.length === 0) {
         continue;
       }
       const warehouseAlertProducts = productItems
-        .filter(item => {
-          const product = products.find(p => p._id.toString() === item.productId.toString());
+        .filter((item) => {
+          const product = products.find(
+            (p) => p._id.toString() === item.productId.toString()
+          );
           return product && item.currentStock < product.MIN_stockalert;
         })
-        .map(item => {
-          const product = products.find(p => p._id.toString() === item.productId.toString());
+        .map((item) => {
+          const product = products.find(
+            (p) => p._id.toString() === item.productId.toString()
+          );
           return {
             productId: item.productId,
             HSN_Code: product.HSN_Code,
@@ -162,14 +207,18 @@ export const StockAlert = async (req, res) => {
             Product_MRP: product.Product_MRP,
             GSTRate: product.GSTRate,
             Size: item.Size,
-            taxableAmount: (item.currentStock * product.Product_MRP),
-            Total: ((item.currentStock * product.Product_MRP) * (100 + parseInt(product.GSTRate))) / 100,
+            taxableAmount: item.currentStock * product.Product_MRP,
+            Total:
+              (item.currentStock *
+                product.Product_MRP *
+                (100 + parseInt(product.GSTRate))) /
+              100,
             currentStock: item.currentStock,
             MIN_stockalert: product.MIN_stockalert,
             warehouseName: warehouse.warehouseName,
             warehosueAddress: warehouse.address,
             SupplierName: product?.partyId?.ownerName || null,
-            SupplierGST: product?.partyId?.gstNumber || null
+            SupplierGST: product?.partyId?.gstNumber || null,
           };
         });
 
@@ -187,16 +236,24 @@ export const viewCurrentStock = async (req, res, next) => {
   try {
     const warehouse = await Warehouse.findById(req.params.id);
     if (!warehouse) {
-      return res.status(404).json({ message: "warehouse not found", status: false });
+      return res
+        .status(404)
+        .json({ message: "warehouse not found", status: false });
     }
-    const productItem = warehouse.productItems.find(item => item.productId === req.params.productId);
+    const productItem = warehouse.productItems.find(
+      (item) => item.productId === req.params.productId
+    );
     if (!productItem) {
-      return res.status(404).json({ message: "Product not found in the warehouse", status: false });
+      return res
+        .status(404)
+        .json({ message: "Product not found in the warehouse", status: false });
     }
     return res.status(200).json({ currentStock: productItem, status: true });
   } catch (err) {
     console.log(err);
-    return res.status(500).json({ error: "Internal Server Error", status: false });
+    return res
+      .status(500)
+      .json({ error: "Internal Server Error", status: false });
   }
 };
 
@@ -223,22 +280,28 @@ export const saveItemWithExcel = async (req, res) => {
       }
       if (document.HSN_Code) {
         const insertedDocument = await Product.create(document);
-        await addProductInWarehouse1(document, insertedDocument.warehouse, insertedDocument)
+        await addProductInWarehouse1(
+          document,
+          insertedDocument.warehouse,
+          insertedDocument
+        );
         insertedDocuments.push(insertedDocument);
       } else {
-        existingParts.push(document.Product_Title)
+        existingParts.push(document.Product_Title);
       }
     }
-    let message = 'Data Inserted Successfully';
+    let message = "Data Inserted Successfully";
     if (existingParts.length > 0) {
-      message = `Some product not exist hsn code: ${existingParts.join(', ')}`;
+      message = `Some product not exist hsn code: ${existingParts.join(", ")}`;
     }
     return res.status(200).json({ message, status: true });
   } catch (err) {
     console.error(err);
-    return res.status(500).json({ error: 'Internal Server Error', status: false });
+    return res
+      .status(500)
+      .json({ error: "Internal Server Error", status: false });
   }
-}
+};
 export const updateItemWithExcel = async (req, res) => {
   try {
     const filePath = await req.file.path;
@@ -261,9 +324,16 @@ export const updateItemWithExcel = async (req, res) => {
         document[heading] = cellValue;
       }
       // if (document.HSN_Code) {
-      const filter = { Product_Title: document.Product_Title, database: req.params.database }; // Ensure the filter is correctly formed
+      const filter = {
+        Product_Title: document.Product_Title,
+        database: req.params.database,
+      }; // Ensure the filter is correctly formed
       const options = { new: true, upsert: true }; // Consider using upsert if you want to create the document if it doesn't exist
-      const insertedDocument = await Product.findOneAndUpdate(filter, document, options);
+      const insertedDocument = await Product.findOneAndUpdate(
+        filter,
+        document,
+        options
+      );
 
       // await addProductInWarehouse1(document, insertedDocument.warehouse,insertedDocument)
       insertedDocuments.push(insertedDocument);
@@ -271,31 +341,34 @@ export const updateItemWithExcel = async (req, res) => {
       //   existingParts.push(document.Product_Title)
       // }
     }
-    let message = 'Updated Successfull !';
+    let message = "Updated Successfull !";
     if (existingParts.length > 0) {
-      message = `Some product not exist hsn code: ${existingParts.join(', ')}`;
+      message = `Some product not exist hsn code: ${existingParts.join(", ")}`;
     }
     return res.status(200).json({ message, status: true });
   } catch (err) {
     console.error(err);
-    return res.status(500).json({ error: 'Internal Server Error', status: false });
+    return res
+      .status(500)
+      .json({ error: "Internal Server Error", status: false });
   }
-}
+};
 
 export const addProductInWarehouse1 = async (warehouse, warehouseId, id) => {
   try {
-    const user = await Warehouse.findById({ _id: warehouseId })
+    const user = await Warehouse.findById({ _id: warehouseId });
     if (!user) {
-      return console.log("warehouse not found")
+      return console.log("warehouse not found");
     }
     const sourceProductItem = user.productItems.find(
-      (pItem) => pItem.productId === id.productId);
+      (pItem) => pItem.productId === id.productId
+    );
     if (sourceProductItem) {
       // sourceProductItem.Size += warehouse.Size;
-      sourceProductItem.currentStock += warehouse.Opening_Stock
+      sourceProductItem.currentStock += warehouse.Opening_Stock;
       sourceProductItem.totalPrice += warehouse.Purchase_Rate;
       sourceProductItem.transferQty += warehouse.Opening_Stock;
-      user.markModified('productItems');
+      user.markModified("productItems");
       await user.save();
     } else {
       let ware = {
@@ -310,13 +383,15 @@ export const addProductInWarehouse1 = async (warehouse, warehouseId, id) => {
         price: warehouse.price,
         totalPrice: warehouse.Purchase_Rate,
         gstPercentage: warehouse.gstPercentage,
-        igstType: warehouse.igstType
-      }
-      const updated = await Warehouse.updateOne({ _id: warehouseId },
+        igstType: warehouse.igstType,
+      };
+      const updated = await Warehouse.updateOne(
+        { _id: warehouseId },
         {
           $push: { productItems: ware },
         },
-        { upsert: true });
+        { upsert: true }
+      );
     }
   } catch (error) {
     console.error(error);
@@ -324,25 +399,29 @@ export const addProductInWarehouse1 = async (warehouse, warehouseId, id) => {
 };
 export const addProductInWarehouse = async (warehouse, warehouseId) => {
   try {
-    const user = await Warehouse.findById({ _id: warehouseId })
+    const user = await Warehouse.findById({ _id: warehouseId });
     if (!user) {
-      return console.log("warehouse not found")
+      return console.log("warehouse not found");
     }
     const sourceProductItem = user.productItems.find(
-      (pItem) => pItem.productId.toString() === warehouse.productId._id.toString());
+      (pItem) =>
+        pItem.productId.toString() === warehouse.productId._id.toString()
+    );
     if (sourceProductItem) {
       // sourceProductItem.Size += warehouse.Size;
-      sourceProductItem.currentStock += warehouse.transferQty
+      sourceProductItem.currentStock += warehouse.transferQty;
       sourceProductItem.totalPrice += warehouse.totalPrice;
       sourceProductItem.transferQty += warehouse.transferQty;
-      user.markModified('productItems');
+      user.markModified("productItems");
       await user.save();
     } else {
-      await Warehouse.updateOne({ _id: warehouseId },
+      await Warehouse.updateOne(
+        { _id: warehouseId },
         {
           $push: { productItems: warehouse },
         },
-        { upsert: true });
+        { upsert: true }
+      );
     }
   } catch (error) {
     console.error(error);
@@ -359,7 +438,10 @@ export const HSNWiseSalesReport = async (req, res, next) => {
       targetQuery.createdAt = { $gte: startDate, $lte: endDate };
     }
     let orders = [];
-    const salesOrder = await CreateOrder.find(targetQuery).populate({ path: "orderItems.productId", model: "product" });
+    const salesOrder = await CreateOrder.find(targetQuery).populate({
+      path: "orderItems.productId",
+      model: "product",
+    });
     if (salesOrder.length === 0) {
       return res.status(404).json({ message: "Not Found", status: false });
     }
@@ -399,7 +481,9 @@ export const HSNWiseSalesReport = async (req, res, next) => {
     return res.status(200).json({ HSNSales: uniqueOrders, status: true });
   } catch (err) {
     console.log(err);
-    return res.status(500).json({ error: "Internal Server Error", status: false });
+    return res
+      .status(500)
+      .json({ error: "Internal Server Error", status: false });
   }
 };
 export const HSNWisePurchaseReport = async (req, res, next) => {
@@ -411,7 +495,10 @@ export const HSNWisePurchaseReport = async (req, res, next) => {
       targetQuery.createdAt = { $gte: startDate, $lte: endDate };
     }
     let orders = [];
-    const salesOrder = await PurchaseOrder.find(targetQuery).populate({ path: "orderItems.productId", model: "product" });
+    const salesOrder = await PurchaseOrder.find(targetQuery).populate({
+      path: "orderItems.productId",
+      model: "product",
+    });
     if (salesOrder.length === 0) {
       return res.status(404).json({ message: "Not Found", status: false });
     }
@@ -451,6 +538,8 @@ export const HSNWisePurchaseReport = async (req, res, next) => {
     return res.status(200).json({ HSNPurchase: uniqueOrders, status: true });
   } catch (err) {
     console.log(err);
-    return res.status(500).json({ error: "Internal Server Error", status: false });
+    return res
+      .status(500)
+      .json({ error: "Internal Server Error", status: false });
   }
 };
