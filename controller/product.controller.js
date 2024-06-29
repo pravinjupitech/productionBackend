@@ -548,34 +548,6 @@ export const HSNWisePurchaseReport = async (req, res, next) => {
   }
 };
 
-// export const ProductInnerQtyDelete = async (req, res, next) => {
-//   try {
-//     const product = await product.findById(req.params.id);
-//     if (product) {
-//       const productInner=product.innerQty;
-//       const productInnerQty = await productInner.findByIdAndDelete(req.params.id);
-//       return productInnerQty
-//         ? res.status(200).json({
-//             message: "InnerQty Deleted Successfully",
-//             productInnerQty,
-//             status: true,
-//           })
-//         : res
-//             .status(404)
-//             .json({ message: "Data Not Deleted ...", status: false });
-//     } else {
-//       return res
-//         .status(404)
-//         .json({ message: "Product Not Found", status: false });
-//     }
-//   } catch (error) {
-//     console.log(error);
-//     return res
-//       .status(500)
-//       .json({ error: "Internal Server Error", status: false });
-//   }
-// };
-
 export const ProductInnerQtyDelete = async (req, res, next) => {
   try {
     const product = await Product.findById(req.params.id);

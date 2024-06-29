@@ -1,4 +1,4 @@
-import { RowAssorting } from "../model/rowAssorting.model.js";
+import { RowAssorting, RowAssorting } from "../model/rowAssorting.model.js";
 
 export const RowAssortingAdd = async (req, res, next) => {
   try {
@@ -93,14 +93,32 @@ export const rowAssortingDelete = async (req, res, next) => {
 
 export const innerQtyDelete = async (req, res, next) => {
   try {
-    const innerQty = await RowAssorting.findByIdAndDelete(req.params.id);
-    return innerQty
-      ? res.status(200).json({
-          message: "Data Deleted Successfully",
-          innerQty,
+    const rowAssorting = await RowAssorting.findById(req.params.id);
+    if (rowAssorting) {
+      const innerQtyId = req.params.innerQtyId;
+      const innerQtyIndex = rowAssorting.innerQty.findIndex(
+        (qty) => qty._id.toString() === innerQtyId
+      );
+      if (innerQtyIndex > -1) {
+        rowAssorting.innerQty.splice(innerQtyIndex, 1);
+        await rowAssorting.save();
+
+        return res.status(200).json({
+          message: "InnerQty Deleted Successfully",
           status: true,
-        })
-      : res.status(404).json({ message: "Data Not Deleted", status: false });
+        });
+      } else {
+        return res.status(404).json({
+          message: "InnerQty Not Found",
+          status: false,
+        });
+      }
+    } else {
+      return res.status(404).json({
+        message: "RowAssorting Not Found",
+        status: false,
+      });
+    }
   } catch (error) {
     console.error(error);
     return res.status(500).json({ error: error.message, status: false });
