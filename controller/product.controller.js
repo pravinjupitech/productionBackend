@@ -561,7 +561,7 @@ export const ProductInnerQtyDelete = async (req, res, next) => {
           .status(404)
           .jsom({ message: "Data Not Deleted ...", status: false });
   } catch (error) {
-    console.log(err);
+    console.log(error);
     return res
       .status(500)
       .json({ error: "Internal Server Error", status: false });
