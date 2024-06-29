@@ -7,15 +7,29 @@ const RowAssortingSchema = new mongoose.Schema(
     productId: {
       type: String,
     },
-    productName: {
+    Product_Title: {
       type: String,
     },
-    innerQty: [
+    finishedRow: [
       {
         piece: { type: Number },
         weight: { type: String },
+        unit: { type: String },
       },
     ],
+    wastage: [
+      {
+        piece: { type: Number },
+        weight: { type: String },
+        unit: { type: String },
+      },
+    ],
+    wastagePieacePer: {
+      type: String,
+    },
+    wastageWeightPer: {
+      type: String,
+    },
   },
   { timestamps: true }
 );

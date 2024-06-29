@@ -78,7 +78,8 @@ const ProductSchema = new mongoose.Schema(
       {
         piece: { type: Number },
         weight: { type: String },
-      }
+        unit: { type: String },
+      },
     ],
     status: {
       type: String,

@@ -2,6 +2,8 @@ import { RowAssorting } from "../model/rowAssorting.model.js";
 
 export const RowAssortingAdd = async (req, res, next) => {
   try {
+    req.body.finishedRow = JSON.parse(req.body.finishedRow);
+    req.body.wastage = JSON.parse(req.body.wastage);
     const rowAssorting = await RowAssorting.create(req.body);
     return rowAssorting
       ? res.status(200).json({
@@ -9,9 +11,7 @@ export const RowAssortingAdd = async (req, res, next) => {
           rowAssorting,
           status: true,
         })
-      : res
-          .status(404)
-          .json({ message: "RowAssorting Not Save", status: false });
+      : res.status(404).json({ message: "Data Not Save", status: false });
   } catch (error) {
     console.error(error);
     return res.status(500).json({ error: error.message, status: false });
@@ -56,6 +56,8 @@ export const rowAssortingViewById = async (req, res, next) => {
 
 export const rowAssortingEdit = async (req, res, next) => {
   try {
+    req.body.finishedRow = JSON.parse(req.body.finishedRow);
+    req.body.wastage = JSON.parse(req.body.wastage);
     const rowAssorting = await RowAssorting.findByIdAndUpdate(
       req.params.id,
       req.body
