@@ -559,7 +559,7 @@ export const ProductInnerQtyDelete = async (req, res, next) => {
         })
       : res
           .status(404)
-          .jsom({ message: "Data Not Deleted ...", status: false });
+          .json({ message: "Data Not Deleted ...", status: false });
   } catch (error) {
     console.log(error);
     return res
