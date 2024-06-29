@@ -53,6 +53,9 @@ router.get("/view-current-stock/:id/:productId", viewCurrentStock);
 
 router.post("/hsn-sales-summary/:database", HSNWiseSalesReport);
 router.post("/hsn-purchase-summary/:database", HSNWisePurchaseReport);
-router.delete("/product-innerQty-delete/:id", ProductInnerQtyDelete);
+router.delete(
+  "/product-innerQty-delete/:id/:innerQtyId",
+  ProductInnerQtyDelete
+);
 
 export default router;
