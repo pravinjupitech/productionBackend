@@ -547,3 +547,23 @@ export const HSNWisePurchaseReport = async (req, res, next) => {
       .json({ error: "Internal Server Error", status: false });
   }
 };
+
+export const ProductInnerQtyDelete = async (req, res, next) => {
+  try {
+    const productInnerQty = await Product.findByIdAndDelete(req.params.id);
+    return productInnerQty
+      ? res.status(200).json({
+          message: "InnerQty Deleted Successfully",
+          productInnerQty,
+          status: true,
+        })
+      : res
+          .status(404)
+          .jsom({ message: "Data Not Deleted ...", status: false });
+  } catch (error) {
+    console.log(err);
+    return res
+      .status(500)
+      .json({ error: "Internal Server Error", status: false });
+  }
+};
