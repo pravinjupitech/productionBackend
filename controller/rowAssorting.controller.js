@@ -1,4 +1,4 @@
-import { RowAssorting, RowAssorting } from "../model/rowAssorting.model.js";
+import RowAssorting from "../model/rowAssorting.model.js";
 
 export const RowAssortingAdd = async (req, res, next) => {
   try {
