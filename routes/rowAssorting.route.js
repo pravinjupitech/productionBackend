@@ -2,7 +2,7 @@ import express from "express";
 import {
   RowAssortingAdd,
   RowAssortingViewAll,
-  innerQtyDelete,
+  // innerQtyDelete,
   rowAssortingDelete,
   rowAssortingEdit,
   rowAssortingViewById,
@@ -14,6 +14,6 @@ router.get("/rowAssortingViewAll", RowAssortingViewAll);
 router.get("/rowAssortingViewById/:id", rowAssortingViewById);
 router.put("/rowAssortingUpdate/:id", rowAssortingEdit);
 router.delete("/rowAssortingDelete/:id", rowAssortingDelete);
-router.delete("/row-innerQtyDelete/:id/:innerQty", innerQtyDelete);
+// router.delete("/row-innerQtyDelete/:id/:innerQty", innerQtyDelete);
 
 export default router;
