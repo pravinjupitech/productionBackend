@@ -89,7 +89,7 @@ export const rowAssortingByIdUpdate = async (req, res, next) => {
       );
       if (assortingIndex > -1) {
         const existingAssorting = rowAssorting.assorting[assortingIndex];
-        const updatedAssorting = { ...existingAssorting._doc, ...req.body };
+        const updatedAssorting = { ...existingAssorting._id, ...req.body };
 
         rowAssorting.assorting[assortingIndex] = updatedAssorting;
 
