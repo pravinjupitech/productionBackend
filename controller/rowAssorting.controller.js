@@ -134,6 +134,39 @@ export const rowAssortingDelete = async (req, res, next) => {
   }
 };
 
+// export const rowAssortingByIdDelete = async (req, res, next) => {
+//   try {
+//     const rowAssorting = await RowAssorting.findById(req.params.id);
+//     if (rowAssorting) {
+//       const assortingId = req.params.assortingId;
+//       const assortingIndex = rowAssorting.assorting.findIndex(
+//         (tot) => tot._id.toString() === assortingId
+//       );
+//       if (assortingIndex > -1) {
+//         rowAssorting.assorting.splice(assortingIndex, 1);
+//         await rowAssorting.save();
+//         res.status(200).json({
+//           message: "Data Deleted Successfully",
+//           rowAssorting,
+//           status: true,
+//         });
+//       } else {
+//         return res.status(404).json({
+//           message: "Assorting Not Found",
+//           status: false,
+//         });
+//       }
+//     } else {
+//       return res.status(404).json({
+//         message: "RowAssorting Not Found",
+//         status: false,
+//       });
+//     }
+//   } catch (error) {
+//     console.error(error);
+//     return res.status(500).json({ error: error.message, status: false });
+//   }
+// };
 export const rowAssortingByIdDelete = async (req, res, next) => {
   try {
     const rowAssorting = await RowAssorting.findById(req.params.id);
@@ -144,12 +177,21 @@ export const rowAssortingByIdDelete = async (req, res, next) => {
       );
       if (assortingIndex > -1) {
         rowAssorting.assorting.splice(assortingIndex, 1);
-        await rowAssorting.save();
-        res.status(200).json({
-          message: "Data Deleted Successfully",
-          rowAssorting,
-          status: true,
-        });
+
+        if (rowAssorting.assorting.length === 0) {
+          await RowAssorting.findByIdAndDelete(req.params.id);
+          return res.status(200).json({
+            message: "Parent Data Deleted Successfully",
+            status: true,
+          });
+        } else {
+          await rowAssorting.save();
+          return res.status(200).json({
+            message: "Data Deleted Successfully",
+            rowAssorting,
+            status: true,
+          });
+        }
       } else {
         return res.status(404).json({
           message: "Assorting Not Found",
@@ -167,37 +209,3 @@ export const rowAssortingByIdDelete = async (req, res, next) => {
     return res.status(500).json({ error: error.message, status: false });
   }
 };
-
-// export const innerQtyDelete = async (req, res, next) => {
-//   try {
-//     const rowAssorting = await RowAssorting.findById(req.params.id);
-//     if (rowAssorting) {
-//       const innerQtyId = req.params.innerQtyId;
-//       const innerQtyIndex = rowAssorting.innerQty.findIndex(
-//         (qty) => qty._id.toString() === innerQtyId
-//       );
-//       if (innerQtyIndex > -1) {
-//         rowAssorting.innerQty.splice(innerQtyIndex, 1);
-//         await rowAssorting.save();
-
-//         return res.status(200).json({
-//           message: "InnerQty Deleted Successfully",
-//           status: true,
-//         });
-//       } else {
-//         return res.status(404).json({
-//           message: "InnerQty Not Found",
-//           status: false,
-//         });
-//       }
-//     } else {
-//       return res.status(404).json({
-//         message: "RowAssorting Not Found",
-//         status: false,
-//       });
-//     }
-//   } catch (error) {
-//     console.error(error);
-//     return res.status(500).json({ error: error.message, status: false });
-//   }
-// };
