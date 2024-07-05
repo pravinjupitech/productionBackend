@@ -21,8 +21,10 @@ export const RowAssortingViewAll = async (req, res, next) => {
   try {
     const database = req.params.database;
     const rowAssorting = await RowAssorting.find({ database })
-      .populate({ path: "userId", model: "user" })
-      .populate({ path: "productId", model: "product" });
+    .populate({
+      path: "userId",
+      model: "user"
+  }).populate({ path: "productId", model: "product" }).exec();
     return rowAssorting
       ? res.status(200).json({
           message: "Data Found Successfully",
