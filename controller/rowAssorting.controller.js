@@ -88,7 +88,41 @@ export const rowAssortingDelete = async (req, res, next) => {
           rowAssorting,
           status: true,
         })
-      : res.status(404).json({ message: "Data Not Deleted", status: false });
+      : res.status(404).json({ message: "Data Not Daleted", status: false });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ error: error.message, status: false });
+  }
+};
+
+export const rowAssortingByIdDelete = async (req, res, next) => {
+  try {
+    const rowAssorting = await RowAssorting.findById(req.params.id);
+    if (rowAssorting) {
+      const assortingId = req.params.assortingId;
+      const assortingIndex = rowAssorting.assorting.findIndex(
+        (qty) => qty._id.toString() === assortingId
+      );
+      if (assortingIndex > -1) {
+        rowAssorting.assorting.splice(assortingIndex, 1);
+        await rowAssorting.save();
+        res.status(200).json({
+          message: "Data Deleted Successfully",
+          rowAssorting,
+          status: true,
+        });
+      } else {
+        return res.status(404).json({
+          message: "Assorting Not Found",
+          status: false,
+        });
+      }
+    } else {
+      return res.status(404).json({
+        message: "RowAssorting Not Found",
+        status: false,
+      });
+    }
   } catch (error) {
     console.error(error);
     return res.status(500).json({ error: error.message, status: false });
