@@ -3,6 +3,7 @@ import {
   RowAssortingAdd,
   RowAssortingViewAll,
   rowAssortingByIdDelete,
+  rowAssortingByIdUpdate,
   rowAssortingDelete,
   rowAssortingEdit,
   rowAssortingViewById,
@@ -18,5 +19,5 @@ router.delete(
   "/innerAssorting-Delete/:id/:assortingId",
   rowAssortingByIdDelete
 );
-
+router.put("/rowAssortingUpdate/:id/:assortingId", rowAssortingByIdUpdate);
 export default router;

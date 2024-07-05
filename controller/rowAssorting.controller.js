@@ -79,6 +79,40 @@ export const rowAssortingEdit = async (req, res, next) => {
   }
 };
 
+export const rowAssortingByIdUpdate = async (req, res, next) => {
+  try {
+    const rowAssorting = await RowAssorting.findById(req.params.id);
+    if (rowAssorting) {
+      const assortingId = req.params.assortingId;
+      const assortingIndex = rowAssorting.assorting.findIndex(
+        (qty) => qty._id.toString() === assortingId
+      );
+      if (assortingIndex > -1) {
+        rowAssorting.assorting[assortingIndex].quantity = req.body.quantity;
+        await rowAssorting.save();
+        res.status(200).json({
+          message: "Data Updated Successfully",
+          updatedAssorting: rowAssorting.assorting[assortingIndex],
+          status: true,
+        });
+      } else {
+        return res.status(404).json({
+          message: "Assorting Not Found",
+          status: false,
+        });
+      }
+    } else {
+      return res.status(404).json({
+        message: "RowAssorting Not Found",
+        status: false,
+      });
+    }
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ error: error.message, status: false });
+  }
+};
+
 export const rowAssortingDelete = async (req, res, next) => {
   try {
     const rowAssorting = await RowAssorting.findByIdAndDelete(req.params.id);
