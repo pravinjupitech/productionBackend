@@ -10,7 +10,7 @@ import {
 const router = express.Router();
 
 router.post("/rowAssortingAdd", RowAssortingAdd);
-router.get("/rowAssortingViewAll", RowAssortingViewAll);
+router.get("/rowAssortingViewAll/:database", RowAssortingViewAll);
 router.get("/rowAssortingViewById/:id", rowAssortingViewById);
 router.put("/rowAssortingUpdate/:id", rowAssortingEdit);
 router.delete("/rowAssortingDelete/:id", rowAssortingDelete);

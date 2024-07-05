@@ -2,7 +2,7 @@ import { RowAssorting } from "../model/rowAssorting.model.js";
 
 export const RowAssortingAdd = async (req, res, next) => {
   try {
-    req.body.assorting = JSON.parse(req.body.assorting);
+    // req.body.assorting = JSON.parse(req.body.assorting);
     const rowAssorting = await RowAssorting.create(req.body);
     return rowAssorting
       ? res.status(200).json({
@@ -19,7 +19,8 @@ export const RowAssortingAdd = async (req, res, next) => {
 
 export const RowAssortingViewAll = async (req, res, next) => {
   try {
-    const rowAssorting = await RowAssorting.find()
+    const database = req.params.database;
+    const rowAssorting = await RowAssorting.find({ database })
       .populate({ path: "userId", model: "user" })
       .populate({ path: "productId", model: "product" });
     return rowAssorting
@@ -57,10 +58,12 @@ export const rowAssortingViewById = async (req, res, next) => {
 
 export const rowAssortingEdit = async (req, res, next) => {
   try {
-    req.body.assorting = JSON.parse(req.body.assorting);
+    // req.body.assorting = JSON.parse(req.body.assorting);
+    const updateData = req.body;
     const rowAssorting = await RowAssorting.findByIdAndUpdate(
       req.params.id,
-      req.body
+      updateData,
+      { new: true }
     );
     return rowAssorting
       ? res.status(200).json({

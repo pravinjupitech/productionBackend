@@ -15,8 +15,10 @@ const RowAssortingSchema = new mongoose.Schema(
         wastage_weight: { type: Number },
         wastage_Per_piece: { type: Number },
         wastage_per_weight: { type: Number },
+        database: { type: String },
       },
     ],
+    database: { type: String },
   },
   { timestamps: true }
 );
