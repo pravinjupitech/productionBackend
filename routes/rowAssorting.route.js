@@ -19,5 +19,5 @@ router.delete(
   "/innerAssorting-Delete/:id/:assortingId",
   rowAssortingByIdDelete
 );
-router.put("/rowAssortingUpdate/:id/:assortingId", rowAssortingByIdUpdate);
+router.put("/innerAssortingUpdate/:id/:assortingId", rowAssortingByIdUpdate);
 export default router;
