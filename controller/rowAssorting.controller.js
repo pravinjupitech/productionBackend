@@ -85,11 +85,16 @@ export const rowAssortingByIdUpdate = async (req, res, next) => {
     if (rowAssorting) {
       const assortingId = req.params.assortingId;
       const assortingIndex = rowAssorting.assorting.findIndex(
-        (qty) => qty._id.toString() === assortingId
+        (tot) => tot._id.toString() === assortingId
       );
       if (assortingIndex > -1) {
-        rowAssorting.assorting[assortingIndex].quantity = req.body.quantity;
+        const existingAssorting = rowAssorting.assorting[assortingIndex];
+        const updatedAssorting = { ...existingAssorting._doc, ...req.body };
+
+        rowAssorting.assorting[assortingIndex] = updatedAssorting;
+
         await rowAssorting.save();
+
         res.status(200).json({
           message: "Data Updated Successfully",
           updatedAssorting: rowAssorting.assorting[assortingIndex],
@@ -135,7 +140,7 @@ export const rowAssortingByIdDelete = async (req, res, next) => {
     if (rowAssorting) {
       const assortingId = req.params.assortingId;
       const assortingIndex = rowAssorting.assorting.findIndex(
-        (qty) => qty._id.toString() === assortingId
+        (tot) => tot._id.toString() === assortingId
       );
       if (assortingIndex > -1) {
         rowAssorting.assorting.splice(assortingIndex, 1);
