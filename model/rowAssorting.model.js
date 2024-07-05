@@ -3,8 +3,8 @@ const RowAssortingSchema = new mongoose.Schema(
   {
     assorting: [
       {
-        userId: { type: mongoose.Schema.Types.ObjectId, ref: "user" },
-        productId: { type: mongoose.Schema.Types.ObjectId, ref: "product" },
+        userId: { type: String },
+        productId: { type: String },
         given_piece: { type: Number },
         given_weight: { type: Number },
         given_unit: { type: String },
