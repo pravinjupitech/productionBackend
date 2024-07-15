@@ -92,9 +92,7 @@ export const rowAssortingByIdUpdate = async (req, res, next) => {
         const updatedAssorting = { ...existingAssorting._doc, ...req.body };
 
         rowAssorting.assorting[assortingIndex] = updatedAssorting;
-
         await rowAssorting.save();
-
         res.status(200).json({
           message: "Data Updated Successfully",
           updatedAssorting: rowAssorting.assorting[assortingIndex],
@@ -134,39 +132,6 @@ export const rowAssortingDelete = async (req, res, next) => {
   }
 };
 
-// export const rowAssortingByIdDelete = async (req, res, next) => {
-//   try {
-//     const rowAssorting = await RowAssorting.findById(req.params.id);
-//     if (rowAssorting) {
-//       const assortingId = req.params.assortingId;
-//       const assortingIndex = rowAssorting.assorting.findIndex(
-//         (tot) => tot._id.toString() === assortingId
-//       );
-//       if (assortingIndex > -1) {
-//         rowAssorting.assorting.splice(assortingIndex, 1);
-//         await rowAssorting.save();
-//         res.status(200).json({
-//           message: "Data Deleted Successfully",
-//           rowAssorting,
-//           status: true,
-//         });
-//       } else {
-//         return res.status(404).json({
-//           message: "Assorting Not Found",
-//           status: false,
-//         });
-//       }
-//     } else {
-//       return res.status(404).json({
-//         message: "RowAssorting Not Found",
-//         status: false,
-//       });
-//     }
-//   } catch (error) {
-//     console.error(error);
-//     return res.status(500).json({ error: error.message, status: false });
-//   }
-// };
 export const rowAssortingByIdDelete = async (req, res, next) => {
   try {
     const rowAssorting = await RowAssorting.findById(req.params.id);
@@ -177,11 +142,10 @@ export const rowAssortingByIdDelete = async (req, res, next) => {
       );
       if (assortingIndex > -1) {
         rowAssorting.assorting.splice(assortingIndex, 1);
-
         if (rowAssorting.assorting.length === 0) {
           await RowAssorting.findByIdAndDelete(req.params.id);
           return res.status(200).json({
-            message: "Parent Data Deleted Successfully",
+            message: "Data Deleted Successfully",
             status: true,
           });
         } else {

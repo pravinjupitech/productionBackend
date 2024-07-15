@@ -67,7 +67,8 @@ import WarningRouter from "./routes/warning.route.js";
 import TerminationRouter from "./routes/termination.route.js";
 import BonusRouter from "./routes/bonus.route.js";
 import UserBranchRouter from "./routes/userBranch.route.js";
-import RowAssorting from "./routes/rowAssorting.route.js";
+import RowAssortingRouter from "./routes/rowAssorting.route.js";
+import ShappingRouter from "./routes/shapping.route.js";
 import mongoose from "mongoose";
 const app = express();
 import cors from "cors";
@@ -158,7 +159,9 @@ app.use("/termination", TerminationRouter);
 app.use("/bonus", BonusRouter);
 app.use("/check", customerCheckRouter);
 app.use("/branch", UserBranchRouter);
-app.use("/rowAssorting", RowAssorting);
+//--------------------------------------------------------------------------------------
+app.use("/rowAssorting", RowAssortingRouter);
+app.use("/shap", ShappingRouter);
 mongoose
   .connect(process.env.DATABASE_URL, {
     useUnifiedTopology: true,
