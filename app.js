@@ -67,8 +67,10 @@ import WarningRouter from "./routes/warning.route.js";
 import TerminationRouter from "./routes/termination.route.js";
 import BonusRouter from "./routes/bonus.route.js";
 import UserBranchRouter from "./routes/userBranch.route.js";
+//production---------------------------------------------------------------------------------------------------------
 import RowAssortingRouter from "./routes/rowAssorting.route.js";
 import ShappingRouter from "./routes/shapping.route.js";
+import ProductionUserRouter from "./routes/productionUser.route.js";
 import mongoose from "mongoose";
 const app = express();
 import cors from "cors";
@@ -159,9 +161,10 @@ app.use("/termination", TerminationRouter);
 app.use("/bonus", BonusRouter);
 app.use("/check", customerCheckRouter);
 app.use("/branch", UserBranchRouter);
-//--------------------------------------------------------------------------------------
+//productions----------------------------------------------------------------------------------------------------------
 app.use("/rowAssorting", RowAssortingRouter);
 app.use("/shap", ShappingRouter);
+app.use("/prodUser", ProductionUserRouter);
 mongoose
   .connect(process.env.DATABASE_URL, {
     useUnifiedTopology: true,
@@ -174,7 +177,7 @@ mongoose
     console.log(error);
   });
 
-//------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------
 cron.schedule("0 20 * * *", () => {
   closingStockUpdated();
 });

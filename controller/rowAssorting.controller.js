@@ -79,6 +79,22 @@ export const rowAssortingEdit = async (req, res, next) => {
   }
 };
 
+export const rowAssortingDelete = async (req, res, next) => {
+  try {
+    const rowAssorting = await RowAssorting.findByIdAndDelete(req.params.id);
+    return rowAssorting
+      ? res.status(200).json({
+          message: "Data Deleted Successfully",
+          rowAssorting,
+          status: true,
+        })
+      : res.status(404).json({ message: "Data Not Daleted", status: false });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ error: error.message, status: false });
+  }
+};
+
 export const rowAssortingByIdUpdate = async (req, res, next) => {
   try {
     const rowAssorting = await RowAssorting.findById(req.params.id);
@@ -110,22 +126,6 @@ export const rowAssortingByIdUpdate = async (req, res, next) => {
         status: false,
       });
     }
-  } catch (error) {
-    console.error(error);
-    return res.status(500).json({ error: error.message, status: false });
-  }
-};
-
-export const rowAssortingDelete = async (req, res, next) => {
-  try {
-    const rowAssorting = await RowAssorting.findByIdAndDelete(req.params.id);
-    return rowAssorting
-      ? res.status(200).json({
-          message: "Data Deleted Successfully",
-          rowAssorting,
-          status: true,
-        })
-      : res.status(404).json({ message: "Data Not Daleted", status: false });
   } catch (error) {
     console.error(error);
     return res.status(500).json({ error: error.message, status: false });
