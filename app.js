@@ -178,15 +178,15 @@ mongoose
   });
 
 //---------------------------------------------------------------------------------------
-cron.schedule("0 20 * * *", () => {
-  closingStockUpdated();
-});
+// cron.schedule("0 20 * * *", () => {
+//   closingStockUpdated();
+// });
 // cron.schedule('0 9 * * *', () => {
 //   viewOpeningStockWarehouse()
 // })
-cron.schedule("1 0 1 * *", () => {
-  increasePercentage();
-});
+// cron.schedule("1 0 1 * *", () => {
+//   increasePercentage();
+// });
 //------------------------------------------------------------------------------
 
 app.listen(process.env.PORT, () => {
