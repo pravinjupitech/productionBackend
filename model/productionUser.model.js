@@ -63,4 +63,3 @@ const userSchema = new mongoose.Schema({
   },
 });
 export const productUser = mongoose.model("productionUser", userSchema);
-

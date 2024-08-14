@@ -134,7 +134,7 @@ app.use("/other-charges", OtherChargesRouter);
 app.use("/bank", BankRouter);
 app.use("/quotation", QuotationRoute);
 app.use("/subscription", SubscriptionRouter);
-//---------------------------------------------
+//----------------------------------------------------------------------------------------------------
 app.use("/create-job", CreateJobRouter);
 app.use("/job-applied", JobAppliedRouter);
 app.use("/interview", InterviewRouter);

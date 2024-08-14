@@ -10,7 +10,9 @@ export const RowAssortingAdd = async (req, res, next) => {
           rowAssorting,
           status: true,
         })
-      : res.status(404).json({ message: "Data Not Save", status: false });
+      : res
+          .status(404)
+          .json({ message: "Something Went Wrong", status: false });
   } catch (error) {
     console.error(error);
     return res.status(500).json({ error: error.message, status: false });
@@ -19,20 +21,14 @@ export const RowAssortingAdd = async (req, res, next) => {
 
 export const RowAssortingViewAll = async (req, res, next) => {
   try {
-    const database = req.params.database;
-    const rowAssorting = await RowAssorting.find({ database: database })
-      .populate({ path: "assorting.userId", model: "user" })
-      .populate({ path: "assorting.productId", model: "product" })
-      .exec();
-    return rowAssorting
+    const rowAssorting = await RowAssorting.find().sort({ sortorder: -1 });
+    return rowAssorting.length > 0
       ? res.status(200).json({
           message: "Data Found Successfully",
           rowAssorting,
           status: true,
         })
-      : res
-          .status(404)
-          .json({ message: "RowAssorting Not Found", status: false });
+      : res.status(404).json({ message: "Not Found", status: false });
   } catch (error) {
     console.error(error);
     return res.status(500).json({ error: error.message, status: false });
@@ -48,9 +44,7 @@ export const rowAssortingViewById = async (req, res, next) => {
           rowAssorting,
           status: true,
         })
-      : res
-          .status(404)
-          .json({ message: "RowAssorting Not Found", status: false });
+      : res.status(404).json({ message: "Not Found", status: false });
   } catch (error) {
     console.error(error);
     return res.status(500).json({ error: error.message, status: false });
@@ -100,29 +94,29 @@ export const rowAssortingByIdUpdate = async (req, res, next) => {
     const rowAssorting = await RowAssorting.findById(req.params.id);
     if (rowAssorting) {
       const assortingId = req.params.assortingId;
-      const assortingIndex = rowAssorting.assorting.findIndex(
+      const assortingIndex = rowAssorting.finished_raw.findIndex(
         (tot) => tot._id.toString() === assortingId
       );
       if (assortingIndex > -1) {
-        const existingAssorting = rowAssorting.assorting[assortingIndex];
+        const existingAssorting = rowAssorting.finished_raw[assortingIndex];
         const updatedAssorting = { ...existingAssorting._doc, ...req.body };
 
-        rowAssorting.assorting[assortingIndex] = updatedAssorting;
+        rowAssorting.finished_raw[assortingIndex] = updatedAssorting;
         await rowAssorting.save();
         res.status(200).json({
           message: "Data Updated Successfully",
-          updatedAssorting: rowAssorting.assorting[assortingIndex],
+          updatedAssorting: rowAssorting.finished_raw[assortingIndex],
           status: true,
         });
       } else {
         return res.status(404).json({
-          message: "Assorting Not Found",
+          message: "finished Raw Not Found",
           status: false,
         });
       }
     } else {
       return res.status(404).json({
-        message: "RowAssorting Not Found",
+        message: " Not Found",
         status: false,
       });
     }
@@ -137,12 +131,12 @@ export const rowAssortingByIdDelete = async (req, res, next) => {
     const rowAssorting = await RowAssorting.findById(req.params.id);
     if (rowAssorting) {
       const assortingId = req.params.assortingId;
-      const assortingIndex = rowAssorting.assorting.findIndex(
+      const assortingIndex = rowAssorting.finished_raw.findIndex(
         (tot) => tot._id.toString() === assortingId
       );
       if (assortingIndex > -1) {
-        rowAssorting.assorting.splice(assortingIndex, 1);
-        if (rowAssorting.assorting.length === 0) {
+        rowAssorting.finished_raw.splice(assortingIndex, 1);
+        if (rowAssorting.finished_raw.length === 0) {
           await RowAssorting.findByIdAndDelete(req.params.id);
           return res.status(200).json({
             message: "Data Deleted Successfully",
@@ -158,13 +152,13 @@ export const rowAssortingByIdDelete = async (req, res, next) => {
         }
       } else {
         return res.status(404).json({
-          message: "Assorting Not Found",
+          message: "finished Raw Not Found",
           status: false,
         });
       }
     } else {
       return res.status(404).json({
-        message: "RowAssorting Not Found",
+        message: "Not Found",
         status: false,
       });
     }
