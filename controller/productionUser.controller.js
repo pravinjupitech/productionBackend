@@ -68,3 +68,4 @@ export const deleteUser = async (req, res, next) => {
     res.status(500).json({ message: "Internal Server Error", status: false });
   }
 };
+
