@@ -69,7 +69,6 @@ import BonusRouter from "./routes/bonus.route.js";
 import UserBranchRouter from "./routes/userBranch.route.js";
 //production---------------------------------------------------------------------------------------------------------
 import RowAssortingRouter from "./routes/rowAssorting.route.js";
-import ShappingRouter from "./routes/shapping.route.js";
 import ProductionUserRouter from "./routes/productionUser.route.js";
 import ProductionLabelRouter from "./routes/productionLabel.route.js";
 import mongoose from "mongoose";
@@ -164,7 +163,6 @@ app.use("/check", customerCheckRouter);
 app.use("/branch", UserBranchRouter);
 //productions----------------------------------------------------------------------------------------------------------
 app.use("/rowAssorting", RowAssortingRouter);
-app.use("/shap", ShappingRouter);
 app.use("/prodUser", ProductionUserRouter);
 app.use("/productionLabel", ProductionLabelRouter);
 mongoose

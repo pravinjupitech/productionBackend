@@ -11,7 +11,6 @@ export const addLabel = async (req, res, next) => {
     res.status(500).json({ error: "Internal Server Error", status: false });
   }
 };
-
 export const viewLabel = async (req, res, next) => {
   try {
     const label = await ProductionLabel.find({}).sort({ sortorder: -1 });

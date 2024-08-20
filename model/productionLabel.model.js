@@ -7,4 +7,4 @@ const LabelSchema = new mongoose.Schema({
     type: String,
   },
 });
-export const ProductionLabel = mongoose.model("/productionLabel", LabelSchema);
+export const ProductionLabel = mongoose.model("productionLabel", LabelSchema);
