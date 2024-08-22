@@ -71,6 +71,7 @@ import UserBranchRouter from "./routes/userBranch.route.js";
 import RowAssortingRouter from "./routes/rowAssorting.route.js";
 import ProductionUserRouter from "./routes/productionUser.route.js";
 import ProductionLabelRouter from "./routes/productionLabel.route.js";
+import ProductionPurchaseOrderRouter from "./routes/productionCreatePurchaseOrder.route.js";
 import mongoose from "mongoose";
 const app = express();
 import cors from "cors";
@@ -165,6 +166,7 @@ app.use("/branch", UserBranchRouter);
 app.use("/rowAssorting", RowAssortingRouter);
 app.use("/prodUser", ProductionUserRouter);
 app.use("/productionLabel", ProductionLabelRouter);
+app.use("/production-order", ProductionPurchaseOrderRouter);
 mongoose
   .connect(process.env.DATABASE_URL, {
     useUnifiedTopology: true,

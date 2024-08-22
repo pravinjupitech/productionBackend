@@ -105,7 +105,7 @@ export const rowAssortingByIdUpdate = async (req, res, next) => {
         await rowAssorting.save();
         res.status(200).json({
           message: "Data Updated Successfully",
-          updatedAssorting: rowAssorting.finished_raw[assortingIndex],
+          updatedAssorting: rowAssorting.finished_raw[assortingIndex], 
           status: true,
         });
       } else {

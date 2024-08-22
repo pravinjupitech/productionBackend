@@ -8,3 +8,4 @@ const LabelSchema = new mongoose.Schema({
   },
 });
 export const ProductionLabel = mongoose.model("productionLabel", LabelSchema);
+ 
