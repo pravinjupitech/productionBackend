@@ -18,7 +18,7 @@ export const viewOrder = async (req, res, next) => {
   try {
     const order = await ProductionPurchaseOrder.find({}).sort({
       sortorder: -1,
-    });
+    });0
     return order.length > 0
       ? res.status(200).json({ message: "Data Found", order, status: true })
       : res.status(404).json({ message: "Not Found", status: false });

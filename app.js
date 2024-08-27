@@ -72,6 +72,7 @@ import RowAssortingRouter from "./routes/rowAssorting.route.js";
 import ProductionUserRouter from "./routes/productionUser.route.js";
 import ProductionLabelRouter from "./routes/productionLabel.route.js";
 import ProductionPurchaseOrderRouter from "./routes/productionCreatePurchaseOrder.route.js";
+import AdminProductionAddRouter from "./routes/adminProduction.route.js";
 import mongoose from "mongoose";
 const app = express();
 import cors from "cors";
@@ -167,6 +168,7 @@ app.use("/rowAssorting", RowAssortingRouter);
 app.use("/prodUser", ProductionUserRouter);
 app.use("/productionLabel", ProductionLabelRouter);
 app.use("/production-order", ProductionPurchaseOrderRouter);
+app.use("/admin-product", AdminProductionAddRouter);
 mongoose
   .connect(process.env.DATABASE_URL, {
     useUnifiedTopology: true,
