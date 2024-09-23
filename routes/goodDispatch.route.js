@@ -1,6 +1,6 @@
 import express from "express";
 import path from "path"
-import { GoodDispathcXml, deleteGoodDispatch, saveGoodDispatch, sendOtp, updateGoodDispatch, updateOrderStatusByDeliveryBoy, viewGoodDispatch, viewGoodDispatchById, viewOrderForDeliveryBoy } from "../controller/goodDispatch.controller.js";
+import { OrderCancelWarehouse, ProductInWarehouse, ViewOtp, ViewWarehouseByOrder, ViewWarehouseOrderCancel, ViewWarehouseOrderCompletedOrCancel, deleteGoodDispatch, saveGoodDispatch, sendOtp, updateGoodDispatch, updateOrderStatusByDeliveryBoy, viewGoodDispatch, viewGoodDispatchById, viewOrderForDeliveryBoy } from "../controller/goodDispatch.controller.js";
 import multer from "multer";
 
 const router = express.Router();
@@ -17,7 +17,6 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage: storage });
 
-router.get("/get-xml", GoodDispathcXml)
 router.post("/save-good-dispatch", upload.any("files"), saveGoodDispatch)
 router.get("/view-good-dispatch/:id/:database", viewGoodDispatch);
 router.get("/view-good-dispatch-by-id/:id", viewGoodDispatchById);
@@ -25,7 +24,13 @@ router.delete("/delete-good-dispatch/:id", deleteGoodDispatch);
 router.put("/update-good-dispatch/:id", upload.any("files"), updateGoodDispatch)
 
 router.get("/view-order-list/:id/:database", viewOrderForDeliveryBoy)
-router.get("/send-otp/:id", sendOtp)
-router.post("/verify-authentication/:id", updateOrderStatusByDeliveryBoy);
+router.post("/send-otp/:id", sendOtp)
+router.get("/view-otp/:id", ViewOtp)
+router.post("/verify-authentication/:id", upload.single("file"), updateOrderStatusByDeliveryBoy);
+router.get("/view-order-warehouse/:id", ViewWarehouseByOrder);
+router.get("/view-cancel-order-warehouse/:id", ViewWarehouseOrderCancel);
+router.get("/cancel-warehouse-order/:id/:productId", OrderCancelWarehouse);
+router.get("/view-warehouse-order-history/:id", ViewWarehouseOrderCompletedOrCancel);
+router.get("/product-warehouse/:productId", ProductInWarehouse);
 
 export default router;

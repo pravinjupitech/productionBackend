@@ -1,11 +1,23 @@
 import ExcelJS from 'exceljs'
 import { Transporter } from "../model/transporter.model.js";
+import { Role } from '../model/role.model.js';
 
 
 export const SaveTransporter = async (req, res) => {
     try {
+        if (req.body.id) {
+            const existing = await Transporter.findOne({ status: "Active", database: req.body.database, id: req.body.id })
+            if (existing) {
+                return res.status(404).json({ message: "id already exist", status: false })
+            }
+        } else {
+            return res.status(400).json({ message: "transporter id required", status: false })
+        }
         if (req.file) {
             req.body.image = req.file.filename;
+        }
+        if (!req.body.OpeningBalance) {
+            return res.status(400).json({ message: "Opening Balance Required", status: false })
         }
         // req.body.City = JSON.parse(req.body.City)
         if (req.body.serviceArea) {
@@ -21,7 +33,7 @@ export const SaveTransporter = async (req, res) => {
 export const ViewTransporter = async (req, res, next) => {
     try {
         const database = req.params.database
-        let transporter = await Transporter.find({ database: database, status: "Active" }).sort({ sortorder: -1 })
+        let transporter = await Transporter.find({ database: database, status: "Active" }).populate({ path: "rolename", model: "role" }).sort({ sortorder: -1 })
         return transporter ? res.status(200).json({ Transporter: transporter, status: true }) : res.status(404).json({ error: "Not Found", status: false })
     }
     catch (err) {
@@ -31,7 +43,7 @@ export const ViewTransporter = async (req, res, next) => {
 }
 export const ViewTransposrterById = async (req, res, next) => {
     try {
-        let transporter = await Transporter.find({ _id: req.params.id, status: "Active" }).sort({ sortorder: -1 })
+        let transporter = await Transporter.findById({ _id: req.params.id, status: "Active" }).populate({ path: "rolename", model: "role" })
         return transporter ? res.status(200).json({ Transporter: transporter, status: true }) : res.status(404).json({ error: "Not Found", status: false })
     }
     catch (err) {
@@ -81,6 +93,8 @@ export const UpdateTransporter = async (req, res, next) => {
 
 export const saveExcelFile = async (req, res) => {
     try {
+        let database = "database"
+        let rolename = "rolename";
         const filePath = await req.file.path;
         const workbook = new ExcelJS.Workbook();
         await workbook.xlsx.readFile(filePath);
@@ -93,6 +107,8 @@ export const saveExcelFile = async (req, res) => {
         const insertedDocuments = [];
         const existingIds = []
         const dataNotExist = []
+        const IdNotExisting = []
+        const roles = [];
         for (let rowIndex = 2; rowIndex <= worksheet.actualRowCount; rowIndex++) {
             const dataRow = worksheet.getRow(rowIndex);
             const document = {};
@@ -106,13 +122,24 @@ export const saveExcelFile = async (req, res) => {
                 }
                 // document[heading] = cellValue;
             }
+            document[database] = req.params.database
             if (document.database) {
-                const existingId = await Transporter.findOne({ id: document.id, database: document.database });
-                if (existingId) {
-                    existingIds.push(document.id)
+                const role = await Role.findOne({ id: document.rolename, database: document.database })
+                if (!role) {
+                    roles.push(document.id)
                 } else {
-                    const insertedDocument = await Transporter.create(document);
-                    insertedDocuments.push(insertedDocument);
+                    document[rolename] = role._id.toString()
+                    if (document.id) {
+                        const existingId = await Transporter.findOne({ id: document.id, database: document.database, status: "Active" });
+                        if (existingId) {
+                            existingIds.push(document.id)
+                        } else {
+                            const insertedDocument = await Transporter.create(document);
+                            insertedDocuments.push(insertedDocument);
+                        }
+                    } else {
+                        IdNotExisting.push(document.name)
+                    }
                 }
             } else {
                 dataNotExist.push(document.name)
@@ -123,6 +150,10 @@ export const saveExcelFile = async (req, res) => {
             message = `this transporter already exist: ${existingIds.join(', ')}`;
         } else if (dataNotExist.length > 0) {
             message = `this transporter database not already exist: ${dataNotExist.join(', ')}`;
+        } else if (IdNotExisting.length > 0) {
+            message = `this transporter id is required : ${IdNotExisting.join(', ')}`;
+        } else if (roles.length > 0) {
+            message = `this transporter's role id is required : ${roles.join(', ')}`;
         }
         return res.status(200).json({ message, status: true });
     } catch (err) {
@@ -132,6 +163,8 @@ export const saveExcelFile = async (req, res) => {
 }
 export const UpdateExcelTransporter = async (req, res) => {
     try {
+        let database = "database"
+        let rolename = "rolename";
         const filePath = await req.file.path;
         const workbook = new ExcelJS.Workbook();
         await workbook.xlsx.readFile(filePath);
@@ -142,6 +175,8 @@ export const UpdateExcelTransporter = async (req, res) => {
             headings.push(cell.value);
         });
         const insertedDocuments = [];
+        const IdNotExisting = []
+        const roles = [];
         for (let rowIndex = 2; rowIndex <= worksheet.actualRowCount; rowIndex++) {
             const dataRow = worksheet.getRow(rowIndex);
             const document = {};
@@ -150,13 +185,29 @@ export const UpdateExcelTransporter = async (req, res) => {
                 const cellValue = dataRow.getCell(columnIndex).value;
                 document[heading] = cellValue;
             }
-            const filter = { id: document.id, database: req.params.database }
-            const options = { new: true, upsert: true };
-            const insertedDocument = await Transporter.findOneAndUpdate(filter, document, options);
-            insertedDocuments.push(insertedDocument);
-
+            document[database] = req.params.database
+            const role = await Role.findOne({ id: document.rolename, database: document.database })
+            if (!role) {
+                roles.push(document.id)
+            } else {
+                const existTransporter = await Transporter.findOne({ id: document.id, database: document.database, status: "Active" })
+                if (!existTransporter) {
+                    IdNotExisting.push(document.id)
+                } else {
+                    document[rolename] = role._id.toString()
+                    const filter = { id: document.id, database: req.params.database }
+                    const options = { new: true, upsert: true };
+                    const insertedDocument = await Transporter.findOneAndUpdate(filter, document, options);
+                    insertedDocuments.push(insertedDocument);
+                }
+            }
         }
         let message = 'Updated Successfully';
+        if (roles.length > 0) {
+            message = `this transporter's role id is required: ${roles.join(', ')}`;
+        } else if (IdNotExisting.length > 0) {
+            message = `this transporter's id not found: ${IdNotExisting.join(', ')}`;
+        }
         return res.status(200).json({ message, status: true });
     } catch (err) {
         console.error(err);

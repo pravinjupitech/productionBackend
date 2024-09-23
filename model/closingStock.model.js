@@ -14,11 +14,15 @@ const ClosingSchema = new mongoose.Schema({
         type: Number,
         default: 0
     },
+    cRate: {
+        type: Number,
+        default: 0
+    },
     cBAmount: {
         type: Number,
         default: 0
     },
-    cTaxAmount: {
+    cTaxRate: {
         type: Number,
         default: 0
     },
@@ -30,11 +34,15 @@ const ClosingSchema = new mongoose.Schema({
         type: Number,
         default: 0
     },
+    pRate: {
+        type: Number,
+        default: 0
+    },
     pBAmount: {
         type: Number,
         default: 0
     },
-    pTaxAmount: {
+    pTaxRate: {
         type: Number,
         default: 0
     },
@@ -46,11 +54,15 @@ const ClosingSchema = new mongoose.Schema({
         type: Number,
         default: 0
     },
+    sRate: {
+        type: Number,
+        default: 0
+    },
     sBAmount: {
         type: Number,
         default: 0
     },
-    sTaxAmount: {
+    sTaxRate: {
         type: Number,
         default: 0
     },

@@ -35,7 +35,7 @@ export const deleteHoliday = async (req, res, next) => {
     try {
         const holiday = await Holiday.findByIdAndDelete(req.params.id)
         if (!holiday) {
-            return res.status(404).json({ message: "Not Fount", status: false })
+            return res.status(404).json({ message: "Not Found", status: false })
         }
         return res.status(200).json({ message: "delete successfull", status: true })
     }
@@ -60,12 +60,12 @@ export const updatedHoliday = async (req, res, next) => {
     }
 }
 
-
 export const saveWorkingHours = async (req, res, next) => {
     try {
-        // const check = await WorkingHours.findOne({ database: req.body.database })
-        // if (!check) {
-        // }
+        const check = await WorkingHours.findOne({ id: req.body.id, shiftName: req.body.shiftName, database: req.body.database })
+        if (check) {
+            return res.status(404).json({ message: "shift id already exist", status: false })
+        }
         const time = await WorkingHours.create(req.body)
         return time ? res.status(200).json({ message: "saved successfully", time, status: true }) : res.status(400).json({ message: "something went wrong", status: false })
     }
@@ -74,12 +74,11 @@ export const saveWorkingHours = async (req, res, next) => {
         return res.status(500).json({ error: "Internal Server Error", status: false })
     }
 }
-
 export const deleteWorkingHours = async (req, res, next) => {
     try {
         const check = await WorkingHours.findByIdAndDelete(req.params.id)
         if (!check) {
-            return res.status(404).json({ message: "Not Fount", status: false })
+            return res.status(404).json({ message: "Not Found", status: false })
         }
         return res.status(200).json({ message: "delete successfull", status: true })
 
@@ -88,7 +87,6 @@ export const deleteWorkingHours = async (req, res, next) => {
         return res.status(500).json({ error: "Internal Server Error", status: false })
     }
 }
-
 export const updatedWorkingHours = async (req, res, next) => {
     try {
         const check = await WorkingHours.findById(req.params.id)

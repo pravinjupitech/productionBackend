@@ -1,15 +1,23 @@
 import mongoose from "mongoose";
 
 const ReceiptSchema = new mongoose.Schema({
-    partyId1: {
-        type: String
-    },
     created_by: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "user",
+        type: String
     },
     database: {
         type: String
+    },
+    userId: {
+        type: String
+    },
+    partyId: {
+        type: String,
+    },
+    expenseId: {
+        type: String,
+    },
+    transporterId: {
+        type: String,
     },
     type: {
         type: String
@@ -32,16 +40,22 @@ const ReceiptSchema = new mongoose.Schema({
     title: {
         type: String
     },
-    partyId: {
-        type: String,
-    },
     amount: {
         type: Number
     },
     instrumentNo: {
         type: String
     },
-    note: {
+    remark: {
+        type: String
+    },
+    latitude: {
+        type: String
+    },
+    longitude: {
+        type: String
+    },
+    time: {
         type: String
     },
     status: {

@@ -32,7 +32,7 @@ const CustomerSchema = new mongoose.Schema({
     type: String
   },
   mobileNumber: {
-    type: Number
+    type: String
   },
   passPortNo: {
     type: String
@@ -76,11 +76,15 @@ const CustomerSchema = new mongoose.Schema({
   limit: {
     type: Number
   },
+  remainingLimit: {
+    type: Number,
+    default: 0
+  },
   paymentTerm: {
-    type: Number
+    type: String
   },
   transporterDetail: {
-    type: Number
+    type: String
   },
   assignTransporter: {
     type: []
@@ -139,6 +143,12 @@ const CustomerSchema = new mongoose.Schema({
   shopPhoto: {
     type: []
   },
+  OpeningBalance: {
+    type: Number
+  },
+  Type: {
+    type: String
+  },
   status: {
     type: String,
     default: "Active"
@@ -147,7 +157,8 @@ const CustomerSchema = new mongoose.Schema({
     type: Number
   },
   autoBillingStatus: {
-    type: String
+    type: String,
+    default: "open"
   },
   latitude: {
     type: String
@@ -159,8 +170,14 @@ const CustomerSchema = new mongoose.Schema({
     type: String
   },
   leadStatus: {
-    type: Boolean,
-    default: true
+    type: String
+  },
+  leadStatusCheck: {
+    type: String,
+    default: "false"
+  },
+  remark: {
+    type: []
   }
 
 }, { timestamps: true });

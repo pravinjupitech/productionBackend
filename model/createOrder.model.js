@@ -5,9 +5,6 @@ const orderItemsSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: "product"
     },
-    Size: {
-        type: Number
-    },
     primaryUnit: {
         type: String
     },
@@ -59,13 +56,27 @@ const orderItemsSchema = new mongoose.Schema({
     },
     date: {
         type: Date,
-        default: Date.now
     },
     igstTaxType: {
         type: Boolean
-    }
+    },
+    warehouse: {
+        type: String
+    },
 }, { timestamps: true });
 const createOrderSchema = new mongoose.Schema({
+    CNUpload: {
+        type: String
+    },
+    FetchSalesInvoice: {
+        type: String
+    },
+    CNDetails: {
+        type: String
+    },
+    AssignDeliveryBoy: {
+        type: String
+    },
     userId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "user"
@@ -80,12 +91,17 @@ const createOrderSchema = new mongoose.Schema({
     invoiceId: {
         type: String
     },
+    orderNo: {
+        type: String
+    },
+    challanNo: {
+        type: String
+    },
     warehouseId: {
         type: String
     },
     date: {
         type: Date,
-        default: Date.now,
     },
     DateofDelivery: {
         type: String
@@ -269,22 +285,9 @@ const createOrderSchema = new mongoose.Schema({
             }
         }
     ],
-    chargesDetails: [
-        {
-            chargedAmount: {
-                type: Number
-            },
-            percentage: {
-                type: Number
-            },
-            title: {
-                type: String
-            },
-            chargedType: {
-                type: String
-            }
-        }
-    ],
+    chargesDetails: {
+        type: Number
+    },
     ARNStatus: {
         type: Boolean,
         default: false
@@ -292,6 +295,15 @@ const createOrderSchema = new mongoose.Schema({
     invoiceStatus: {
         type: Boolean,
         default: false
+    },
+    invoiceType: {
+        type: String
+    },
+    AssignDeliveryBoy: {
+        type: String
+    },
+    NoOfPackage: {
+        type: Number
     }
 }, { timestamps: true })
 

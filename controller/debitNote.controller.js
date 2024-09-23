@@ -1,16 +1,29 @@
 import { DebitNote } from "../model/debitNote.model.js";
 import { getDebitNoteHierarchy } from "../rolePermission/RolePermission.js";
+import { DebitNoteNO } from "../service/invoice.js";
 
 
+export const SaveDebitNote = async (req, res) => {
+    try {
+        const note = await DebitNoteNO(req.body)
+        console.log(note)
+        // const debit = await DebitNote.create(req.body)
+        // return debit ? res.status(200).json({ message: "Debit Note Saved Successfull!", status: true }) : res.status(400).json({ message: "Bad Request", status: false })
+    } catch (err) {
+        console.log(err);
+        return res.status(500).json({ error: 'Internal Server Error', status: false });
+    }
+};
 export const viewDebitNote = async (req, res, next) => {
     try {
-        const userId = req.params.id;
-        const adminDetail = await getDebitNoteHierarchy(userId);
-        return (adminDetail.length > 0) ? res.status(200).json({ DebitNote: adminDetail, status: true }) : res.status(400).json({ message: "Not Found", status: false })
+        // const userId = req.params.id;
+        // const adminDetail = await getDebitNoteHierarchy(userId);
+        const debit = await DebitNote.find({ database: req.params.database }).sort({ sortorder: -1 }).populate({ path: "productItems.productId", model: "product" }).populate({ path: "userId", model: "user" }).populate({ path: "partyId", model: "customer" })
+        return (debit.length > 0) ? res.status(200).json({ DebitNote: debit, status: true }) : res.status(400).json({ message: "Not Found", status: false })
     }
     catch (err) {
         console.log(err);
-        return res.status(500).json({ error: err, status: false })
+        return res.status(500).json({ error: "Internal Server Error", status: false })
     }
 }
 export const viewDebitNoteById = async (req, res) => {
@@ -28,5 +41,3 @@ export const viewDebitNoteById = async (req, res) => {
         return res.status(500).json({ error: 'Internal Server Error', status: false });
     }
 };
-
-

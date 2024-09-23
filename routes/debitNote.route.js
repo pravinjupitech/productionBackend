@@ -1,9 +1,10 @@
 import express from "express";
-import { viewDebitNote, viewDebitNoteById } from "../controller/debitNote.controller.js";
+import { SaveDebitNote, viewDebitNote, viewDebitNoteById } from "../controller/debitNote.controller.js";
 
 const router = express.Router();
 
-router.get("/view-debit-note/:id", viewDebitNote);
+router.post("/save-debit-note", SaveDebitNote);
+router.get("/view-debit-note/:database", viewDebitNote);
 router.get("/view-debit-note-by-id/:id", viewDebitNoteById)
 
 export default router;
