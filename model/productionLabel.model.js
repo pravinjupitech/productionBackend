@@ -1,11 +1,8 @@
 import mongoose from "mongoose";
 const LabelSchema = new mongoose.Schema({
-  production_step_name: {
-    type: String,
-  },
+  production_step_name: [],
   note: {
     type: String,
   },
 });
 export const ProductionLabel = mongoose.model("productionLabel", LabelSchema);
- 
