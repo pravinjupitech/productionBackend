@@ -24,11 +24,9 @@ export const overDue = async (body) => {
         console.log(err)
     }
 };
-
 export const overDue1 = async (body) => {
     try {
         const over = await OverDueReport.findOne({ partyId: body.partyId, activeStatus: "Active" }).sort({ sortorder: -1 })
-        const over1 = await PartyOrderLimit.findOne({ partyId: body.partyId, activeStatus: "Active" })
         if (!over) {
             body.remainingAmount = body.amount;
             body.totalPaidAmount = body.amount
@@ -43,10 +41,13 @@ export const overDue1 = async (body) => {
             over.voucherDate = new Date(new Date())
             if (over.remainingAmount <= 0) {
                 party.autoBillingStatus = "open"
-                await party.save()
-                over.activeStatus = "Deactive"
                 await over.save()
-                await over1.save()
+                if (party.remainingLimit > 0) {
+                    over.activeStatus = "Deactive"
+                    party.remainingLimit = 0
+                    await over.save()
+                    await party.save()
+                }
             } else {
                 await over.save()
             }
@@ -55,4 +56,60 @@ export const overDue1 = async (body) => {
     catch (err) {
         console.log(err)
     }
-};   
+};
+export const DeleteOverDue = async (body) => {
+    try {
+        const over = await OverDueReport.findOne({ partyId: body.partyId, activeStatus: "Active" }).sort({ sortorder: -1 })
+        if (!over) {
+            console.log("Over Due Not Found")
+        } else {
+            const party = await Customer.findById(body.partyId)
+            over.totalPaidAmount = over.totalPaidAmount - body.amount
+            over.remainingAmount = over.remainingAmount + body.amount;
+            over.voucherNo = body.voucherNo - 1 || over.voucherNo + 1
+            if (over.remainingAmount <= 0) {
+                party.autoBillingStatus = "open"
+                await over.save()
+                if (party.remainingLimit) {
+                    over.activeStatus = "Deactive"
+                    party.remainingLimit = 0
+                    await over.save()
+                    await party.save()
+                }
+                await over.save()
+            } else {
+                await over.save()
+            }
+        }
+    }
+    catch (err) {
+        console.log(err)
+    }
+};
+export const UpdateOverDue = async (body, previousAmount) => {
+    try {
+        const over = await OverDueReport.findOne({ partyId: body.partyId, activeStatus: "Active" }).sort({ sortorder: -1 })
+        if (!over) {
+            console.log("Over Due Not Found")
+        } else {
+            const party = await Customer.findById(body.partyId)
+            over.totalPaidAmount = over.totalPaidAmount + (body.amount - previousAmount)
+            over.remainingAmount = over.remainingAmount - (body.amount - previousAmount);
+            if (over.remainingAmount <= 0) {
+                party.autoBillingStatus = "open"
+                await over.save()
+                if (party.remainingLimit > 0) {
+                    over.activeStatus = "Deactive"
+                    party.remainingLimit = 0
+                    await over.save()
+                    await party.save()
+                }
+            } else {
+                await over.save()
+            }
+        }
+    }
+    catch (err) {
+        console.log(err)
+    }
+};

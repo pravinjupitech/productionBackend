@@ -49,7 +49,7 @@ export const deleteBonus = async (req, res, next) => {
     try {
         const bonus = await Bonus.findById(req.params.id)
         if (!bonus) {
-            return res.status(404).json({ message: "Not Fount", status: false })
+            return res.status(404).json({ message: "Not Found", status: false })
         }
         bonus.status = "Deactive"
         await bonus.save();
@@ -88,7 +88,6 @@ export const viewBonusById = async (req, res, next) => {
         return res.status(500).json({ error: "Internal Server Error", status: false })
     }
 }
-
 export const getBonus = async (req, res, next) => {
     try {
         const check = await Bonus.find({ userId: req.params.id })

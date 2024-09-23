@@ -9,8 +9,7 @@ const LedgerSchema = new mongoose.Schema({
         type: String
     },
     date: {
-        type: Date,
-        default: Date.now
+        type: Date
     },
     userId: {
         type: String
@@ -18,7 +17,13 @@ const LedgerSchema = new mongoose.Schema({
     partyId: {
         type: String
     },
-    partyId1: {
+    expenseId: {
+        type: String
+    },
+    transporterId: {
+        type: String
+    },
+    orderId: {
         type: String
     },
     name: {
@@ -61,6 +66,10 @@ const LedgerSchema = new mongoose.Schema({
         type: String
     },
     particular: {
+        type: String
+    },
+
+    paymentMode: {
         type: String
     }
 }, { timestamps: true })

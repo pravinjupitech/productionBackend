@@ -18,9 +18,11 @@ const UserSchema = new mongoose.Schema({
   geotagging: {
     type: String
   },
-  warehouse: {
-    type: []
-  },
+  warehouse: [{
+    id: {
+      type: String
+    }
+  }],
   setRule: {
     type: []
   },
@@ -201,6 +203,12 @@ const UserSchema = new mongoose.Schema({
     type: String,
     default: "unpaid"
   },
+  OpeningBalance: {
+    type: Number
+  },
+  Type: {
+    type: String
+  },
   externalImageId: {
     type: String
   },
@@ -220,6 +228,9 @@ const UserSchema = new mongoose.Schema({
   },
   shift: {
     type: String,
+  },
+  otp: {
+    type: String
   }
 }, { timestamps: true });
 

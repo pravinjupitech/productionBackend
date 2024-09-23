@@ -1,15 +1,16 @@
-import { Order } from "../model/order.model.js";
 import { InvoiceList } from "../model/createInvoice.model.js";
 import { CreateOrder } from "../model/createOrder.model.js";
 import { getUserHierarchyBottomToTop } from "../rolePermission/RolePermission.js";
 import { Customer } from "../model/customer.model.js";
-import { ledgerPartyForCredit, ledgerPartyForDebit, ledgerSalesForCredit, ledgerSalesForDebit } from "../service/ledger.js";
+import { ledgerPartyForCredit, ledgerPartyForDebit } from "../service/ledger.js";
 import { PurchaseOrder } from "../model/purchaseOrder.model.js";
 import { OverDueReport } from "../model/overDue.mode.js";
 import { Product } from "../model/product.model.js";
-import { addProductInWarehouse } from "./product.controller.js";
+import { addProductInWarehouse, addProductInWarehouse2 } from "./product.controller.js";
 import { Warehouse } from "../model/warehouse.model.js";
 import { ClosingStock } from "../model/closingStock.model.js";
+import { create } from "html-pdf";
+import { CustomerGroup } from "../model/customerGroup.model.js";
 
 
 export const SaveInvoiceList = async (req, res, next) => {
@@ -23,70 +24,84 @@ export const SaveInvoiceList = async (req, res, next) => {
         }
         const { partyId } = createOrder;
         const party = await Customer.findById({ _id: partyId })
-        const due = await OverDueReport.findOne({ partyId: partyId, activeStatus: "Active" })
-        if (due) {
-            const lastOrderDate = due?.createdAt
-            const currentDate = new Date();
-            const timeDifference = currentDate - lastOrderDate;
-            const days = Math.floor(timeDifference / (1000 * 60 * 60 * 24))
-            // if (days >= party.lockInTime && due.remainingAmount > 0) {
-            //     party.autoBillingStatus = "locked";
-            //     due.dueStatus = "overDue"
-            //     await due.save()
-            //     await party.save()
-            //     return res.status(400).json({ message: "First, you need to pay the previous payment", status: false });
-            // } else if (due?.remainingAmount > 0 && due?.lockingAmount <= due?.remainingAmount) {
-            //     party.autoBillingStatus = "locked";
-            //     due.dueStatus = "overDue";
-            //     await due.save()
-            //     await party.save()
-            //     return res.status(400).json({ message: "First, you need to pay the previous payment", status: false });
-            // }
+        if (!party) {
+            return res.status(404).json({ message: "party not found", status: false })
         }
-        const existingInvoice = await InvoiceList.findOne({ orderId });
+        if (party.paymentTerm.toLowerCase() !== "cash") {
+            const due = await OverDueReport.findOne({ partyId: partyId, activeStatus: "Active" })
+            if (due) {
+                const lastOrderDate = due?.createdAt
+                const currentDate = new Date();
+                const timeDifference = currentDate - lastOrderDate;
+                const days = Math.floor(timeDifference / (1000 * 60 * 60 * 24))
+                // if (days >= party.lockInTime && due.remainingAmount > 0) {
+                //     party.autoBillingStatus = "locked";
+                //     due.dueStatus = "overDue"
+                //     await due.save()
+                //     await party.save()
+                //     return res.status(400).json({ message: "First, you need to pay the previous payment", status: false });
+                // } else if (due?.remainingAmount > 0 && due?.lockingAmount <= due?.remainingAmount) {
+                //     party.autoBillingStatus = "locked";
+                //     due.dueStatus = "overDue";
+                //     await due.save()
+                //     await party.save()
+                //     return res.status(400).json({ message: "First, you need to pay the previous payment", status: false });
+                // }
+            }
+        }
+        // const existingInvoice = await InvoiceList.findOne({ orderId });
+        const existingInvoice = await CreateOrder.findOne({ orderId, invoiceStatus: true });
         if (existingInvoice) {
             return res.status(400).json({ message: "Invoice already created for this order", status: false });
         }
-        for (const orderItem of req.body.orderItems) {
+        for (const orderItem of createOrder.orderItems) {
             const product = await Product.findById({ _id: orderItem.productId._id });
             if (product) {
                 ware = product.warehouse
                 product.salesDate = new Date(new Date())
                 const warehouse = await Warehouse.findById(product.warehouse)
                 if (warehouse) {
-                    const pro = warehouse.productItems.find((item) => item.productId === orderItem.productId._id)
-                    pro.currentStock -= (orderItem.qty);
-                    if (pro.currentStock < 0) {
-                        return res.status(404).json({ message: "out of stock", status: false })
-                    }
-                    pro.pendingStock += (orderItem.qty)
+                    const pro = warehouse.productItems.find((item) => item.productId.toString() === orderItem.productId.toString())
+                    // pro.currentStock -= (orderItem.qty);
+                    // if (pro.currentStock < 0) {
+                    // return res.status(404).json({ message: "out of stock", status: false })
+                    // }
+                    // pro.pendingStock += (orderItem.qty)
                     // await warehouse.save();
                     // await product.save()
-                    await ClosingSales(orderItem, product.warehouse)
+                    // await ClosingSales(orderItem, product.warehouse)
                 }
             } else {
                 console.error(`Product with ID ${orderItem.productId._id} not found`);
             }
         }
-        req.body.warehouseId = ware
-        req.body.orderId = orderId
-        req.body.invoiceType = "sales"
-        req.body.invoiceStatus = true
-        const invoiceList = await InvoiceList.create(req.body);
+        createOrder.discountDetails = req.body.discountDetails
+        createOrder.gstOtherCharges = req.body.gstOtherCharges
+        createOrder.chargesDetails = req.body.chargesDetails
+        createOrder.orderItems = req.body.orderItems
+        createOrder.amount = req.body.amount
+        createOrder.igstTotal = req.body.igstTotal
+        createOrder.sgstTotal = req.body.sgstTotal
+        createOrder.cgstTotal = req.body.cgstTotal
+        createOrder.roundOff = req.body.roundOff
+        createOrder.grandTotal = req.body.grandTotal
+        createOrder.warehouseId = ware
+        createOrder.orderId = orderId
+        createOrder.invoiceType = "sales"
+        createOrder.invoiceStatus = true
+        createOrder.status = req.body.status
         createOrder.transporter = req.body.transporter
         createOrder.vehicleNo = req.body.vehicleNo
-        createOrder.invoiceStatus = true
+        createOrder.ARNStatus = req.body.ARNStatus
+        createOrder.ARN = req.body.ARN
         createOrder.overAllDiscountPer = req.body.overAllDiscountPer
         createOrder.overAllCharges = req.body.overAllCharges
-        createOrder.discountDetails = req.body.discountDetails
-        createOrder.chargesDetails = req.body.chargesDetails
-        await createOrder.save()
-        if (invoiceList) {
-            // await ledgerSalesForDebit(req.body, particular)
-            await ledgerPartyForDebit(req.body, particular)
-            // await ledgerPartyForCredit(req.body, particular)
-        }
-        return res.status(201).json({ message: "InvoiceList created successfully", Invoice: invoiceList, status: true, data: invoiceList });
+        createOrder.AssignDeliveryBoy = req.body.AssignDeliveryBoy
+        const updated = await createOrder.save()
+        // if (updated) {
+        //     await ledgerPartyForDebit(updated, particular)
+        // }
+        return res.status(201).json({ message: "InvoiceList created successfully", Invoice: updated, status: true, data: updated });
     } catch (err) {
         console.error(err);
         return res.status(500).json({ error: "Internal Server Error", status: false });
@@ -142,7 +157,7 @@ export const UpdatedInvoice = async (req, res, next) => {
     }
 };
 
-export const SavePurchaseInvoice = async (req, res, next) => {
+export const SavePurchaseInvoice1 = async (req, res, next) => {
     try {
         let particular = "PurchaseInvoice"
         const orderId = req.params.id;
@@ -162,7 +177,8 @@ export const SavePurchaseInvoice = async (req, res, next) => {
                 product.partyId = req.body.partyId;
                 product.purchaseStatus = true
                 // product.landedCost = orderItem.landedCost;
-                product.Opening_Stock += orderItem.qty;
+                product.qty += orderItem.qty;
+                product.pendingQty -= orderItem.qty;
                 const warehouse = { productId: orderItem.productId, currentStock: (orderItem.qty), transferQty: (orderItem.qty), price: orderItem.price, totalPrice: orderItem.totalPrice, gstPercentage: orderItem.gstPercentage, igstTaxType: orderItem.igstTaxType, primaryUnit: orderItem.primaryUnit, secondaryUnit: orderItem.secondaryUnit, secondarySize: orderItem.secondarySize, landedCost: orderItem.landedCost }
                 await product.save();
                 await addProductInWarehouse(warehouse, product.warehouse)
@@ -175,11 +191,81 @@ export const SavePurchaseInvoice = async (req, res, next) => {
         req.body.invoiceType = "purchase"
         const invoiceList = await InvoiceList.create(req.body);
         if (invoiceList) {
-            // await ledgerSalesForCredit(req.body, particular)
-            await ledgerPartyForCredit(req.body, particular)
-            // await ledgerPartyForDebit(req.body, particular)
+            await ledgerPartyForCredit(invoiceList, particular)
         }
         return res.status(201).json({ message: "InvoiceList created successfully", Invoice: invoiceList, status: true });
+    } catch (err) {
+        console.error(err);
+        return res.status(500).json({ error: "Internal Server Error", status: false });
+    }
+};
+export const SavePurchaseInvoice = async (req, res, next) => {
+    try {
+        let groupDiscount = 0;
+        let particular = "PurchaseInvoice"
+        const orderId = req.params.id;
+        const purchase = await PurchaseOrder.findById(orderId);
+        if (!purchase) {
+            return res.status(404).json({ message: "Purchase Order Not Found", status: false });
+        }
+        const existingInvoice = await PurchaseOrder.findOne({ _id: orderId, invoiceStatus: true });
+        if (existingInvoice) {
+            return res.status(400).json({ message: "Invoice already created for this order", status: false });
+        }
+        if (req.body.status === "cancelled") {
+            purchase.orderId = orderId
+            purchase.invoiceType = "purchase"
+            // purchase.invoiceStatus = true
+            purchase.status = req.body.status;
+            const invoiceList = await purchase.save()
+            return res.status(201).json({ message: "Purchase Status Update Successfully", Invoice: invoiceList, status: true });
+        } else {
+            for (const orderItem of purchase.orderItems) {
+                const product = await Product.findOne({ _id: orderItem.productId });
+                if (product) {
+                    const group = await CustomerGroup.find({ database: product.database, status: "Active" })
+                    if (group.length > 0) {
+                        const maxDiscount = group.reduce((max, group) => {
+                            return group.discount > max.discount ? group : max;
+                        });
+                        groupDiscount = maxDiscount.discount;
+                    }
+                    if (product.Purchase_Rate > orderItem.landedCost) {
+                        product.Purchase_Rate = product.Purchase_Rate;
+                    } else {
+                        product.Purchase_Rate = orderItem.landedCost;
+                    }
+                    // product.Purchase_Rate = orderItem.landedCost;
+                    product.landedCost = orderItem.landedCost;
+                    if (!product.ProfitPercentage || product.ProfitPercentage === 0) {
+                        product.SalesRate = product.Purchase_Rate * 1.03;
+                        product.Product_MRP = (product.SalesRate) * (1 + product.GSTRate / 100) * (1 + groupDiscount / 100);
+                    } else {
+                        product.SalesRate = (product.Purchase_Rate * (100 + product.ProfitPercentage) / 100);
+                        product.Product_MRP = (product.SalesRate) * (1 + product.GSTRate / 100) * (1 + groupDiscount / 100);
+                    }
+                    const current = new Date(new Date())
+                    product.purchaseDate = current
+                    product.partyId = purchase.partyId;
+                    product.purchaseStatus = true
+                    product.qty += orderItem.qty;
+                    await product.save();
+                    await addProductInWarehouse2(product, product.warehouse, orderItem)
+                    await ClosingPurchase(orderItem, product.warehouse)
+                } else {
+                    return res.status(404).json(`Product with ID ${orderItem.productId} not found`);
+                }
+            }
+            purchase.orderId = orderId
+            purchase.invoiceType = "purchase"
+            purchase.invoiceStatus = true
+            purchase.status = req.body.status;
+            const invoiceList = await purchase.save()
+            if (invoiceList) {
+                await ledgerPartyForCredit(invoiceList, particular)
+            }
+            return res.status(201).json({ message: "InvoiceList created successfully", Invoice: invoiceList, status: true });
+        }
     } catch (err) {
         console.error(err);
         return res.status(500).json({ error: "Internal Server Error", status: false });
@@ -217,15 +303,17 @@ export const ClosingPurchase = async (orderItem, warehouse) => {
             igstRate = (((orderItem.qty) * orderItem.price) * parseInt(orderItem.gstPercentage)) / 100;
             tax = igstRate
         }
+        // tax = (orderItem.igstRate + orderItem.cgstRate + orderItem.sgstRate)
         const stock = await ClosingStock.findOne({ warehouseId1: warehouse, productId: orderItem.productId })
         if (stock) {
             stock.pQty += (orderItem.qty);
+            stock.pRate += (orderItem.price);
             stock.pBAmount += orderItem.totalPrice;
-            stock.pTaxAmount += tax;
+            stock.pTaxRate += tax;
             stock.pTotal += (orderItem.totalPrice + tax)
             await stock.save()
         } else {
-            const closing = ClosingStock({ warehouseId1: warehouse, productId: orderItem.productId, pQty: (orderItem.qty), pBAmount: orderItem.totalPrice, pTaxAmount: tax, pTotal: (orderItem.totalPrice + tax) })
+            const closing = ClosingStock({ warehouseId1: warehouse, productId: orderItem.productId, pQty: (orderItem.qty), pRate: orderItem.price, pBAmount: orderItem.totalPrice, pTaxRate: tax, pTotal: (orderItem.totalPrice + tax) })
             await closing.save()
         }
         return true
@@ -244,20 +332,22 @@ export const ClosingSales = async (orderItem, warehouse) => {
         if (orderItem.igstTaxType === false) {
             cgstRate = (((orderItem.qty) * orderItem.price) * rate) / 100;
             sgstRate = (((orderItem.qty) * orderItem.price) * rate) / 100;
-            tax = cgstRate + sgstRate
+            tax = cgstRate + sgstRate.sgstRate
         } else {
             igstRate = (((orderItem.qty) * orderItem.price) * parseInt(orderItem.gstPercentage)) / 100;
             tax = igstRate
         }
+        // tax = (orderItem.igstRate + orderItem.cgstRate + orderItem.sgstRate)
         const stock = await ClosingStock.findOne({ warehouseId1: warehouse, productId: orderItem.productId })
         if (stock) {
             stock.sQty += (orderItem.qty);
+            stock.sRate += (orderItem.price);
             stock.sBAmount += orderItem.totalPrice;
-            stock.sTaxAmount += tax;
+            stock.sTaxRate += tax;
             stock.sTotal += (orderItem.totalPrice + tax)
             await stock.save()
         } else {
-            const closing = ClosingStock({ warehouseId1: warehouse, productId: orderItem.productId, sQty: (orderItem.qty), sBAmount: orderItem.totalPrice, sTaxAmount: tax, sTotal: (orderItem.totalPrice + tax) })
+            const closing = ClosingStock({ warehouseId1: warehouse, productId: orderItem.productId, sQty: (orderItem.qty), sRate: orderItem.price, sBAmount: orderItem.totalPrice, sTaxRate: tax, sTotal: (orderItem.totalPrice + tax) })
             await closing.save()
         }
         return true

@@ -22,6 +22,12 @@ const WarehouseSchema = new mongoose.Schema({
   address: {
     type: String
   },
+  Password: {
+    type: String
+  },
+  Username: {
+    type: String
+  },
   productItems: [{
     productId: {
       type: String
@@ -80,38 +86,66 @@ const WarehouseSchema = new mongoose.Schema({
     },
     damageItem: {
       type: Object
-    }
-  }],
-  damageItem: [{
-    productId: {
-      type: String
     },
-    unitType: {
-      type: String
+    oQty: {
+      type: Number,
+      default: 0
     },
-    Size: {
-      type: Number
+    oRate: {
+      type: Number,
+      default: 0
     },
-    currentStock: {
-      type: Number
+    oBAmount: {
+      type: Number,
+      default: 0
     },
-    transferQty: {
-      type: Number
+    oTaxRate: {
+      type: Number,
+      default: 0
     },
-    price: {
-      type: Number
+    oTotal: {
+      type: Number,
+      default: 0
     },
-    totalPrice: {
-      type: Number
+    pQty: {
+      type: Number,
+      default: 0
     },
-    demagePercentage: {
-      type: Number
+    pRate: {
+      type: Number,
+      default: 0
     },
-    reason: {
-      type: String
+    pBAmount: {
+      type: Number,
+      default: 0
     },
-    typeStatus: {
-      type: String
+    pTaxRate: {
+      type: Number,
+      default: 0
+    },
+    pTotal: {
+      type: Number,
+      default: 0
+    },
+    sQty: {
+      type: Number,
+      default: 0
+    },
+    sRate: {
+      type: Number,
+      default: 0
+    },
+    sBAmount: {
+      type: Number,
+      default: 0
+    },
+    sTaxRate: {
+      type: Number,
+      default: 0
+    },
+    sTotal: {
+      type: Number,
+      default: 0
     }
   }],
   grandTotal: {
@@ -127,6 +161,9 @@ const WarehouseSchema = new mongoose.Schema({
   assignStatus: {
     type: Boolean,
     default: false
+  },
+  warehouseNo: {
+    type: String
   }
 }, { timestamps: true })
 

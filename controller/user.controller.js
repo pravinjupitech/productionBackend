@@ -6,36 +6,32 @@ import Jwt from "jsonwebtoken";
 import { getUserHierarchyDetails } from "../rolePermission/RolePermission.js";
 import { getUserWarehouseHierarchy } from "../rolePermission/permission.js";
 import { Customer } from "../model/customer.model.js";
-import transporter from "../service/email.js";
+import transporterss from "../service/email.js";
 import { Warehouse } from "../model/warehouse.model.js";
 import { ruleCreation } from "../model/ruleCreation.model.js";
 import { ApplyRule } from "../model/rule.applied.model.js";
 import { UserDetail } from "../model/userDetails.model.js";
 import { Subscription } from "../model/subscription.model.js";
+import { Role } from "../model/role.model.js";
+import mongoose from "mongoose";
+import { WorkingHours } from "../model/workingHours.model.js";
+import { UserBranch } from "../model/userBranch.model.js";
+import { LoginVerificationMail } from "../service/sendmail.js";
 dotenv.config();
 
 
 export const SaveUser = async (req, res, next) => {
   try {
-    // if (req.body.id) {
-    //   const existing = await User.findOne({ id: req.body.id })
-    //   if (existing) {
-    //     return res.status(404).json({ message: "id already exist", status: false })
-    //   }
-    // } else {
-    //   return res.status(400).json({ message: "id required", status: false })
-    // }
+    if (req.body.id) {
+      const existing = await User.findOne({ status: "Active", database: req.body.database, id: req.body.id })
+      if (existing) {
+        return res.status(404).json({ message: "id already exist", status: false })
+      }
+    } else {
+      return res.status(400).json({ message: "user id required", status: false })
+    }
     if (req.file) {
       req.body.profileImage = req.file.filename;
-    }
-    if (req.body.Pan_No) {
-      req.body.code = req.body.Pan_No
-    } else {
-      if (req.body.Aadhar_No) {
-        req.body.code = req.body.Aadhar_No
-      } else {
-        return res.status(400).json({ message: "It is necessary to insert aadhar no. or pan no.", status: false })
-      }
     }
     if (req.body.setRule) {
       req.body.setRule = await JSON.parse(req.body.setRule)
@@ -51,10 +47,13 @@ export const SaveUser = async (req, res, next) => {
         req.body.userAllotted = sub.noOfUser
       }
     }
-    const user = await User.create(req.body);
     if (req.body.warehouse) {
       req.body.warehouse = await JSON.parse(req.body.warehouse)
       await assingWarehouse(req.body.warehouse, user._id)
+    }
+    const user = await User.create(req.body);
+    if (req.body.warehouse) {
+      await assingWarehouse(user.warehouse, user._id)
     }
     if (user) {
       await setSalary(user)
@@ -67,7 +66,7 @@ export const SaveUser = async (req, res, next) => {
 };
 export const ViewRegisterUser = async (req, res, next) => {
   try {
-    let user = await User.find({ database: req.params.database, status: "Active" })
+    let user = await User.find({ database: req.params.database, status: "Active" }).populate({ path: "branch", model: "userBranch" }).populate({ path: "rolename", model: "role" })
     if (user.length === 0) {
       return res.status(404).json({ message: "user not found", status: false })
     }
@@ -94,7 +93,7 @@ export const SuperAdminRoleUpdate = async (req, res, next) => {
 }
 export const ViewUserById = async (req, res, next) => {
   try {
-    let user = await User.findById({ _id: req.params.id, status: "Active" }).populate({ path: "subscriptionPlan", model: "subscription" })
+    let user = await User.findById({ _id: req.params.id, status: "Active" }).populate({ path: "subscriptionPlan", model: "subscription" }).populate({ path: "created_by", model: "user" }).populate({ path: "rolename", model: "role" }).populate({ path: "branch", model: "userBranch" }).populate({ path: "shift", model: "WorkingHour" }).populate({ path: "warehouse.id", model: "warehouse" })
     return res.status(200).json({ User: user, status: true });
   } catch (err) {
     console.error(err);
@@ -146,7 +145,7 @@ export const UpdateUser = async (req, res, next) => {
         req.body.setRule = JSON.parse(req.body.setRule)
       }
       if (req.body.subscriptionPlan) {
-        const sub = await Subscription.findById(req.body.subscriptionPlan)
+        const sub = await Subscription.findById({ _id: req.body.subscriptionPlan })
         if (sub) {
           // const { _id, ...subWithoutId } = sub.toObject();
           const date = new Date();
@@ -156,11 +155,13 @@ export const UpdateUser = async (req, res, next) => {
           req.body.userAllotted = sub.noOfUser
         }
       }
+      if (req.body.warehouse?.length > 0) {
+        req.body.warehouse = JSON.parse(req.body.warehouse)
+      }
       const updatedUser = req.body;
       const user = await User.findByIdAndUpdate(userId, updatedUser, { new: true });
       if (req.body.warehouse?.length > 0) {
-        req.body.warehouse = JSON.parse(req.body.warehouse)
-        await assingWarehouse(req.body.warehouse, userId)
+        await assingWarehouse(user.warehouse, userId)
       }
       if (user) {
         await setSalary(user)
@@ -177,14 +178,20 @@ const otpStore = {};
 
 export const SignIn = async (req, res, next) => {
   try {
+    const otp = Math.floor(1000 + Math.random() * 9000);
     const { email, password, latitude, longitude, currentAddress } = req.body;
-    let existingAccount = await User.findOne({ email }).populate({
-      path: "rolename",
-      model: "role",
-    });
+    let existingAccount = await User.findOne({ email }).populate({ path: "rolename", model: "role" }).populate({ path: "branch", model: "userBranch" });
     let existingCustomer = await Customer.findOne({ email }).populate({ path: "rolename", model: "role" })
     if (!existingAccount && !existingCustomer) {
       return res.status(400).json({ message: "Incorrect email", status: false });
+    }
+    if (existingAccount) {
+      if (existingAccount.rolename.roleName === "MASTER") {
+        existingAccount.otp = otp
+        await LoginVerificationMail(existingAccount, otp)
+        await existingAccount.save()
+        return res.status(200).json({ message: "otp send successfull!", user: { ...existingAccount.toObject(), password: undefined, otp: undefined, role: "MASTER" }, status: true })
+      }
     }
     if (existingAccount && existingAccount.password !== password ||
       existingCustomer && existingCustomer.password !== password) {
@@ -207,22 +214,15 @@ export const SignIn = async (req, res, next) => {
 export const verifyOTP = async (req, res) => {
   const { email, otp } = req.body;
   try {
-    const user = await User.findOne({ email: email });
+    const user = await User.findOne({ email: email }).populate({ path: "rolename", model: "role" }).populate({ path: "branch", model: "userBranch" });
     if (!user) {
-      return res.status(404).json({ message: "User not found" });
+      return res.status(404).json({ message: "User Not Found" });
     }
-    if (otp == otpStore[email]) {
-      delete otpStore[email];
-      let token = await Jwt.sign({ subject: user.email }, "dfdfjdkfdjfkdjf");
-      return res
-        .status(200)
-        .json({
-          message: "Login successful",
-          user: { ...user.toObject(), password: undefined, token },
-          status: true,
-        });
+    if (user.otp === otp) {
+      const token = Jwt.sign({ subject: email }, process.env.TOKEN_SECRET_KEY);
+      return res.json({ message: "Login Successfull", user: { ...user.toObject(), password: undefined, token }, status: true, });
     } else {
-      return res.status(400).json({ error: "Invalid otp" });
+      return res.status(400).json({ error: "Invalid otp", status: false });
     }
   } catch (error) {
     console.error("Error verifying OTP:", error);
@@ -240,25 +240,15 @@ export const EditProfile = async (req, res, next) => {
     const userDetail = req.body;
     const user_first = await User.findById(req.params.id);
     if (!user_first) {
-      return res
-        .status(404)
-        .json({ error: "this user not found", status: false });
+      return res.status(404).json({ error: "this user not found", status: false });
     }
-    const user = await User.findByIdAndUpdate(userId, userDetail, {
-      new: true,
-    });
+    const user = await User.findByIdAndUpdate(userId, userDetail, { new: true, });
     if (user)
-      return res
-        .status(200)
-        .json({ User: user, message: "successful updated", status: true });
-    return res
-      .status(404)
-      .json({ error: "something went wrong", status: false });
+      return res.status(200).json({ User: user, message: "successful updated", status: true });
+    return res.status(404).json({ error: "something went wrong", status: false });
   } catch (err) {
     console.log(err);
-    return res
-      .status(500)
-      .json({ error: "Internal Server Error", status: false });
+    return res.status(500).json({ error: "Internal Server Error", status: false });
   }
 };
 // --------------------------------------------------------
@@ -284,7 +274,7 @@ export const forgetPassword = async (request, response, next) => {
         otp +
         '</h2><p style={{ fontSize: "0.9em" }}Regards,<br />Distribution Management System</p><hr style={{ border: "none", borderTop: "1px solid #eee" }} /></div</div>',
     };
-    await transporter.sendMail(mailOptions, (error, info) => {
+    await transporterss.sendMail(mailOptions, (error, info) => {
       !error ? response.status(201).json({ user: user, message: "send otp on email", status: true }) : console.log(error) || response.json({ error: "something went wrong" });
     });
   } catch (error) {
@@ -338,15 +328,17 @@ export const ViewWarehouse = async (req, res, next) => {
     return adminDetail.length > 0 ? res.status(200).json({ adminDetails: adminDetail, status: true }) : res.status(404).json({ error: "Not Found", status: false });
   } catch (err) {
     console.log(err);
-    return res
-      .status(500)
-      .json({ error: "Internal Server Error", status: false });
+    return res.status(500).json({ error: "Internal Server Error", status: false });
   }
 };
 
 export const saveUserWithExcel = async (req, res) => {
   try {
     let code = "code";
+    let database = "database";
+    let rolename = "rolename";
+    let shift = "shift";
+    let branch = "branch"
     const filePath = await req.file.path;
     const workbook = new ExcelJS.Workbook();
     await workbook.xlsx.readFile(filePath);
@@ -360,7 +352,11 @@ export const saveUserWithExcel = async (req, res) => {
     const existingParts = [];
     const panMobile = [];
     const existingIds = [];
-    const dataNotExist = []
+    const dataNotExist = [];
+    const roles = [];
+    const shiftss = [];
+    const branchss = [];
+    const IdNotExisting = [];
     for (let rowIndex = 2; rowIndex <= worksheet.actualRowCount; rowIndex++) {
       const dataRow = worksheet.getRow(rowIndex);
       const document = {};
@@ -374,38 +370,61 @@ export const saveUserWithExcel = async (req, res) => {
         }
         // document[heading] = cellValue;
       }
+      document[database] = req.params.database
       if (document.database) {
-        const existingId = await User.findOne({ id: document.id, database: document.database });
-        if (existingId) {
-          existingIds.push(document.id)
+        const role = await Role.findOne({ id: document.rolename, database: document.database })
+        if (!role) {
+          roles.push(document.id)
         } else {
-          if (document.Pan_No) {
-            document[code] = document.Pan_No;
-            const existingRecord = await User.findOne({
-              Pan_No: document.Pan_No, database: document.database
-            });
-            if (!existingRecord) {
-              const insertedDocument = await User.create(document);
-              insertedDocuments.push(insertedDocument);
-            } else {
-              existingParts.push(document.Pan_No);
-            }
+          const shifts = await WorkingHours.findOne({ status: "Active", id: document.shift, database: document.database })
+          if (!shifts) {
+            shiftss.push(document.id)
           } else {
-            if (document.Aadhar_No) {
-              const codes = document.Aadhar_No;
-              document[code] = codes;
-              const existingRecord = await User.findOne({
-                Aadhar_No: document.Aadhar_No, database: document.database
-              });
-              if (!existingRecord) {
-                const insertedDocument = await User.create(document);
-                insertedDocuments.push(insertedDocument);
-              } else {
-                existingParts.push(document.Aadhar_No);
-              }
+            const branchs = await UserBranch.findOne({ id: document.branch, database: document.database })
+            if (!branchs) {
+              branchss.push(document.id)
             } else {
-              // const insertedDocument = await Customer.create(document);
-              panMobile.push(document.Aadhar_No);
+              document[rolename] = role._id.toString()
+              document[shift] = shifts._id.toString()
+              document[branch] = branchs._id.toString()
+              if (document.id) {
+                const existingId = await User.findOne({ id: document.id, database: document.database, status: "Active" });
+                if (existingId) {
+                  existingIds.push(document.id)
+                } else {
+                  if (document.Pan_No) {
+                    // document[code] = document.Pan_No;
+                    const existingRecord = await User.findOne({
+                      Pan_No: document.Pan_No, database: document.database, status: "Active"
+                    });
+                    if (!existingRecord) {
+                      const insertedDocument = await User.create(document);
+                      insertedDocuments.push(insertedDocument);
+                    } else {
+                      existingParts.push(document.Pan_No);
+                    }
+                  } else {
+                    if (document.Aadhar_No) {
+                      // const codes = document.Aadhar_No;
+                      // document[code] = codes;
+                      const existingRecord = await User.findOne({
+                        Aadhar_No: document.Aadhar_No, database: document.database, status: "Active"
+                      });
+                      if (!existingRecord) {
+                        const insertedDocument = await User.create(document);
+                        insertedDocuments.push(insertedDocument);
+                      } else {
+                        existingParts.push(document.Aadhar_No);
+                      }
+                    } else {
+                      // const insertedDocument = await Customer.create(document);
+                      panMobile.push(document.Aadhar_No);
+                    }
+                  }
+                }
+              } else {
+                IdNotExisting.push(document.firstName)
+              }
             }
           }
         }
@@ -417,11 +436,19 @@ export const saveUserWithExcel = async (req, res) => {
     if (existingParts.length > 0) {
       message = `some user already exist: ${existingParts.join(', ')}`;
     } else if (panMobile.length > 0) {
-      message = `this pan or adharCard already exist: ${panMobile.join(', ')}`;
+      message = `Pan Or Aadhar Not Exist : ${panMobile.join(', ')}`;
     } else if (existingIds.length > 0) {
       message = `this user id already exist: ${existingIds.join(', ')}`;
     } else if (dataNotExist.length > 0) {
       message = `this user's database not exist: ${dataNotExist.join(', ')}`;
+    } else if (roles.length > 0) {
+      message = `this user's rolename not correct: ${roles.join(', ')}`;
+    } else if (IdNotExisting.length > 0) {
+      message = `this user's id is required : ${IdNotExisting.join(', ')}`;
+    } else if (shiftss.length > 0) {
+      message = `this user's shift id is required : ${shiftss.join(', ')}`;
+    } else if (branchss.length > 0) {
+      message = `this user's branch id is required : ${branchss.join(', ')}`;
     }
     return res.status(200).json({ message, status: true });
   } catch (err) {
@@ -431,6 +458,10 @@ export const saveUserWithExcel = async (req, res) => {
 }
 export const updateUserWithExcel = async (req, res) => {
   try {
+    let rolename = "rolename";
+    let shift = "shift";
+    let branch = "branch"
+    let database = "database";
     const filePath = await req.file.path;
     const workbook = new ExcelJS.Workbook();
     await workbook.xlsx.readFile(filePath);
@@ -442,6 +473,11 @@ export const updateUserWithExcel = async (req, res) => {
     });
     const insertedDocuments = [];
     const existingParts = [];
+    const roles = [];
+    const shiftss = [];
+    const branchss = [];
+    const dataNotExist = [];
+    const IdNotExisting = [];
     for (let rowIndex = 2; rowIndex <= worksheet.actualRowCount; rowIndex++) {
       const dataRow = worksheet.getRow(rowIndex);
       const document = {};
@@ -455,14 +491,56 @@ export const updateUserWithExcel = async (req, res) => {
         }
         // document[heading] = cellValue;
       }
-      const filter = { id: document.id, database: req.params.database };
-      const options = { new: true, upsert: true };
-      const insertedDocument = await User.findOneAndUpdate(filter, document, options);
-      insertedDocuments.push(insertedDocument);
+      document[database] = req.params.database
+      // if (document.database) {
+      const role = await Role.findOne({ id: document.rolename, database: document.database })
+      if (!role) {
+        roles.push(document.id)
+      } else {
+        const shifts = await WorkingHours.findOne({ id: document.shift, database: document.database, status: "Active" })
+        if (!shifts) {
+          shiftss.push(document.id)
+        } else {
+          const branchs = await UserBranch.findOne({ id: document.branch, database: document.database })
+          if (!branchs) {
+            branchss.push(document.id)
+          } else {
+            const existUser = await User.findOne({ id: document.id, database: document.database, status: "Active" })
+            if (!existUser) {
+              IdNotExisting.push(document.id)
+            } else {
+              document[rolename] = role._id.toString()
+              document[shift] = shifts._id.toString()
+              document[branch] = branchs._id.toString()
+              const filter = { id: document.id, database: req.params.database };
+              const options = { new: true, upsert: true };
+              const insertedDocument = await User.findOneAndUpdate(filter, document, options);
+              insertedDocuments.push(insertedDocument);
+            }
+          }
+        }
+      }
+      // } else {
+      //   dataNotExist.push(document.id)
+      // }
+      // const filter = { id: document.id, database: req.params.database };
+      // const options = { new: true, upsert: true };
+      // const insertedDocument = await User.findOneAndUpdate(filter, document, options);
+      // insertedDocuments.push(insertedDocument);
     }
-    let message = 'Data Inserted Successfully';
+    let message = 'User Updated Successfully!';
     if (existingParts.length > 0) {
       message = `some user already exist: ${existingParts.join(', ')}`;
+    } else if (roles.length > 0) {
+      message = `this user's role id not correct : ${roles.join(', ')}`;
+    } else if (shiftss.length > 0) {
+      message = `this user's shift id is required : ${shiftss.join(', ')}`;
+    } else if (branchss.length > 0) {
+      message = `this user's branch id is required : ${branchss.join(', ')}`;
+    } else if (dataNotExist.length > 0) {
+      message = `this user's database not exist : ${dataNotExist.join(', ')}`;
+    } else if (IdNotExisting.length > 0) {
+      message = `this user's id not found : ${IdNotExisting.join(', ')}`;
     }
     return res.status(200).json({ message, status: true });
   } catch (err) {
@@ -477,7 +555,7 @@ export const UserList = async (req, res, next) => {
     const user = await User.find({ database: database }).populate({ path: "created_by", model: "user" }).populate({ path: "rolename", model: "role" })
     let customer = await Customer.find({ database: database }).sort({ sortorder: -1 }).populate({ path: "created_by", model: "user" }).populate({ path: "rolename", model: "role" })
     const data = user.concat(customer)
-    return data.length > 0 ? res.status(200).json({ User: data, status: true }) : res.status(404).json({ error: "Not Found", status: false });
+    return data.length > 0 ? res.status(200).json({ User: data, status: true }) : res.status(404).json({ message: "Not Found", status: false });
   } catch (err) {
     console.log(err);
     return res.status(500).json({ error: "Internal Server Error", status: false });
@@ -567,7 +645,6 @@ export const assingWarehouse = async function assingWarehouse(warehouse, userId)
     return res.status(500).json({ error: "Internal Server Error", status: false })
   }
 }
-
 export const GetExcelKeys = async (req, res) => {
   const excludedKeys = ['_id', 'createdAt', 'updatedAt', '__v', 'latitude', 'longitude', 'currentAddress', 'warehouse', 'typeStatus', 'otpVerify', 'position', 'code', 'created_by', 'status'];
   const modelKeys = Object.keys(User.schema.paths).filter(key => !excludedKeys.includes(key));
@@ -818,3 +895,24 @@ export const updatePlan = async (req, res, next) => {
     return res.status(500).json({ error: "Internal Server Error", status: false })
   }
 }
+
+
+export const customId = async (req, res, next) => {
+  try {
+    const Model = mongoose.model(req.body.model);
+    const existingData = await Model.findById(req.body.id);
+    if (!existingData) {
+      return res.status(404).json({ message: "Data Not Found", status: false });
+    }
+    const existingId = await Model.findOne({ database: existingData.database, id: req.body.userId })
+    if (existingId) {
+      return res.status(404).json({ message: "Id Already Exist", status: false });
+    }
+    existingData.id = req.body.userId;
+    await existingData.save();
+    return res.status(200).json({ message: "Data Saved Successfully!", status: true });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({ message: "Internal Server Error", status: false });
+  }
+};

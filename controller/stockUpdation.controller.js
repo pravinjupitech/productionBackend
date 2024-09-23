@@ -1,14 +1,14 @@
 import moment from "moment"
 import { StockUpdation } from "../model/stockUpdation.model.js";
 import { User } from "../model/user.model.js";
-import { Factory } from "../model/factory.model.js";
 import { Stock } from "../model/stock.js";
 import { CreateOrder } from "../model/createOrder.model.js";
 import { Warehouse } from "../model/warehouse.model.js";
 import { Product } from "../model/product.model.js";
 import { Customer } from "../model/customer.model.js";
-import { Receipt } from "../model/receipt.model.js";
 import { ClosingStock } from "../model/closingStock.model.js";
+import { warehouseNo } from "../service/invoice.js";
+import { PurchaseOrder } from "../model/purchaseOrder.model.js";
 
 export const viewInWardStockToWarehouse = async (req, res, next) => {
     try {
@@ -36,10 +36,12 @@ export const viewOutWardStockToWarehouse = async (req, res, next) => {
 };
 export const stockTransferToWarehouse = async (req, res) => {
     try {
-        const user = await User.findById({ _id: req.body.created_by })
-        if (!user) {
-            return res.status(400).json({ message: "User Not Found", status: false })
+        const warehousefrom = await Warehouse.findOne({ _id: req.body.warehouseFromId });
+        if (!warehousefrom) {
+            return res.status(400).json({ message: "Warehouse From Not Found", status: false })
         }
+        const warehouseno = await warehouseNo(warehousefrom.database)
+        warehousefrom.warehouseNo = warehousefrom.id + warehouseno
         const { warehouseToId, warehouseFromId, stockTransferDate, productItems, grandTotal, transferStatus, created_by, InwardStatus, OutwardStatus } = req.body;
         for (const item of productItems) {
             const sourceProduct = await Warehouse.findOne({
@@ -48,10 +50,11 @@ export const stockTransferToWarehouse = async (req, res) => {
             });
             if (sourceProduct) {
                 const sourceProductItem = sourceProduct.productItems.find(
-                    (pItem) => pItem.productId === item.productId);
+                    (pItem) => pItem.productId.toString() === item.productId.toString());
                 if (sourceProductItem) {
-                    sourceProductItem.Size = item.Size;
-                    sourceProductItem.currentStock -= (item.transferQty * item.Size);
+                    // sourceProductItem.price = item.price;
+                    sourceProductItem.currentStock -= (item.transferQty);
+                    sourceProductItem.pendingStock += (item.transferQty);
                     sourceProductItem.totalPrice -= item.totalPrice;
                     sourceProduct.markModified('productItems');
                     await sourceProduct.save();
@@ -60,23 +63,13 @@ export const stockTransferToWarehouse = async (req, res) => {
                     //     'productItems.productId': item.productId,
                     // });
                     // if (destinationProduct) {
-                    //     const destinationProductItem = destinationProduct.productItems.find((pItem) => pItem.productId === item.productId);
-                    //     destinationProductItem.Size = item.Size;
-                    //     destinationProductItem.currentStock += (item.transferQty * item.Size);
+                    //     const destinationProductItem = destinationProduct.productItems.find((pItem) => pItem.productId.toString() === item.productId.toString());
+                    //     destinationProductItem.price = item.price;
+                    //     destinationProductItem.currentStock += (item.transferQty);
                     //     destinationProductItem.totalPrice += item.totalPrice;
                     //     await destinationProduct.save();
                     // } else {
-                    //     await Warehouse.updateOne({ _id: warehouseToId },
-                    //         {
-                    //             $push: { productItems: item },
-                    //             $set: {
-                    //                 stockTransferDate: stockTransferDate,
-                    //                 transferStatus: transferStatus,
-                    //                 grandTotal: grandTotal,
-                    //                 warehouseFromId: warehouseFromId
-                    //             }
-                    //         },
-                    //         { upsert: true });
+                    //     await Warehouse.updateOne({ _id: warehouseToId }, { $push: { productItems: item } }, { upsert: true });
                     // }
                 } else {
                     return res.status(400).json({ error: 'Insufficient quantity in the source warehouse or product not found' });
@@ -95,10 +88,12 @@ export const stockTransferToWarehouse = async (req, res) => {
             transferStatus,
             InwardStatus,
             OutwardStatus,
-            database: user.database
+            database: warehousefrom.database,
+            warehouseNo: warehousefrom.warehouseNo,
         });
         await stockTransfer.save();
-        return res.status(201).json({ message: 'Stock transfer successful' });
+        await warehousefrom.save();
+        return res.status(201).json({ message: 'Stock transfer successfull', status: true });
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Internal Server Error', status: false });
@@ -127,28 +122,42 @@ export const updateWarehousetoWarehouse = async (req, res, next) => {
         }
         await StockUpdation.findByIdAndUpdate(factoryId, req.body, { new: true })
         for (const item of existingFactory.productItems) {
-            const destinationProduct = await Warehouse.findOne({
-                _id: existingFactory.warehouseToId,
+            const sourceProduct = await Warehouse.findOne({
+                _id: existingFactory.warehouseFromId,
                 'productItems.productId': item.productId,
             });
-            if (destinationProduct) {
-                const destinationProductItem = destinationProduct.productItems.find((pItem) => pItem.productId.toString() === item.productId.toString());
-                destinationProductItem.Size = item.Size;
-                destinationProductItem.currentStock += (item.transferQty * item.Size);
-                destinationProductItem.totalPrice += item.totalPrice;
-                await destinationProduct.save();
+            if (sourceProduct) {
+                const sourceProductItem = sourceProduct.productItems.find(
+                    (pItem) => pItem.productId.toString() === item.productId.toString());
+                if (sourceProductItem) {
+                    // sourceProductItem.price = item.price;
+                    // sourceProductItem.currentStock -= (item.transferQty);
+                    // sourceProductItem.totalPrice -= item.totalPrice;
+                    sourceProductItem.pendingStock -= (item.transferQty);
+                    sourceProduct.markModified('productItems');
+                    await sourceProduct.save();
+                    const destinationProduct = await Warehouse.findOne({
+                        _id: existingFactory.warehouseToId,
+                        'productItems.productId': item.productId,
+                    });
+                    if (destinationProduct) {
+                        const destinationProductItem = destinationProduct.productItems.find((pItem) => pItem.productId.toString() === item.productId.toString());
+                        destinationProductItem.price = item.price;
+                        destinationProductItem.currentStock += (item.transferQty);
+                        destinationProductItem.totalPrice += item.totalPrice;
+                        await destinationProduct.save();
+                    } else {
+                        item.currentStock = item.transferQty
+                        await Warehouse.updateOne({ _id: existingFactory.warehouseToId },
+                            { $push: { productItems: item }, $set: { stockTransferDate: existingFactory.stockTransferDate, transferStatus: existingFactory.transferStatus, grandTotal: existingFactory.grandTotal, warehouseFromId: existingFactory.warehouseFromId } }, { upsert: true });
+                    }
+                    // await ClosingSales(item, existingFactory.warehouseFromId)
+                    // await ClosingPurchase(item, existingFactory.warehouseToId)
+                } else {
+                    // return res.status(400).json({ error: 'Insufficient quantity in the source warehouse or product not found' });
+                }
             } else {
-                await Warehouse.updateOne({ _id: existingFactory.warehouseToId },
-                    {
-                        $push: { productItems: item },
-                        $set: {
-                            stockTransferDate: existingFactory.stockTransferDate,
-                            transferStatus: existingFactory.transferStatus,
-                            grandTotal: existingFactory.grandTotal,
-                            warehouseFromId: existingFactory.warehouseFromId
-                        }
-                    },
-                    { upsert: true });
+                // return res.status(400).json({ error: 'Product not found in the source warehouse' });
             }
         }
         return res.status(200).json({ message: "status updated successfull!", status: true });
@@ -225,7 +234,6 @@ export const saveDamageItem1 = async (req, res, next) => {
         return res.status(500).json({ error: error, status: false });
     }
 };
-
 export const saveDamageItem = async (req, res, next) => {
     try {
         const warehouse = await Warehouse.findOne({ _id: req.body.warehouse });
@@ -368,12 +376,12 @@ export const updateTypeStatus = async (req, res, next) => {
     }
 };
 //--------------------------------------------------------------------------
-export const ViewAllWarehouse = async (req, res, next) => {
+export const ViewAllWarehouse1 = async () => {
     try {
         let array = []
         const ware = await Warehouse.find({}).sort({ sortorder: -1 }).select('_id');
         if (!ware) {
-            return res.status(404).json({ message: "Not Found", status: false })
+            // return res.status(404).json({ message: "Not Found", status: false })
         }
         for (let id of ware) {
             let userData = await Warehouse.findById({ _id: id._id }).sort({ sortorder: -1 })
@@ -397,10 +405,10 @@ export const ViewAllWarehouse = async (req, res, next) => {
         }
         // }
         await deleteModel()
-        return res.status(200).json({ message: "data saved successful", status: true });
+        // return res.status(200).json({ message: "data saved successful", status: true });
     } catch (err) {
         console.error(err);
-        return res.status(500).json({ error: "Internal Server Error", status: false });
+        // return res.status(500).json({ error: "Internal Server Error", status: false });
     }
 };
 export const viewStockClosingWarehouse = async (req, res, next) => {
@@ -475,47 +483,61 @@ export const ViewOverDueStock1 = async (req, res, next) => {
 
 export const ViewOverDueStock = async (req, res, next) => {
     try {
+        const allProduct = []
         const currentDate = moment();
         const startOfLastMonth = currentDate.clone().subtract(30, 'days');
-        const productsNotOrderedLastMonth = await Product.find({ status: "Active", createdAt: { $lt: startOfLastMonth.toDate() } }).populate({ path: "partyId", model: "customer" });
-
+        const productsNotOrderedLastMonth = await Product.find({ database: req.params.database, status: "Active", createdAt: { $lt: startOfLastMonth.toDate() } }).populate({ path: "partyId", model: "customer" }).populate({ path: "warehouse", model: "warehouse" });
         if (!productsNotOrderedLastMonth || productsNotOrderedLastMonth.length === 0) {
             return res.status(404).json({ message: "No products found", status: false });
         }
         const orderedProductsLastMonth = await CreateOrder.find({
+            database: req.params.database,
             createdAt: { $gte: startOfLastMonth.toDate() }
         }).distinct('orderItems');
         const orderedProductIdsLastMonth = orderedProductsLastMonth.map(orderItem => orderItem.productId.toString());
         const productsToProcess = productsNotOrderedLastMonth.filter(product =>
-            !orderedProductIdsLastMonth.includes(product._id.toString())
-        );
-        const warehouseIds = productsToProcess.map(product => product.warehouse);
-        const warehouses = await Warehouse.find({ _id: { $in: warehouseIds } });
-        const allProduct = productsToProcess.map(product => {
-            const warehouse = warehouses.find(warehouse => warehouse._id.toString() === product.warehouse.toString());
-            const qty = warehouse ? warehouse.productItems.find(item => item.productId.toString() === product._id.toString()) : null;
-            return {
-                product,
-                Qty: qty ? qty.currentStock : null
-            };
-        });
+            !orderedProductIdsLastMonth.includes(product._id.toString()));
+        // const warehouseIds = productsToProcess.map(product => product.warehouse);
+        // const warehouses = await Warehouse.find({ _id: { $in: warehouseIds } });
+        for (let item of productsToProcess) {
+            let partyId = "";
+            let days = 0;
+            const purchase = await PurchaseOrder.find({
+                "orderItems.productId": item._id.toString()
+            }).sort({ sortorder: -1 }).populate({ path: "partyId", model: "customer" });
 
+            if (purchase.length > 0) {
+                partyId = purchase[purchase.length - 1].partyId.CompanyName;
+            }
+            const lastDate = item.salesDate || item.createdAt;
+            const lastOrderDate = new Date(lastDate);
+            const currentDates = new Date();
+            const timeDifference = currentDates - lastOrderDate;
+            days = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
+            const products = {
+                product: item,
+                overDue: days,
+                // supplierName: partyId
+            };
+
+            allProduct.push(products);
+        }
         return res.status(200).json({ allProduct, status: true });
     } catch (err) {
         console.error(err);
         return res.status(500).json({ error: "Internal Server Error", status: false });
     }
 };
-
-
-export const ViewDeadParty1 = async (req, res, next) => {
+export const ViewDeadParty = async (req, res, next) => {
     try {
+        let days = 0
+        const Parties = []
         const userId = req.params.id;
         const database = req.params.database;
         const currentDate = moment();
         const startOfLastMonth = currentDate.clone().subtract(30, 'days');
 
-        const hierarchy = await Customer.find({ database: database, status: 'Active', createdAt: { $lt: startOfLastMonth } })
+        const hierarchy = await Customer.find({ database: database, status: 'Active', leadStatusCheck: "false", createdAt: { $lt: startOfLastMonth } }).populate({ path: "created_by", model: "user" }).populate({ path: "category", model: "customerGroup" })
 
         const allOrderedParties = await CreateOrder.find({ database: database, createdAt: { $gte: startOfLastMonth.toDate() } })
         let allParty = []
@@ -528,46 +550,73 @@ export const ViewDeadParty1 = async (req, res, next) => {
         }
         let lastDays = ""
         for (let id of allParty) {
-            const payment = await Receipt.find({ type: "receipt", partyId: id._id })
-            if (payment.length > 0) {
-                const lastPayment = payment[payment.length - 1]
-                lastDays = lastPayment.createdAt;
-            } else {
-                lastDays = "0"
+            // const payment = await Receipt.find({ type: "receipt", partyId: id._id })
+            // if (payment.length > 0) {
+            //     const lastPayment = payment[payment.length - 1]
+            //     lastDays = lastPayment.createdAt;
+            // } else {
+            //     lastDays = "0"
+            // }
+            let purchaseDate = "";
+            const purchase = await PurchaseOrder.find({ partyId: id._id.toString() }).sort({ sortorder: -1 }).populate({ path: "partyId", model: "customer" });
+            if (purchase.length > 0) {
+                purchaseDate = purchase[purchase.length - 1].createdAt;
+                const lastDate = purchaseDate;
+                const lastOrderDate = new Date(lastDate);
+                const currentDates = new Date();
+                const timeDifference = currentDates - lastOrderDate;
+                days = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
             }
-            const party = await partyHierarchy(id.created_by, database);
-            const resultItem = { id, party, lastDays };
-            result.push(resultItem);
+            const products = {
+                Party: id,
+                purchaseDate: purchaseDate,
+                days: days
+            };
+            Parties.push(products);
+            days = 0;
+            // const party = await partyHierarchy(id.created_by, database);
+            // const resultItem = { id, party, lastDays };
+            // result.push(resultItem);
         }
-        return res.status(200).json({ Parties: result, status: true });
+        return res.status(200).json({ Parties: Parties, status: true });
     } catch (err) {
         console.error(err);
         return res.status(500).json({ error: "Internal Server Error", status: false });
     }
 };
-export const ViewDeadParty = async (req, res, next) => {
+export const ViewDeadParty1 = async (req, res, next) => {
     try {
+        const Parties = []
         const userId = req.params.id;
         const database = req.params.database;
         const currentDate = moment();
         const startOfLastMonth = currentDate.clone().subtract(30, 'days');
-
-        const hierarchy = await Customer.find({ database: database, status: 'Active', createdAt: { $lt: startOfLastMonth } }).lean();
-
+        const hierarchy = await Customer.find({ database: database, status: 'Active', leadStatusCheck: "false", createdAt: { $lt: startOfLastMonth } }).populate({ path: "created_by", model: "user" }).populate({ path: "category", model: "customerGroup" }).lean();
         const allOrderedParties = await CreateOrder.find({ database: database, createdAt: { $gte: startOfLastMonth.toDate() } }).lean();
-
         const receiptMap = {};
-        await Promise.all(hierarchy.map(async (item) => {
-            const payment = await Receipt.findOne({ type: "receipt", partyId: item._id }).sort({ createdAt: -1 }).lean();
-            receiptMap[item._id] = payment ? payment.createdAt : "0";
-        }));
+        // await Promise.all(hierarchy.map(async (item) => {
+        //     const payment = await Receipt.findOne({ type: "receipt", partyId: item._id }).sort({ createdAt: -1 }).lean();
+        //     receiptMap[item._id] = payment ? payment.createdAt : "0";
+        // }));
+        // const result = await Promise.all(hierarchy.map(async (item) => {
+        //     const party = await partyHierarchy(item.created_by, database);
+        //     return { id: item, party: party, lastDays: receiptMap[item._id] };
+        // }));
+        for (let item of hierarchy) {
+            let purchaseDate = "";
+            const purchase = await PurchaseOrder.find({ partyId: item._id.toString() }).sort({ sortorder: -1 }).populate({ path: "partyId", model: "customer" });
+            if (purchase.length > 0) {
+                purchaseDate = purchase[purchase.length - 1].createdAt;
+            }
+            const products = {
+                Party: item,
+                purchaseDate: purchaseDate
+            };
 
-        const result = await Promise.all(hierarchy.map(async (item) => {
-            const party = await partyHierarchy(item.created_by, database);
-            return { id: item, party: party, lastDays: receiptMap[item._id] };
-        }));
+            Parties.push(products);
+        }
 
-        return res.status(200).json({ Parties: result, status: true });
+        return res.status(200).json({ Parties: Parties, status: true });
     } catch (err) {
         console.error(err);
         return res.status(500).json({ error: "Internal Server Error", status: false });
@@ -595,17 +644,15 @@ export const partyHierarchy = async function partyHierarchy(userId, database, pr
         throw error;
     }
 };
-
-
-export const ViewAllWarehouse1 = async (req, res, next) => {
+export const ViewAllWarehouse = async () => {
     try {
         let array = []
         const ware = await Warehouse.find({}).sort({ sortorder: -1 }).select('_id');
         if (!ware) {
-            return res.status(404).json({ message: "Not Found", status: false })
+            // return res.status(404).json({ message: "Not Found", status: false })
         }
         for (let id of ware) {
-            let userData = await Warehouse.findById({ _id: id._id }).sort({ sortorder: -1 }).populate({ path: "productItems.productId", model: "product" }).populate({ path: "damageItem.productId", model: "product" })
+            let userData = await Warehouse.findById({ _id: id._id }).sort({ sortorder: -1 }).populate({ path: "productItems.productId", model: "product" })
             const { _id, warehouseName, address, mobileNo, landlineNumber, productItems, damageItem, database } = userData
             const stocks = await ClosingStocks(id._id, productItems)
             const warehouse = {
@@ -624,10 +671,11 @@ export const ViewAllWarehouse1 = async (req, res, next) => {
             }
         }
         // }
-        return res.status(200).json({ message: "data saved successful", status: true });
+        await deleteModel()
+        // return res.status(200).json({ message: "data saved successful", status: true });
     } catch (err) {
         console.error(err);
-        return res.status(500).json({ error: "Internal Server Error", status: false });
+        // return res.status(500).json({ error: "Internal Server Error", status: false });
     }
 };
 export const ClosingStocks = async (warehouse, productItem) => {
@@ -637,23 +685,27 @@ export const ClosingStocks = async (warehouse, productItem) => {
         let igstRate = 0;
         let tax = 0
         let pQty = 0;
+        let pRate = 0;
         let pBAmount = 0
-        let pTaxAmount = 0
+        let pTaxRate = 0
         let pTotal = 0
         let sQty = 0;
+        let sRate = 0;
         let sBAmount = 0
-        let sTaxAmount = 0
+        let sTaxRate = 0
         let sTotal = 0
         for (let item of productItem) {
-            const stock = await ClosingStock.findOne({ warehouseId1: warehouse, productId: item.productId })
+            const stock = await ClosingStock.findOne({ warehouseId1: warehouse, productId: item.productId._id.toString() })
             if (stock) {
                 pQty = stock.pQty || 0;
+                pRate = stock.pRate || 0;
                 pBAmount = stock.pBAmount || 0
-                pTaxAmount = stock.pTaxAmount || 0
+                pTaxRate = stock.pTaxRate || 0
                 pTotal = stock.pTotal || 0
                 sQty = stock.sQty || 0;
+                sRate = stock.sRate || 0;
                 sBAmount = stock.sBAmount || 0
-                sTaxAmount = stock.sTaxAmount || 0
+                sTaxRate = stock.sTaxRate || 0
                 sTotal = stock.sTotal || 0
             }
             const rate = item.gstPercentage / 2;
@@ -665,7 +717,7 @@ export const ClosingStocks = async (warehouse, productItem) => {
                 tax = igstRate
             }
             const gst = {
-                productId: item.productId._id,
+                productId: item.productId._id.toString(),
                 unitType: item.unitType,
                 Size: item.Size,
                 currentStock: item.currentStock,
@@ -677,20 +729,33 @@ export const ClosingStocks = async (warehouse, productItem) => {
                 gstPercentage: item.gstPercentage,
                 damageItem: item.damageItem,
                 cQty: item.currentStock || 0,
+                cRate: item.price || 0,
                 cBAmount: item.totalPrice || 0,
-                cTaxAmount: tax || 0,
+                cTaxRate: tax || 0,
                 cTotal: (item.totalPrice + tax) || 0,
                 pQty: pQty || 0,
+                pRate: pRate || 0,
                 pBAmount: pBAmount || 0,
-                pTaxAmount: pTaxAmount || 0,
+                pTaxRate: pTaxRate || 0,
                 pTotal: pTotal || 0,
                 sQty: sQty || 0,
+                sRate: sRate || 0,
                 sBAmount: sBAmount || 0,
-                sTaxAmount: sTaxAmount || 0,
+                sTaxRate: sTaxRate || 0,
                 sTotal: sTotal || 0
 
             };
             gstDetails.push(gst);
+            pQty = 0;
+            pRate = 0;
+            pBAmount = 0
+            pTaxRate = 0
+            pTotal = 0
+            sQty = 0;
+            sRate = 0;
+            sBAmount = 0
+            sTaxRate = 0
+            sTotal = 0
         }
         return gstDetails;
     }
@@ -704,5 +769,74 @@ export const deleteModel = async () => {
         return true
     } catch (error) {
         console.error('Error deleting data:', error);
+    }
+}
+// InWard And OutWard
+export const ClosingPurchase = async (orderItem, warehouse) => {
+    try {
+        let cgstRate = 0;
+        let sgstRate = 0;
+        let igstRate = 0;
+        let tax = 0
+        const rate = parseInt(orderItem.gstPercentage) / 2;
+        if (orderItem.igstTaxType === false) {
+            cgstRate = (((orderItem.transferQty) * orderItem.price) * rate) / 100;
+            sgstRate = (((orderItem.transferQty) * orderItem.price) * rate) / 100;
+            tax = cgstRate + sgstRate
+        } else {
+            igstRate = (((orderItem.transferQty) * orderItem.price) * parseInt(orderItem.gstPercentage)) / 100;
+            tax = igstRate
+        }
+        // tax = (orderItem.igstRate + orderItem.cgstRate + orderItem.sgstRate)
+        const stock = await ClosingStock.findOne({ warehouseId1: warehouse, productId: orderItem.productId })
+        if (stock) {
+            stock.pQty += (orderItem.transferQty);
+            stock.pRate += (orderItem.price);
+            stock.pBAmount += orderItem.totalPrice;
+            stock.pTaxRate += tax;
+            stock.pTotal += (orderItem.totalPrice + tax)
+            await stock.save()
+        } else {
+            const closing = ClosingStock({ warehouseId1: warehouse, productId: orderItem.productId, pQty: (orderItem.transferQty), pRate: orderItem.price, pBAmount: orderItem.totalPrice, pTaxRate: tax, pTotal: (orderItem.totalPrice + tax) })
+            await closing.save()
+        }
+        return true
+    }
+    catch (err) {
+        console.log(err)
+    }
+}
+export const ClosingSales = async (orderItem, warehouse) => {
+    try {
+        let cgstRate = 0;
+        let sgstRate = 0;
+        let igstRate = 0;
+        let tax = 0
+        const rate = parseInt(orderItem.gstPercentage) / 2;
+        if (orderItem.igstTaxType === false) {
+            cgstRate = (((orderItem.transferQty) * orderItem.price) * rate) / 100;
+            sgstRate = (((orderItem.transferQty) * orderItem.price) * rate) / 100;
+            tax = cgstRate + sgstRate.sgstRate
+        } else {
+            igstRate = (((orderItem.transferQty) * orderItem.price) * parseInt(orderItem.gstPercentage)) / 100;
+            tax = igstRate
+        }
+        // tax = (orderItem.igstRate + orderItem.cgstRate + orderItem.sgstRate)
+        const stock = await ClosingStock.findOne({ warehouseId1: warehouse, productId: orderItem.productId })
+        if (stock) {
+            stock.sQty += (orderItem.transferQty);
+            stock.sRate += (orderItem.price);
+            stock.sBAmount += orderItem.totalPrice;
+            stock.sTaxRate += tax;
+            stock.sTotal += (orderItem.totalPrice + tax)
+            await stock.save()
+        } else {
+            const closing = ClosingStock({ warehouseId1: warehouse, productId: orderItem.productId, sQty: (orderItem.transferQty), sRate: orderItem.price, sBAmount: orderItem.totalPrice, sTaxRate: tax, sTotal: (orderItem.totalPrice + tax) })
+            await closing.save()
+        }
+        return true
+    }
+    catch (err) {
+        console.log(err)
     }
 }

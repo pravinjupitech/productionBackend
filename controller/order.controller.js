@@ -1,240 +1,51 @@
 import dotenv from "dotenv";
-import axios from "axios";
+import moment from "moment";
 import path from "path"
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 import fs from "fs"
 import pdf from 'html-pdf'
-import { Order } from "../model/order.model.js";
 import { User } from "../model/user.model.js";
 import { Product } from "../model/product.model.js";
 import { CreateOrder } from "../model/createOrder.model.js";
-import { generateInvoice } from "../service/invoice.js";
-import { getCreateOrderHierarchy, getOrderHierarchy, getUserHierarchyBottomToTop } from "../rolePermission/RolePermission.js";
+import { generateInvoice, generateOrderNo } from "../service/invoice.js";
+import { getCreateOrderHierarchy, getUserHierarchyBottomToTop } from "../rolePermission/RolePermission.js";
 import { Customer } from "../model/customer.model.js";
 import { createInvoiceTemplate } from "../Invoice/invoice.js";
 import transporter from "../service/email.js";
 import { Warehouse } from "../model/warehouse.model.js";
-import { checkLimit } from "../service/checkLimit.js";
+import { UpdateCheckLimitSales, checkLimit } from "../service/checkLimit.js";
 import { PartyOrderLimit } from "../model/partyOrderLimit.model.js";
+import { Ledger } from "../model/ledger.model.js";
+import { ClosingStock } from "../model/closingStock.model.js";
+import { Receipt } from "../model/receipt.model.js";
+import { ClosingSales } from "./createInvoice.controller.js";
+import { ledgerPartyForDebit } from "../service/ledger.js";
 dotenv.config();
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-export const OrderXml = async (req, res) => {
-    const fileUrl = "https://xmlfile.blr1.cdn.digitaloceanspaces.com/CreateCustomerConfig.xml";
-    try {
-        const response = await axios.get(fileUrl);
-        const data = response.data;
-        return res.status(200).json({ data, status: true });
-    } catch (error) {
-        console.error(error);
-        return res.status(500).send("Error reading the file");
-    }
-};
-
-export const placeOrder = async (req, res, next) => {
-    try {
-        const orderItems = req.body.orderItems;
-        const user = await User.findOne({ _id: req.body.userId });
-        if (!user) {
-            return res.status(401).json({ message: "No user found", status: false });
-        } else {
-            const result = await generateInvoice(user.database);
-            const billAmount = orderItems.reduce((total, orderItem) => {
-                return total + (orderItem.price * orderItem.qty);
-            }, 0);
-            for (const orderItem of orderItems) {
-                const product = await Product.findOne({ _id: orderItem.productId });
-                if (product) {
-                    const warehouse = User.findById({ _id: product.warehouse })
-                    if (warehouse) {
-                        const pro = warehouse.productItems.find((item) => item.productId === orderItem.productId)
-                        pro.currentStock -= (orderItem.Size * orderItem.qty);
-                        await warehouse.save();
-                    }
-                } else {
-                    console.error(`Product with ID ${orderItem.productId} not found`);
-                }
-            }
-            const order = new Order({
-                userId: user._id,
-                database: user.database,
-                fullName: req.body.fullName,
-                partyId: req.body.partyId,
-                invoiceId: result,
-                address: req.body.address,
-                MobileNo: req.body.MobileNo,
-                country: req.body.country,
-                state: req.body.state,
-                city: req.body.city,
-                landMark: req.body.landMark,
-                pincode: req.body.pincode,
-                grandTotal: req.body.grandTotal,
-                discount: req.body.discount,
-                shippingCost: req.body.shippingCost,
-                taxAmount: req.body.taxAmount,
-                status: req.body.status,
-                latitude: req.body.latitude,
-                longitude: req.body.longitude,
-                currentAddress: req.body.currentAddress,
-                orderItems: orderItems
-            });
-            const savedOrder = await order.save();
-            return res.status(200).json({ orderDetail: savedOrder, status: true });
-        }
-    } catch (err) {
-        console.log(err);
-        return res.status(500).json({ error: err });
-    }
-};
-export const placeOrderHistoryByUserId = async (req, res, next) => {
-    try {
-        const userId = req.params.id;
-        // const userHierarchy = await findUserDetails(userId);
-        // const adminDetail = (userHierarchy[userHierarchy.length - 1])
-        const orders = await Order.find({ userId: userId }).populate({
-            path: 'orderItems.productId',
-            model: 'product'
-        }).populate({ path: "partyId", model: "customer" }).exec();
-
-        if (!orders || orders.length === 0) {
-            return res.status(404).json({ message: "No orders found for the user", status: false });
-        }
-        const formattedOrders = orders.map(order => {
-            const formattedOrderItems = order.orderItems.map(item => ({
-                product: item.productId,
-                qty: item.qty,
-                Size: item.Size,
-                unitType: item.unitType,
-                price: item.price,
-                status: item.status
-            }));
-            return {
-                _id: order._id,
-                userId: order.userId,
-                partyId: order.partyId,
-                invoiceId: order.invoiceId,
-                fullName: order.fullName,
-                address: order.address,
-                MobileNo: order.MobileNo,
-                country: order.country,
-                state: order.state,
-                city: order.city,
-                landMark: order.landMark,
-                pincode: order.pincode,
-                grandTotal: order.grandTotal,
-                discount: order.discount,
-                shippingCost: order.shippingCost,
-                taxAmount: order.taxAmount,
-                orderItems: formattedOrderItems,
-                latitude: req.body.latitude,
-                longitude: req.body.longitude,
-                currentAddress: req.body.currentAddress,
-                status: order.status,
-                // adminDetail: adminDetail,
-                createdAt: order.createdAt,
-                updatedAt: order.updatedAt
-            };
-        });
-        return res.status(200).json({ orderHistory: formattedOrders, status: true });
-    } catch (err) {
-        console.log(err);
-        return res.status(500).json({ error: err });
-    }
-};
-
-export const updatePlaceOrder = async (req, res, next) => {
-    try {
-        const orderId = req.params.id;
-        req.body.orderItems = req.body.orderItems
-        const updatedFields = req.body;
-        if (!orderId || !updatedFields) {
-            return res.status(400).json({ message: "Invalid input data", status: false });
-        }
-        const order = await Order.findById({ _id: orderId });
-        if (!order) {
-            return res.status(404).json({ message: "Order not found", status: false });
-        }
-        else if (order.status === 'completed')
-            return res.status(400).json({ message: "this order not updated", status: false })
-        const oldOrderItems = order.orderItems || [];
-        const newOrderItems = updatedFields.orderItems || [];
-        for (const newOrderItem of newOrderItems) {
-            const oldOrderItem = oldOrderItems.find(item => item.productId.toString() === newOrderItem.productId.toString());
-            if (oldOrderItem) {
-                const quantityChange = newOrderItem.qty - oldOrderItem.qty;
-                if (quantityChange !== 0) {
-                    const product = await Product.findById({ _id: newOrderItem.productId });
-                    if (product) {
-                        product.Size -= quantityChange;
-                        await product.save();
-                    } else {
-                        console.error(`Product with ID ${newOrderItem.productId} not found`);
-                    }
-                }
-            }
-        }
-        Object.assign(order, updatedFields);
-        const updatedOrder = await order.save();
-        return res.status(200).json({ orderDetail: updatedOrder, status: true });
-    } catch (err) {
-        console.error(err);
-        return res.status(500).json({ error: "Internal Server Error" });
-    }
-};
-export const updatePlaceOrderStatus = async (req, res) => {
-    try {
-        const orderId = req.params.id;
-        const { status } = req.body;
-        const order = await Order.findById({ _id: orderId });
-        if (!order) {
-            return res.status(404).json({ message: 'Place order not found' });
-        }
-        order.status = status;
-        await order.save();
-        // if (status === 'completed') {
-        //     req.body.totalAmount = order.grandTotal;
-        //     req.body.productItems = order.orderItem;
-        //     req.body.userId = order.userId;
-        //     req.body.orderId = order._id;
-        //     await CreditNote.create(req.body)
-        // }
-        return res.status(200).json({ Order: order, status: true });
-    } catch (error) {
-        console.error(error);
-        return res.status(500).json({ error: error, status: false });
-    }
-}
 
 export const createOrder = async (req, res, next) => {
     try {
-        let ware = ""
-        const { partyId, userId, orderId } = req.body;
         const orderItems = req.body.orderItems;
-        const party = await Customer.findById({ _id: partyId })
+        const party = await Customer.findById({ _id: req.body.partyId })
         const user = await User.findOne({ _id: party.created_by });
         if (!user) {
             return res.status(401).json({ message: "No user found", status: false });
         } else {
-            const result = await generateInvoice(user.database);
-            const billAmount = orderItems.reduce((total, orderItem) => {
-                return total + (orderItem.price * orderItem.qty);
-            }, 0);
+            const orderNo = await generateOrderNo(user.database);
             for (const orderItem of orderItems) {
                 const product = await Product.findById({ _id: orderItem.productId });
                 if (product) {
-                    ware = product.warehouse
                     product.salesDate = new Date()
                     const warehouse = await Warehouse.findById(product.warehouse)
                     if (warehouse) {
-                        const pro = warehouse.productItems.find((item) => item.productId === orderItem.productId)
+                        const pro = warehouse.productItems.find((item) => item.productId.toString() === orderItem.productId.toString())
                         pro.currentStock -= (orderItem.qty);
-                        product.Opening_Stock -= orderItem.qty;
-                        if (pro.currentStock < 0) {
-                            return res.status(404).json({ message: "out of stock", status: false })
-                        }
+                        product.qty -= orderItem.qty;
+                        product.pendingQty += orderItem.qty;
                         await warehouse.save();
                         await product.save()
                     }
@@ -242,51 +53,60 @@ export const createOrder = async (req, res, next) => {
                     console.error(`Product with ID ${orderItem.productId} not found`);
                 }
             }
-            const order = new CreateOrder({
-                userId: party.created_by,
-                database: user.database,
-                fullName: req.body.fullName,
-                partyId: req.body.partyId,
-                warehouseId: ware,
-                primaryUnit: req.body.primaryUnit,
-                secondaryUnit: req.body.secondaryUnit,
-                secondarySize: req.body.secondarySize,
-                invoiceId: result,
-                address: req.body.address,
-                MobileNo: req.body.MobileNo,
-                country: req.body.country,
-                state: req.body.state,
-                city: req.body.city,
-                landMark: req.body.landMark,
-                pincode: req.body.pincode,
-                grandTotal: req.body.grandTotal,
-                discount: req.body.discount,
-                shippingCost: req.body.shippingCost,
-                taxAmount: req.body.taxAmount,
-                latitude: req.body.latitude,
-                longitude: req.body.longitude,
-                currentAddress: req.body.currentAddress,
-                status: req.body.status,
-                orderItems: orderItems,
-                gstDetails: req.body.gstDetails,
-                roundOff: req.body.roundOff,
-                amount: req.body.amount,
-                sgstTotal: req.body.sgstTotal,
-                cgstTotal: req.body.cgstTotal,
-                igstTaxType: req.body.igstTaxType,
-                igstTotal: req.body.igstTotal,
-                discountAmount: req.body.discountAmount
-            });
-            const savedOrder = await order.save();
+            req.body.userId = party.created_by
+            req.body.database = user.database
+            req.body.orderNo = orderNo
+            req.body.orderItems = orderItems
+            const savedOrder = CreateOrder.create(req.body)
             req.body.database = user.database;
             req.body.totalAmount = req.body.grandTotal;
             req.body.orderId = savedOrder._id;
-            await checkLimit(req.body)
+            if (party.paymentTerm === "credit") {
+                await checkLimit(req.body)
+            }
             return res.status(200).json({ orderDetail: savedOrder, status: true });
         }
     } catch (err) {
         console.log(err);
-        return res.status(500).json({ error: err });
+        return res.status(500).json({ error: "Internal Server Error", status: false });
+    }
+};
+export const createOrderWithInvoice = async (req, res, next) => {
+    try {
+        const orderItems = req.body.orderItems;
+        const party = await Customer.findById({ _id: req.body.partyId })
+        const user = await User.findOne({ _id: party.created_by });
+        if (!user) {
+            return res.status(401).json({ message: "No user found", status: false });
+        } else {
+            for (const orderItem of orderItems) {
+                const product = await Product.findById({ _id: orderItem.productId });
+                if (product) {
+                    const warehouse = await Warehouse.findById(product.warehouse)
+                    if (warehouse) {
+                        const pro = warehouse.productItems.find((item) => item.productId.toString() === orderItem.productId.toString())
+                        pro.currentStock -= (orderItem.qty);
+                        product.qty -= orderItem.qty;
+                        await warehouse.save();
+                        await product.save()
+                    }
+                } else {
+                    console.error(`Product with ID ${orderItem.productId} not found`);
+                }
+            }
+            req.body.status = "completed"
+            req.body.userId = party.created_by
+            req.body.database = user.database
+            const savedOrder = CreateOrder.create(req.body)
+            if (savedOrder) {
+                const particular = "SalesInvoice";
+                await ledgerPartyForDebit(savedOrder, particular)
+            }
+            return res.status(200).json({ orderDetail: savedOrder, status: true });
+        }
+    } catch (err) {
+        console.log(err);
+        return res.status(500).json({ error: "Internal Server Error", status: false });
     }
 };
 export const createOrderHistoryByUserId = async (req, res, next) => {
@@ -294,10 +114,7 @@ export const createOrderHistoryByUserId = async (req, res, next) => {
         const userId = req.params.id;
         // const userHierarchy = await findUserDetails(userId);
         // const adminDetail = (userHierarchy[userHierarchy.length - 1])
-        const orders = await CreateOrder.find({ userId: userId }).populate({
-            path: 'orderItems.productId',
-            model: 'product'
-        }).populate({ path: "partyId", model: "customer" }).exec();
+        const orders = await CreateOrder.find({ userId: userId }).populate({ path: 'orderItems.productId', model: 'product' }).populate({ path: "partyId", model: "customer" }).exec();
         if (!orders || orders.length === 0) {
             return res.status(404).json({ message: "No orders found for the user", status: false });
         }
@@ -305,7 +122,6 @@ export const createOrderHistoryByUserId = async (req, res, next) => {
             const formattedOrderItems = order.orderItems.map(item => ({
                 product: item.productId,
                 qty: item.qty,
-                Size: item.Size,
                 unitType: item.unitType,
                 price: item.price,
                 status: item.status
@@ -352,7 +168,6 @@ export const createOrderHistoryById = async (req, res, next) => {
         return res.status(500).json({ error: err });
     }
 };
-
 export const deleteSalesOrder = async (req, res, next) => {
     try {
         const order = await CreateOrder.findById(req.params.id)
@@ -362,6 +177,28 @@ export const deleteSalesOrder = async (req, res, next) => {
         if (order.status === "completed") {
             return res.status(400).json({ error: "this order not deleted", status: false });
         }
+        for (const orderItem of order.orderItems) {
+            const product = await Product.findById({ _id: orderItem.productId });
+            if (product) {
+                // ware = product.warehouse
+                // product.salesDate = new Date()
+                // const warehouse = await Warehouse.findById(product.warehouse)
+                // if (warehouse) {
+                //     const pro = warehouse.productItems.find((item) => item.productId === orderItem.productId.toString())
+                //     pro.currentStock += (orderItem.qty);
+                product.qty += orderItem.qty;
+                product.pendingQty += orderItem.qty;
+                //     if (pro.currentStock < 0) {
+                //         return res.status(404).json({ message: "Product Out Of Stock", status: false })
+                //     }
+                // await warehouse.save();
+                await product.save()
+                // }
+            } else {
+                console.error(`Product With ID ${orderItem.productId} Not Found`);
+            }
+        }
+        await UpdateCheckLimitSales(order)
         order.status = "Deactive";
         await order.save();
         return res.status(200).json({ message: "delete successfull!", status: true })
@@ -370,24 +207,6 @@ export const deleteSalesOrder = async (req, res, next) => {
         return res.status(500).json({ error: "Internal Server Error", status: false });
     }
 }
-
-// export const createOrderHistoryByPartyId = async (req, res, next) => {
-//     try {
-//         const orders = await CreateOrder.findById(req.params.id).populate({
-//             path: 'orderItems.productId',
-//             model: 'product'
-//         }).populate({ path: "partyId", model: "customer" }).populate({ path: "userId", model: "user" }).exec();
-//         if (!orders) {
-//             return res.status(404).json({ message: "No orders found for the user", status: false });
-//         }
-//         const party = await Customer.findById(orders.partyId._id).populate({ path: 'category', model: "customerGroup" })
-//         return res.status(200).json({ orderHistory: { ...orders.toObject(), party, partyId: undefined }, status: true });
-//     } catch (err) {
-//         console.log(err);
-//         return res.status(500).json({ error: err });
-//     }
-// };
-
 export const createOrderHistoryByPartyId = async (req, res, next) => {
     try {
         const orders = await CreateOrder.findById(req.params.id).populate({ path: 'orderItems.productId', model: 'product' }).populate({ path: "partyId", model: "customer" }).populate({ path: "userId", model: "user" }).exec();
@@ -409,72 +228,79 @@ export const createOrderHistoryByPartyId = async (req, res, next) => {
         return res.status(500).json({ error: err });
     }
 };
-
-export const updateCreateOrderStatus1 = async (req, res) => {
+export const OrdertoBilling = async (req, res) => {
     try {
         const orderId = req.params.id;
-        const { status } = req.body;
-        const order = await CreateOrder.findById({ _id: orderId }).populate({ path: "userId", model: "user" }).populate({ path: "orderItems.productId", model: "product" });
+        const order = await CreateOrder.findById({ _id: orderId })
         if (!order) {
-            return res.status(404).json({ message: 'sales order not found' });
+            return res.status(404).json({ message: 'Sales Order Not Found', status: false });
         }
-        order.status = status;
-        await order.save();
-        const invoice = {
-            fullName: order.fullName,
-            invoiceId: order.invoiceId,
-            address: order.address,
-            MobileNo: order.MobileNo,
-            grandTotal: order.grandTotal,
-            country: order.country,
-            state: order.state,
-            city: order.city,
-            pincode: order.pincode,
-            landMark: order.landMark,
-            discount: order.discount,
-            shippingCost: order.shippingCost,
-            taxAmount: order.taxAmount,
-            date: order.date,
-            orderItems: order.orderItems
-        }
-        const pdfFilePath = path.resolve(__dirname, 'invoice.pdf');
-        await pdf.create(createInvoiceTemplate(invoice), {}).toFile(pdfFilePath, (err) => {
-            if (err) {
-                console.log(err);
-            }
-        })
-        // pathToAttachment = await path.join(__dirname, './invoice.pdf')
-        const attachment = await fs.readFileSync(pdfFilePath).toString("base64")
-
-        await transporter.sendMail({
-            from: process.env.EMAIL,
-            to: req.body.email,
-            subject: 'Pdf Generate document',
-            html: `
-        Testing Pdf Generate document, Thanks.`,
-            attachments: [
-                {
-                    content: attachment,
-                    filename: 'invoice.pdf',
-                    contentType: 'application/pdf',
-                    path: pdfFilePath
+        for (const orderItem of req.body.orderItems) {
+            const product = await Product.findById({ _id: orderItem.productId });
+            if (product) {
+                product.salesDate = new Date(new Date())
+                const warehouse = await Warehouse.findById(orderItem.warehouse)
+                if (warehouse) {
+                    const pro = warehouse.productItems.find((item) => item.productId.toString() === orderItem.productId.toString())
+                    // pro.currentStock -= (orderItem.qty);
+                    // product.qty -= orderItem.qty;
+                    // if (pro.currentStock < 0) {
+                    // return res.status(404).json({ message: `Product Out Of Stock ${product.Product_Title}`, status: false })
+                    // }
+                    // pro.pendingStock += (orderItem.qty)
+                    // await warehouse.save();
+                    // await product.save()
+                    // await ClosingSales(orderItem, orderItem.warehouse)
                 }
-            ]
-        }, function (error, info) {
-            if (error) {
-                console.log(error);
+            } else {
+                console.error(`Product with ID ${orderItem.productId._id} not found`);
             }
-            else {
-                res.send("Mail has been sended to your email. Check your mail")
-            }
-        })
-        return res.status(200).json({ Order: order, status: true });
+        }
+        order.orderItems = req.body.orderItems;
+        order.status = "Billing";
+        await order.save();
+        return res.status(200).json({ message: "Order Billing Seccessfull!", Order: order, status: true });
     } catch (error) {
         console.error(error);
-        return res.status(500).json({ error: error, status: false });
+        return res.status(500).json({ error: "Internal Server Error", status: false });
     }
 };
 
+// Order To Dispatch
+export const OrdertoDispatch = async (req, res) => {
+    try {
+        const Checked = []
+        const orderId = req.params.id;
+        const order = await CreateOrder.findById({ _id: orderId })
+        if (!order) {
+            return res.status(404).json({ message: 'Sales Order Not Found', status: false });
+        }
+        for (const orderItem of order.orderItems) {
+            if (orderItem.warehouse.toString() === req.body.warehouse.toString()) {
+                orderItem.status = "Dispatch";
+            }
+            if (orderItem.status === "Dispatch") {
+                order.status = "Dispatch"
+            }
+            else {
+                Checked.push(orderItem)
+            }
+        }
+        if (order.NoOfPackage) {
+            order.NoOfPackage += req.body.NoOfPackage
+        } else {
+            order.NoOfPackage = req.body.NoOfPackage
+        }
+        if (Checked.length !== 0) {
+            order.status = "Billing"
+        }
+        await order.save();
+        return res.status(200).json({ message: "Order Dispatch Seccessfull!", Order: order, status: true });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ error: "Internal Server Error", status: false });
+    }
+};
 export const updateCreateOrder = async (req, res, next) => {
     try {
         const orderId = req.params.id;
@@ -497,12 +323,15 @@ export const updateCreateOrder = async (req, res, next) => {
                 if (quantityChange !== 0) {
                     const product = await Product.findById({ _id: newOrderItem.productId });
                     if (product) {
+                        product.qty -= quantityChange;
+                        product.pendingQty += quantityChange;
                         const warehouse = await Warehouse.findById({ _id: product.warehouse })
                         if (warehouse) {
-                            const pro = warehouse.productItems.find((item) => item.productId === newOrderItem.productId)
+                            const pro = warehouse.productItems.find((item) => item.productId.toString() === newOrderItem.productId.toString())
                             pro.currentStock -= (quantityChange);
                             await warehouse.save();
                         }
+                        await product.save()
                     } else {
                         console.error(`Product with ID ${newOrderItem.productId} not found`);
                     }
@@ -517,26 +346,6 @@ export const updateCreateOrder = async (req, res, next) => {
         return res.status(500).json({ error: "Internal Server Error" });
     }
 };
-
-export const autoBillingLock = async (req, res, next) => {
-    try {
-        const order = await Order.find({ userId: req.params.id })
-        const orders = await order[order.length - 1];
-        const time1 = await new Date(order[order.length - 1].createdAt);
-        const currentDate = new Date();
-        const timeDifference = currentDate - time1;
-        const days = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
-        if (days >= 15) {
-            orders.status = "locked";
-            await order.save();
-        }
-    }
-    catch (err) {
-        console.log(err);
-        return res.status(500).json({ error: "Internal Server Error", status: false })
-    }
-}
-
 export const SalesOrderList = async (req, res, next) => {
     try {
         const userId = req.params.id;
@@ -545,36 +354,19 @@ export const SalesOrderList = async (req, res, next) => {
         if (!adminDetail.length > 0) {
             return res.status(404).json({ error: "Product Not Found", status: false })
         }
-        const orders = await Order.find({ database: database }).populate({
-            path: 'orderItems.productId',
-            model: 'product'
-        }).populate({ path: "partyId", model: "customer" }).exec();
         const createOrder = await CreateOrder.find({ database: database }).populate({
             path: 'orderItems.productId',
             model: 'product'
         }).populate({ path: "partyId", model: "customer" }).exec();
-        if ((!orders || orders.length === 0) && (!createOrder || createOrder.length === 0)) {
+        if ((!createOrder || createOrder.length === 0)) {
             return res.status(404).json({ message: "No orders found", status: false });
         }
-        const ordersDetails = await orders.concat(createOrder)
-        return res.status(200).json({ orderHistory: ordersDetails, status: true });
+        return res.status(200).json({ orderHistory: createOrder, status: true });
     } catch (err) {
         console.log(err);
         return res.status(500).json({ error: "Internal Server Error", status: false });
     }
 };
-
-export const placeOrderHistory = async (req, res, next) => {
-    try {
-        const userId = req.params.id;
-        const adminDetail = await getOrderHierarchy(userId)
-        return (adminDetail.length > 0) ? res.status(200).json({ orderHistory: adminDetail, status: true }) : res.status(400).json({ message: "Not Found", status: false })
-    } catch (err) {
-        console.log(err);
-        return res.status(500).json({ error: "Internal Server Error", status: false });
-    }
-};
-
 export const createOrderHistory = async (req, res, next) => {
     try {
         const userId = req.params.id;
@@ -585,7 +377,6 @@ export const createOrderHistory = async (req, res, next) => {
         return res.status(500).json({ error: "Internal Server Error", status: false });
     }
 };
-
 export const updateCreateOrderStatus = async (req, res) => {
     try {
         const orderId = req.params.id;
@@ -636,17 +427,15 @@ export const updateCreateOrderStatus = async (req, res) => {
         return res.status(500).json({ error: error, status: false });
     }
 };
-
 export const checkPartyOrderLimit = async (req, res, next) => {
     try {
-        const party = await PartyOrderLimit.findOne({ partyId: req.params.id }).sort({ sortorder: -1 })
-        if (!party) {
-            const customer = await Customer.findById(req.params.id)
-            const CustomerLimit = customer.limit;
+        // const party = await PartyOrderLimit.findOne({ partyId: req.params.id })
+        const party = await Customer.findById(req.params.id)
+        if (party) {
+            const CustomerLimit = (party.remainingLimit > 0) ? party.remainingLimit : party.limit;
             return res.status(200).json({ CustomerLimit, message: `The limit on your order amount is ${CustomerLimit}`, status: true })
         } else {
-            const CustomerLimit = party.remainingAmount;
-            return res.status(200).json({ CustomerLimit, message: `The limit on your order amount is ${CustomerLimit}`, status: true })
+            return res.status(404).json({ message: "Party Not Found", status: true })
         }
     }
     catch (err) {
@@ -654,24 +443,6 @@ export const checkPartyOrderLimit = async (req, res, next) => {
         return res.status(500).json({ error: "Internal Server Error", status: false })
     }
 }
-
-// export const ProductWiseSalesReport = async (req, res, next) => {
-//     try {
-//         let orders = [];
-//         const salesOrder = await CreateOrder.find({ database: req.params.database }).populate({ path: "orderItems.productId", model: "product" });
-//         if (salesOrder.length === 0) {
-//             return res.status(404).json({ message: "Not Found", status: false });
-//         }
-//         for (let order of salesOrder) {
-//             orders = orders.concat(order.orderItems);
-//         }
-//         console.log(orders);
-//     } catch (err) {
-//         console.log(err);
-//         return res.status(500).json({ error: "Internal Server Error", status: false });
-//     }
-// };
-
 export const ProductWiseSalesReport = async (req, res, next) => {
     try {
         const startDate = req.body.startDate ? new Date(req.body.startDate) : null;
@@ -711,3 +482,235 @@ export const ProductWiseSalesReport = async (req, res, next) => {
         return res.status(500).json({ error: "Internal Server Error", status: false });
     }
 };
+// Order History App
+export const ViewOrderHistoryForPartySalesPerson = async (req, res, next) => {
+    try {
+        const orders = await CreateOrder.find({ partyId: req.params.id, status: { $ne: "Deactive" } }).populate({ path: 'orderItems.productId', model: 'product' }).populate({ path: "userId", model: "user" }).populate({ path: "partyId", model: "customer" })
+        return res.status(200).json({ orderHistory: orders, status: true })
+    }
+    catch (err) {
+        console.log(err)
+        return res.status(500).json({ error: "Internal Server Error", status: false })
+    }
+}
+
+//  For DashBoard
+export const SalesOrderCalculate111 = async (req, res, next) => {
+    try {
+        let salesOrders = {
+            totalAmount: 0,
+            lastMonthAmount: 0,
+            averageAmount: 0,
+            totalPending: 0,
+            totalDelivery: 0
+        };
+        const previousMonthStart = moment().subtract(1, 'months').startOf('month').toDate();
+        const previousMonthEnd = moment().subtract(1, 'months').endOf('month').toDate();
+        const order = await CreateOrder.find({ database: req.params.database }).sort({ sortorder: -1 })
+        if (order.length === 0) {
+            return res.status(404).json({ message: "Sales Order Not Found", status: false })
+        }
+        const lastMonth = order[0].createdAt.getMonth() + 1
+        for (let item of order) {
+            if (item.status === "Completed") {
+                salesOrders.totalAmount += item.grandTotal
+            }
+            if (item.status === "pending") {
+                salesOrders.totalPending++
+            }
+            if (item.status === "Pending for Delivery") {
+                salesOrders.totalDelivery++
+            }
+        }
+        const orders = await CreateOrder.find({
+            database: req.params.database, status: "Completed",
+            createdAt: { $gte: previousMonthStart, $lte: previousMonthEnd }
+        });
+        if (orders.length === 0) {
+            return res.status(404).json({ message: "Sales Order Not Found", status: false })
+        }
+        for (let item of orders) {
+            salesOrders.lastMonthAmount += item.grandTotal
+        }
+        salesOrders.averageAmount = (salesOrders.totalAmount / lastMonth).toFixed(2)
+        res.status(200).json({ salesOrders, status: true })
+    }
+    catch (err) {
+        console.log(err)
+        return res.status(500).json({ error: "Internal Server Error", status: false })
+    }
+}
+export const SalesOrderCalculate = async (req, res, next) => {
+    try {
+        let salesOrders = {
+            totalAmount: 0,
+            lastMonthAmount: 0,
+            averageAmount: 0,
+            totalPending: 0,
+            totalDelivery: 0
+        };
+        const previousMonthStart = moment().subtract(1, 'months').startOf('month').toDate();
+        const previousMonthEnd = moment().subtract(1, 'months').endOf('month').toDate();
+        const orders = await CreateOrder.find({ database: req.params.database }).sort({ sortorder: -1 });
+        if (orders.length === 0) {
+            return res.status(404).json({ message: "Sales Order Not Found", status: false });
+        }
+        let completedOrdersLastMonth = [];
+        const lastMonth = orders[0].createdAt.getMonth() + 1
+        orders.forEach(order => {
+            if (order.status === "Completed") {
+                salesOrders.totalAmount += order.grandTotal;
+                if (moment(order.createdAt).isBetween(previousMonthStart, previousMonthEnd, null, '[]')) {
+                    completedOrdersLastMonth.push(order);
+                }
+            } else if (order.status === "pending") {
+                salesOrders.totalPending++;
+            } else if (order.status === "Pending for Delivery") {
+                salesOrders.totalDelivery++;
+            }
+        });
+        completedOrdersLastMonth.forEach(order => {
+            salesOrders.lastMonthAmount += order.grandTotal;
+        });
+        salesOrders.averageAmount = (salesOrders.totalAmount / lastMonth).toFixed(2);
+        return res.status(200).json({ SalesCalculation: salesOrders, status: true });
+    } catch (err) {
+        console.log(err);
+        return res.status(500).json({ error: "Internal Server Error", status: false });
+    }
+};
+
+// For DashBoard
+export const DebitorCalculate = async (req, res, next) => {
+    try {
+        let Debtor = {
+            totalReceipt: 0,
+            totalDue: 0,
+            currentReceipt: 0,
+            currentOutstanding: 0,
+            totalOutstanding: 0
+        };
+        let currentSales;
+        // const startOfDay = moment().startOf('day').toDate();
+        // const endOfDay = moment().endOf('day').toDate();
+        const startOfDay = moment().startOf('month').toDate();
+        const endOfDay = moment().endOf('month').toDate();
+        const [salesOrder, salesOrderCurrentMonth, receipt, receipts] = await Promise.all([
+            CreateOrder.find({ database: req.params.database, status: "Completed" }).sort({ sortorder: -1 }),
+            CreateOrder.find({ database: req.params.database, status: "Completed", createdAt: { $gte: startOfDay, $lte: endOfDay } }).sort({ sortorder: -1 }),
+            Receipt.find({ database: req.params.database, type: "receipt", status: "Active" }).sort({ sortorder: -1 }),
+            Receipt.find({ database: req.params.database, type: "receipt", createdAt: { $gte: startOfDay, $lte: endOfDay }, status: "Active" }).sort({ sortorder: -1 })
+        ]);
+
+        // Calculate totals
+        Debtor.totalDue = salesOrder.reduce((sum, item) => sum + item.grandTotal, 0);
+        currentSales = salesOrderCurrentMonth.reduce((sum, item) => sum + item.grandTotal, 0);
+        Debtor.totalReceipt = receipt.reduce((sum, item) => sum + item.amount, 0);
+        Debtor.currentReceipt = receipts.reduce((sum, item) => sum + item.amount, 0);
+        // Debtor.totalOutstanding = Debtor.totalDue - Debtor.totalReceipt;
+        // Debtor.currentOutstanding = currentSales - Debtor.currentReceipt;
+
+        res.status(200).json({ Debtor, status: true });
+    } catch (err) {
+        console.log(err);
+        return res.status(500).json({ error: "Internal Server Error", status: false });
+    }
+};
+
+// --------------------------------------------
+export const deletedSalesOrder = async (req, res, next) => {
+    try {
+        const order = await CreateOrder.findById(req.params.id)
+        if (!order) {
+            return res.status(404).json({ error: "Not Found", status: false });
+        }
+        for (const orderItem of order.orderItems) {
+            const product = await Product.findById({ _id: orderItem.productId });
+            if (product) {
+                // ware = product.warehouse
+                // product.salesDate = new Date()
+                const warehouse = await Warehouse.findById(orderItem.warehouse)
+                if (warehouse) {
+                    const pro = warehouse.productItems.find((item) => item.productId === orderItem.productId.toString())
+                    pro.currentStock += (orderItem.qty);
+                    product.qty += orderItem.qty;
+                    product.pendingQty -= orderItem.qty;
+                    if (pro.currentStock < 0) {
+                        return res.status(404).json({ message: "Product Out Of Stock", status: false })
+                    }
+                    // pro.pendingStock -= (orderItem.qty)
+                    await warehouse.save();
+                    await product.save()
+                    await DeleteClosingSales(orderItem, orderItem.warehouse)
+                }
+            } else {
+                console.error(`Product With ID ${orderItem.productId} Not Found`);
+            }
+        }
+        await UpdateCheckLimitSales(order)
+        order.status = "Deactive";
+        await order.save();
+        await Ledger.findOneAndDelete({ orderId: req.params.id })
+        return res.status(200).json({ message: "delete successfull!", status: true })
+    } catch (err) {
+        console.log(err);
+        return res.status(500).json({ error: "Internal Server Error", status: false });
+    }
+}
+export const DeleteClosingSales = async (orderItem, warehouse) => {
+    try {
+        let cgstRate = 0;
+        let sgstRate = 0;
+        let igstRate = 0;
+        let tax = 0
+        const rate = parseInt(orderItem.gstPercentage) / 2;
+        if (orderItem.igstTaxType === false) {
+            cgstRate = (((orderItem.qty) * orderItem.price) * rate) / 100;
+            sgstRate = (((orderItem.qty) * orderItem.price) * rate) / 100;
+            tax = cgstRate + sgstRate
+        } else {
+            igstRate = (((orderItem.qty) * orderItem.price) * parseInt(orderItem.gstPercentage)) / 100;
+            tax = igstRate
+        }
+        const stock = await ClosingStock.findOne({ warehouseId1: warehouse, productId: orderItem.productId })
+        if (stock) {
+            stock.sQty -= (orderItem.qty);
+            stock.sBAmount -= orderItem.totalPrice;
+            stock.sTaxRate -= tax;
+            stock.sTotal -= (orderItem.totalPrice + tax)
+            await stock.save()
+            // console.log("ClosingSales : " + stock)
+        }
+        // return true
+    }
+    catch (err) {
+        console.log(err)
+    }
+}
+
+// For Customer Target, Purchase Product Qty By Customer
+export const PartyPurchaseqty = async (req, res, next) => {
+    try {
+        const previousMonthStart = moment().subtract(1, 'months').startOf('month').toDate();
+        const previousMonthEnd = moment().subtract(1, 'months').endOf('month').toDate();
+        let qty = 0;
+        const partyOrder = await CreateOrder.find({
+            partyId: req.params.partyId,
+            createdAt: { $gte: previousMonthStart, $lte: previousMonthEnd }
+        });
+        if (!partyOrder.length) {
+            return res.status(200).json({ qty, status: true });
+        }
+        for (let item of partyOrder) {
+            for (let orderItem of item.orderItems) {
+                if (orderItem.productId.toString() === req.params.productId) {
+                    qty += orderItem.qty;
+                }
+            }
+        }
+        return res.status(200).json({ qty, status: true });
+    } catch (err) {
+        console.error("Error fetching party purchase quantity:", err);
+        return res.status(500).json({ error: "Internal Server Error", status: false });
+    }
+}
