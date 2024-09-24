@@ -2,11 +2,13 @@ import { StepsModel } from "../model/steps.model.js";
 
 export const createSteps = async (req, res, next) => {
   try {
-    const id = req.body.createdBy;
-    const innerId = req.body.innerId;
-    const findSteps = await StepsModel.findOne({ createdBy: id });
+    const { createdBy, steps } = req.body;
+
+    const findSteps = await StepsModel.findOne({ createdBy });
+
     if (findSteps) {
-      if (innerId) {
+      if (req.body.innerId) {
+        const innerId = req.body.innerId;
         const findIndex = findSteps.steps.findIndex(
           (item) => item._id.toString() === innerId
         );
@@ -26,15 +28,21 @@ export const createSteps = async (req, res, next) => {
             .json({ message: "Step with innerId not found", status: false });
         }
       } else {
-        findSteps.steps.push(req.body);
+        if (Array.isArray(steps)) {
+          steps.forEach((step) => {
+            findSteps.steps.push(step);
+          });
+        } else {
+          findSteps.steps.push(steps);
+        }
         await findSteps.save();
         return res
           .status(200)
-          .json({ message: "Step Added Successfully", status: true });
+          .json({ message: "Steps Added Successfully", status: true });
       }
     } else {
-      const steps = await StepsModel.create(req.body);
-      return steps
+      const stepsDoc = await StepsModel.create(req.body);
+      return stepsDoc
         ? res
             .status(200)
             .json({ message: "Data Added Successfully", status: true })
