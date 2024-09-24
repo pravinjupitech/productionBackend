@@ -2,6 +2,8 @@ import express from "express";
 import {
   createSteps,
   deleteSteps,
+  innerDelete,
+  innerUpdate,
   updateSteps,
   viewSteps,
   viewbyIdSteps,
@@ -13,4 +15,6 @@ router.get("/view-steps/:createdBy", viewSteps);
 router.get("/view-steps/:id", viewbyIdSteps);
 router.put("/edit-steps/:id", updateSteps);
 router.delete("/delete-steps/:id", deleteSteps);
+router.put("/edit-inner-step/:id/:innerId", innerUpdate);
+router.delete("/delete-inner-step/:id/:innerId", innerDelete);
 export default router;

@@ -2,12 +2,18 @@ import { StepsModel } from "../model/steps.model.js";
 
 export const createSteps = async (req, res, next) => {
   try {
-    const steps = await StepsModel.create(req.body);
-    return steps
-      ? res.status(200).json({ message: "Data Added", status: true })
-      : res
-          .status(404)
-          .json({ message: "Something Went Wrong", status: false });
+    const id = req.body.createdBy;
+    const stepId = req.body.stepId;
+    const findSteps = await StepsModel.findOne({ createdBy: id });
+    if (findSteps) {
+    } else {
+      const steps = await StepsModel.create(req.body);
+      return steps
+        ? res.status(200).json({ message: "Data Added", status: true })
+        : res
+            .status(404)
+            .json({ message: "Something Went Wrong", status: false });
+    }
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: "Internal Server Error", status: false });
@@ -67,6 +73,72 @@ export const deleteSteps = async (req, res, next) => {
     }
     await StepsModel.findByIdAndDelete(id);
     res.status(200).json({ message: "Data Deleted", status: false });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Internal Server Error", status: false });
+  }
+};
+
+export const innerUpdate = async (req, res, next) => {
+  try {
+    const { id, innerId } = req.params;
+    const { newData } = req.body;
+    const OuterSteps = await StepsModel.findById(id);
+    if (OuterSteps) {
+      const findIndex = OuterSteps.steps.findIndex(
+        (item) => item._id.toString() === innerId
+      );
+
+      if (findIndex !== -1) {
+        OuterSteps.steps[findIndex] = {
+          ...OuterSteps.steps[findIndex]._doc,
+          ...newData,
+        };
+        await OuterSteps.save();
+        return res
+          .status(200)
+          .json({ message: "Data Updated Successfully", status: true });
+      } else {
+        return res
+          .status(404)
+          .json({ error: "Inner Data Not Found", status: false });
+      }
+    } else {
+      return res.status(404).json({ error: "Not Found", status: false });
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Internal Server Error", status: false });
+  }
+};
+
+export const innerDelete = async (req, res, next) => {
+  try {
+    const { id, innerId } = req.params;
+    const OuterSteps = await StepsModel.findById(id);
+
+    if (OuterSteps) {
+      const findIndex = OuterSteps.steps.findIndex(
+        (item) => item._id.toString() === innerId
+      );
+
+      if (findIndex !== -1) {
+        OuterSteps.steps.splice(findIndex, 1);
+        await OuterSteps.save();
+
+        return res
+          .status(200)
+          .json({ message: "Inner data deleted successfully", status: true });
+      } else {
+        return res
+          .status(404)
+          .json({ error: "Inner data not found", status: false });
+      }
+    } else {
+      return res
+        .status(404)
+        .json({ error: "Parent data not found", status: false });
+    }
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: "Internal Server Error", status: false });
