@@ -110,8 +110,8 @@ export const deleteSteps = async (req, res, next) => {
 export const innerUpdate = async (req, res, next) => {
   try {
     const { id, innerId } = req.params;
-    const { newData } = req.body;
-    console.log("req body", newData);
+    // const { newData } = req.body;
+    console.log("req body", req.body);
     const OuterSteps = await StepsModel.findById(id);
     if (OuterSteps) {
       const findIndex = OuterSteps.steps.findIndex(
@@ -121,7 +121,7 @@ export const innerUpdate = async (req, res, next) => {
       if (findIndex !== -1) {
         OuterSteps.steps[findIndex] = {
           ...OuterSteps.steps[findIndex]._doc,
-          ...newData,
+          ...req.body,
         };
         console.log("OuterSteps", OuterSteps);
         await OuterSteps.save();
