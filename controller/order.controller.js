@@ -428,7 +428,7 @@ export const updateCreateOrder = async (req, res, next) => {
     return res.status(500).json({ error: "Internal Server Error" });
   }
 };
-export const rderList = async (req, res, next) => {
+export const SalesOrderList = async (req, res, next) => {
   try {
     const userId = req.params.id;
     const database = req.params.database;
