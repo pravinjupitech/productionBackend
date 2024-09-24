@@ -1,110 +1,116 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
-const ProductSchema = new mongoose.Schema({
+const ProductSchema = new mongoose.Schema(
+  {
     id: {
-        type: String
+      type: String,
     },
     created_by: {
-        type: String
+      type: String,
     },
     database: {
-        type: String
+      type: String,
     },
     partyId: {
-        type: String
+      type: String,
     },
     primaryUnit: {
-        type: String
+      type: String,
     },
     secondaryUnit: {
-        type: String
+      type: String,
     },
     secondarySize: {
-        type: Number
+      type: Number,
     },
     unitType: {
-        type: String
+      type: String,
     },
     category: {
-        type: String
+      type: String,
     },
     SubCategory: {
-        type: String
+      type: String,
     },
     warehouse: {
-        type: String
+      type: String,
     },
     pendingQty: {
-        type: Number,
-        default: 0
+      type: Number,
+      default: 0,
     },
     Unit: {
-        type: String
+      type: String,
     },
     Product_Title: {
-        type: String
+      type: String,
     },
     Size: {
-        type: String
+      type: String,
     },
     qty: {
-        type: Number
+      type: Number,
+    },
+    weight: {
+      type: Number,
     },
     discount: {
-        type: Number
+      type: Number,
     },
     HSN_Code: {
-        type: String
+      type: String,
     },
     GSTRate: {
-        type: Number
+      type: Number,
     },
     Product_Desc: {
-        type: String
+      type: String,
     },
     Product_image: {
-        type: []
+      type: [],
     },
     Product_MRP: {
-        type: Number
+      type: Number,
     },
     MIN_stockalert: {
-        type: Number
+      type: Number,
     },
     addProductType: {
-        type: String
+      type: String,
     },
     status: {
-        type: String,
-        default: "Active"
+      type: String,
+      default: "Active",
     },
     salesDate: {
-        type: Date
+      type: Date,
     },
     purchaseDate: {
-        type: Date
+      type: Date,
     },
     purchaseStatus: {
-        type: Boolean,
-        default: false
+      type: Boolean,
+      default: false,
     },
     Opening_Stock: {
-        type: Number
+      type: Number,
     },
     Purchase_Rate: {
-        type: Number
+      type: Number,
     },
     basicPrice: {
-        type: Number
+      type: Number,
     },
     landedCost: {
-        type: Number
+      type: Number,
     },
     SalesRate: {
-        type: Number
+      type: Number,
     },
     ProfitPercentage: {
-        type: Number
-    }
-}, { timestamps: true })
-export const Product = mongoose.model('product', ProductSchema);
+      type: Number,
+    },
+  },
+  { timestamps: true }
+);
+export const Product = mongoose.model("product", ProductSchema);
