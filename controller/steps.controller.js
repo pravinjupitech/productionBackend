@@ -111,17 +111,19 @@ export const innerUpdate = async (req, res, next) => {
   try {
     const { id, innerId } = req.params;
     const { newData } = req.body;
+    console.log("req body", newData);
     const OuterSteps = await StepsModel.findById(id);
     if (OuterSteps) {
       const findIndex = OuterSteps.steps.findIndex(
         (item) => item._id.toString() === innerId
       );
-
+      console.log("findIndex", findIndex);
       if (findIndex !== -1) {
         OuterSteps.steps[findIndex] = {
           ...OuterSteps.steps[findIndex]._doc,
           ...newData,
         };
+        console.log("OuterSteps", OuterSteps);
         await OuterSteps.save();
         return res
           .status(200)
