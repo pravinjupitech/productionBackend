@@ -1,276 +1,296 @@
 import mongoose from "mongoose";
 
-const orderItemsSchema = new mongoose.Schema({
+const orderItemsSchema = new mongoose.Schema(
+  {
     productId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "product"
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "product",
     },
     Size: {
-        type: Number
+      type: Number,
     },
     qty: {
-        type: Number
+      type: Number,
     },
     price: {
-        type: Number
+      type: Number,
     },
     totalPrice: {
-        type: Number
+      type: Number,
+    },
+    weight: {
+      type: Number,
     },
     sgstRate: {
-        type: Number
+      type: Number,
     },
     cgstRate: {
-        type: Number
+      type: Number,
     },
     igstRate: {
-        type: Number
+      type: Number,
     },
     taxableAmount: {
-        type: Number
+      type: Number,
     },
     grandTotal: {
-        type: Number
+      type: Number,
     },
     unitType: {
-        type: String
+      type: String,
     },
     discountPercentage: {
-        type: Number
+      type: Number,
     },
     gstPercentage: {
-        type: String
+      type: String,
     },
     totalPriceWithDiscount: {
-        type: Number
+      type: Number,
     },
     status: {
-        type: String,
-        default: "ordered"
+      type: String,
+      default: "ordered",
     },
     date: {
-        type: Date,
+      type: Date,
     },
     igstTaxType: {
-        type: Boolean
+      type: Boolean,
     },
     basicPrice: {
-        type: Number
+      type: Number,
     },
     landedCost: {
-        type: Number
+      type: Number,
     },
     primaryUnit: {
-        type: String
+      type: String,
     },
     secondaryUnit: {
-        type: String
+      type: String,
     },
     secondarySize: {
-        type: Number
+      type: Number,
     },
     ReceiveQty: {
-        type: String
+      type: String,
     },
     DamageQty: {
-        type: String
-    }
-}, { timestamps: true })
-const PurchaseOrderSchema = new mongoose.Schema({
+      type: String,
+    },
+  },
+  { timestamps: true }
+);
+const PurchaseOrderSchema = new mongoose.Schema(
+  {
     userId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "user"
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "user",
     },
     partyId: {
-        type: String
+      type: String,
     },
     coolieAndCartage: {
-        type: Number
+      type: Number,
     },
     transportationCost: {
-        type: Number
+      type: Number,
     },
     labourCost: {
-        type: Number
+      type: Number,
     },
     localFreight: {
-        type: Number
+      type: Number,
     },
     miscellaneousCost: {
-        type: Number
+      type: Number,
     },
     tax: {
-        type: Number
+      type: Number,
     },
     maxGstPercentage: {
-        type: Number
+      type: Number,
     },
     database: {
-        type: String
+      type: String,
     },
     invoiceId: {
-        type: String
+      type: String,
     },
     date: {
-        type: Date,
+      type: Date,
     },
     DispatchDate: {
-        type: String
+      type: String,
     },
     fullName: {
-        type: String
+      type: String,
     },
     address: {
-        type: String
+      type: String,
     },
     MobileNo: {
-        type: Number
+      type: Number,
     },
     country: {
-        type: String
+      type: String,
     },
     state: {
-        type: String
+      type: String,
     },
     city: {
-        type: String
+      type: String,
     },
     landMark: {
-        type: String
+      type: String,
     },
     pincode: {
-        type: Number
+      type: Number,
     },
     grandTotal: {
-        type: Number,
-        default: 0
+      type: Number,
+      default: 0,
     },
     discount: {
-        type: Number,
-        default: 0
+      type: Number,
+      default: 0,
     },
     shippingCost: {
-        type: Number,
-        default: 0
+      type: Number,
+      default: 0,
     },
     taxAmount: {
-        type: Number,
-        default: 0
+      type: Number,
+      default: 0,
     },
     status: {
-        type: String,
-        default: "pending"
+      type: String,
+      default: "pending",
     },
     latitude: {
-        type: String
+      type: String,
     },
     longitude: {
-        type: String
+      type: String,
     },
     currentAddress: {
-        type: String
+      type: String,
     },
     paymentId: {
-        type: String
+      type: String,
     },
     paymentMode: {
-        type: String
+      type: String,
     },
     orderItems: [orderItemsSchema],
     roundOff: {
-        type: Number
+      type: Number,
     },
     amount: {
-        type: Number
+      type: Number,
     },
     sgstTotal: {
-        type: Number
+      type: Number,
     },
     cgstTotal: {
-        type: Number
+      type: Number,
     },
     igstTotal: {
-        type: Number
+      type: Number,
     },
     discountAmount: {
-        type: Number
+      type: Number,
     },
     igstTaxType: {
-        type: Number
+      type: Number,
     },
-    gstDetails: [{
+    gstDetails: [
+      {
         hsn: {
-            type: String
+          type: String,
         },
         taxable: {
-            type: Number
+          type: Number,
         },
-        centralTax: [{
+        centralTax: [
+          {
             rate: {
-                type: Number
+              type: Number,
             },
             amount: {
-                type: Number
-            }
-        }],
-        stateTax: [{
+              type: Number,
+            },
+          },
+        ],
+        stateTax: [
+          {
             rate: {
-                type: Number
+              type: Number,
             },
             amount: {
-                type: Number
-            }
-        }],
-        igstTax: [{
+              type: Number,
+            },
+          },
+        ],
+        igstTax: [
+          {
             rate: {
-                type: Number
+              type: Number,
             },
             amount: {
-                type: Number
-            }
-        }],
+              type: Number,
+            },
+          },
+        ],
         discountPercentage: {
-            type: Number
+          type: Number,
         },
         withoutDiscountAmount: {
-            type: Number,
+          type: Number,
         },
         withDiscountAmount: {
-            type: Number
+          type: Number,
         },
         withoutTaxablePrice: {
-            type: Number
-        }
-    }],
+          type: Number,
+        },
+      },
+    ],
     transporter: {
-        type: Object
+      type: Object,
     },
     vehicleNo: {
-        type: String
+      type: String,
     },
     otherCharges: {
-        type: Number
+      type: Number,
     },
     gstOtherCharges: [],
     ARN: {
-        type: String
+      type: String,
     },
     ARNStatus: {
-        type: Boolean,
-        default: false
+      type: Boolean,
+      default: false,
     },
     invoiceStatus: {
-        type: Boolean,
-        default: false
+      type: Boolean,
+      default: false,
     },
     NoOfPackage: {
-        type: Number,
-        default: 0
+      type: Number,
+      default: 0,
     },
     BuiltyNumber: {
-        type: Number,
-        default: 0
+      type: Number,
+      default: 0,
     },
-}, { timestamps: true });
+  },
+  { timestamps: true }
+);
 
-export const PurchaseOrder = mongoose.model("purchaseOrder", PurchaseOrderSchema)
+export const PurchaseOrder = mongoose.model(
+  "purchaseOrder",
+  PurchaseOrderSchema
+);
