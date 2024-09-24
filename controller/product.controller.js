@@ -49,7 +49,7 @@ export const SaveProduct = async (req, res) => {
         req.body.SalesRate *
         (1 + req.body.GSTRate / 100) *
         (1 + groupDiscount / 100);
-      console.log("productmrp", Product_MRP);
+      console.log("productmrp", req.body.Product_MRP);
       // const latest = (req.body.SalesRate + (req.body.SalesRate * req.body.GSTRate / 100))
       // req.body.Product_MRP = latest + (latest * (groupDiscount) / 100);
     }
