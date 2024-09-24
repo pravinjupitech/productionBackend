@@ -31,7 +31,7 @@ export const viewbyIdSteps = async (req, res, next) => {
     const id = req.params.id;
     const steps = await StepsModel.findById(id);
     return steps
-      ? res.status(200).json({ message: "Data Found", status: true })
+      ? res.status(200).json({ message: "Data Found", steps, status: true })
       : res.status(404).json({ message: "Not Found", status: false });
   } catch (error) {
     console.log(error);
