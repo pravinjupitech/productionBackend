@@ -16,7 +16,10 @@ export const createSteps = async (req, res, next) => {
 
 export const viewSteps = async (req, res, next) => {
   try {
-    const steps = await StepsModel.find();
+    const id = req.params.createdBy;
+    const steps = await StepsModel.find({ createdBy: id }).sort({
+      sortorder: -1,
+    });
     return steps.length > 0
       ? res.status(200).json({ message: "Data Found", steps, status: true })
       : res.status(404).json({ message: "Not Found", status: false });

@@ -9,7 +9,7 @@ import {
 const router = express.Router();
 
 router.post("/add-step", createSteps);
-router.get("/view-steps", viewSteps);
+router.get("/view-steps/:createdBy", viewSteps);
 router.get("/view-steps/:id", viewbyIdSteps);
 router.put("/edit-steps/:id", updateSteps);
 router.delete("/delete-steps/:id", deleteSteps);
