@@ -141,7 +141,6 @@ export const DeleteProduct = async (req, res, next) => {
 };
 export const UpdateProduct = async (req, res, next) => {
   try {
-    console.log("reqbody", req.body);
     let groupDiscount = 0;
     if (req.files) {
       let images = [];
@@ -183,7 +182,6 @@ export const UpdateProduct = async (req, res, next) => {
           req.body.SalesRate *
           (1 + parseInt(req.body.GSTRate) / 100) *
           (1 + groupDiscount / 100);
-        console.log(" req.body.Product_MRP ", req.body.Product_MRP);
       } else {
         req.body.SalesRate =
           req.body.Purchase_Rate *
@@ -192,7 +190,6 @@ export const UpdateProduct = async (req, res, next) => {
           req.body.SalesRate *
           (1 + parseInt(req.body.GSTRate) / 100) *
           (1 + groupDiscount / 100);
-        console.log(" req.body.Product_MRP+saleRate ", req.body.Product_MRP);
       }
       if (existingProduct.Opening_Stock !== parseInt(req.body.Opening_Stock)) {
         const qty = req.body.Opening_Stock - existingProduct.Opening_Stock;
