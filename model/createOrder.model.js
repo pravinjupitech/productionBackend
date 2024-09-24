@@ -15,6 +15,9 @@ const orderItemsSchema = new mongoose.Schema(
     secondarySize: {
       type: String,
     },
+    weight: {
+      type: Number,
+    },
     qty: {
       type: Number,
     },
