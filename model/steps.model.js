@@ -11,6 +11,9 @@ const stepsSchema = new mongoose.Schema(
         },
       },
     ],
+    createdBy: {
+      type: String,
+    },
   },
   { timestamps: true }
 );
