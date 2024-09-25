@@ -259,12 +259,10 @@ export const createOrderHistoryByPartyId = async (req, res, next) => {
     } else {
       console.log("Party ID not found in orders");
     }
-    return res
-      .status(200)
-      .json({
-        orderHistory: { ...orders.toObject(), partyId: undefined, partyId },
-        status: true,
-      });
+    return res.status(200).json({
+      orderHistory: { ...orders.toObject(), partyId: undefined, partyId },
+      status: true,
+    });
   } catch (err) {
     console.log(err);
     return res.status(500).json({ error: err });
@@ -306,13 +304,11 @@ export const OrdertoBilling = async (req, res) => {
     order.orderItems = req.body.orderItems;
     order.status = "Billing";
     await order.save();
-    return res
-      .status(200)
-      .json({
-        message: "Order Billing Seccessfull!",
-        Order: order,
-        status: true,
-      });
+    return res.status(200).json({
+      message: "Order Billing Seccessfull!",
+      Order: order,
+      status: true,
+    });
   } catch (error) {
     console.error(error);
     return res
@@ -351,13 +347,11 @@ export const OrdertoDispatch = async (req, res) => {
       order.status = "Billing";
     }
     await order.save();
-    return res
-      .status(200)
-      .json({
-        message: "Order Dispatch Seccessfull!",
-        Order: order,
-        status: true,
-      });
+    return res.status(200).json({
+      message: "Order Dispatch Seccessfull!",
+      Order: order,
+      status: true,
+    });
   } catch (error) {
     console.error(error);
     return res
@@ -537,13 +531,11 @@ export const checkPartyOrderLimit = async (req, res, next) => {
     if (party) {
       const CustomerLimit =
         party.remainingLimit > 0 ? party.remainingLimit : party.limit;
-      return res
-        .status(200)
-        .json({
-          CustomerLimit,
-          message: `The limit on your order amount is ${CustomerLimit}`,
-          status: true,
-        });
+      return res.status(200).json({
+        CustomerLimit,
+        message: `The limit on your order amount is ${CustomerLimit}`,
+        status: true,
+      });
     } else {
       return res.status(404).json({ message: "Party Not Found", status: true });
     }
