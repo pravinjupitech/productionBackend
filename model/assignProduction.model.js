@@ -4,44 +4,83 @@ const assignProductSchema = new mongoose.Schema(
     step_name: {
       type: String,
     },
+    user_name: {
+      type: String,
+    },
+    database: {
+      type: String,
+    },
     product_details: [
       {
-        user_name: {
+        rProduct_name: {
           type: String,
         },
-        product_name: {
+        rHeading1: {
           type: String,
         },
-        piece: {
-          type: Number,
+        rUnit1: {
+          type: String,
         },
-        weight: {
-          type: Number,
+        rHeading2: {
+          type: String,
         },
-        unit: {
+        rUnit2: {
+          type: String,
+        },
+        rHeading3: {
+          type: String,
+        },
+        rUnit3: {
+          type: String,
+        },
+        fProduct_name: {
+          type: String,
+        },
+        fHeading1: {
+          type: String,
+        },
+        fUnit1: {
+          type: String,
+        },
+        fHeading2: {
+          type: String,
+        },
+        fUnit2: {
+          type: String,
+        },
+        fHeading3: {
+          type: String,
+        },
+        fUnit3: {
+          type: String,
+        },
+        wProduct_name: {
+          type: String,
+        },
+        wHeading1: {
+          type: String,
+        },
+        wUnit1: {
+          type: String,
+        },
+        wHeading2: {
+          type: String,
+        },
+        wUnit2: {
+          type: String,
+        },
+        wHeading3: {
+          type: String,
+        },
+        wUnit3: {
           type: String,
         },
       },
     ],
-    final_product_qty: {
+    totalStep: {
       type: Number,
     },
-    final_product_name: {
-      type: String,
-    },
-    diff_Production_target: {
-      type: Number,
-    },
-    wastage_qty: {
-      type: Number,
-    },
-    wastage_Per: {
-      type: Number,
-    },
-    target_achive_val: {
-      type: Number,
-    },
-    target_achive_per: {
+    currentStep: {
       type: Number,
     },
   },
@@ -51,3 +90,6 @@ export const AssignProduction = mongoose.model(
   "assignProduction",
   assignProductSchema
 );
+/*
+
+*/
