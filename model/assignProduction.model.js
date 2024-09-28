@@ -10,70 +10,97 @@ const assignProductSchema = new mongoose.Schema(
     database: {
       type: String,
     },
+    rHeading1: {
+      type: String,
+    },
+    rUnit1: {
+      type: String,
+    },
+    rHeading2: {
+      type: String,
+    },
+    rUnit2: {
+      type: String,
+    },
+    rHeading3: {
+      type: String,
+    },
+    rUnit3: {
+      type: String,
+    },
+    fHeading1: {
+      type: String,
+    },
+    fUnit1: {
+      type: String,
+    },
+    fHeading2: {
+      type: String,
+    },
+    fUnit2: {
+      type: String,
+    },
+    fHeading3: {
+      type: String,
+    },
+    fUnit3: {
+      type: String,
+    },
+    wHeading1: {
+      type: String,
+    },
+    wUnit1: {
+      type: String,
+    },
+    wHeading2: {
+      type: String,
+    },
+    wUnit2: {
+      type: String,
+    },
+    wHeading3: {
+      type: String,
+    },
+    wUnit3: {
+      type: String,
+    },
     product_details: [
       {
         rProduct_name: {
           type: String,
         },
-        rHeading1: {
-          type: String,
+        rHeading1Value: {
+          type: Number,
         },
-        rUnit1: {
-          type: String,
+        rHeading2Value: {
+          type: Number,
         },
-        rHeading2: {
-          type: String,
-        },
-        rUnit2: {
-          type: String,
-        },
-        rHeading3: {
-          type: String,
-        },
-        rUnit3: {
-          type: String,
+        rHeading3Value: {
+          type: Number,
         },
         fProduct_name: {
           type: String,
         },
-        fHeading1: {
-          type: String,
+        fHeading1Value: {
+          type: Number,
         },
-        fUnit1: {
-          type: String,
+        fHeading2Value: {
+          type: Number,
         },
-        fHeading2: {
-          type: String,
-        },
-        fUnit2: {
-          type: String,
-        },
-        fHeading3: {
-          type: String,
-        },
-        fUnit3: {
-          type: String,
+        fHeading3Value: {
+          type: Number,
         },
         wProduct_name: {
           type: String,
         },
-        wHeading1: {
-          type: String,
+        wHeading1Value: {
+          type: Number,
         },
-        wUnit1: {
-          type: String,
+        wHeading2Value: {
+          type: Number,
         },
-        wHeading2: {
-          type: String,
-        },
-        wUnit2: {
-          type: String,
-        },
-        wHeading3: {
-          type: String,
-        },
-        wUnit3: {
-          type: String,
+        wHeading3Value: {
+          type: Number,
         },
       },
     ],
@@ -90,6 +117,3 @@ export const AssignProduction = mongoose.model(
   "assignProduction",
   assignProductSchema
 );
-/*
-
-*/
