@@ -76,6 +76,23 @@ export const deleteProduct = async (req, res, next) => {
   }
 };
 
+export const viewByIdProduct2 = async (req, res, next) => {
+  try {
+    const product = await AssignProduction.findById(req.params.id)
+      .populate({
+        path: "user_name",
+        model: "user",
+      })
+      .populate({ path: "product_details.rProduct_name", model: "product" });
+    return product
+      ? res.status(200).json({ message: "Data Found", product, status: true })
+      : res.status(404).json({ message: "Not Found", status: false });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Internal Server Error", status: false });
+  }
+};
+
 export const demoProduct = async (req, res, next) => {
   try {
     let arr = [1, 2, 3, 3, 4, 5, 5, 5];
@@ -95,14 +112,4 @@ export const demoProduct = async (req, res, next) => {
     res.status(500).json({ error: "Internal Server Error", status: false });
   }
 };
-
-/*
-let arr=[1,2,3,4,5,2,1,3,8];
-for(let i=0;i<ar.length;i++){
-for(let j=i+1;j<arr.length;i++){
-if(arr[i]===arr[j]){
-
-}
-}
-}
- */
+/*  */
