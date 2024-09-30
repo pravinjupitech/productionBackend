@@ -83,7 +83,7 @@ export const viewByIdProduct2 = async (req, res, next) => {
         path: "user_name",
         model: "user",
       })
-      .populate({ path: "product_details.rProduct_name", model: "product" });
+      .populate({ path: "product_details.fProduct_name", model: "product" });
     return product
       ? res.status(200).json({ message: "Data Found", product, status: true })
       : res.status(404).json({ message: "Not Found", status: false });
