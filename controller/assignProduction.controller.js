@@ -18,7 +18,9 @@ export const viewProduct = async (req, res, next) => {
   try {
     const product = await AssignProduction.find({
       database: req.params.database,
-    }).sort({ sortorder: -1 });
+    })
+      .sort({ sortorder: -1 })
+      .populate({ path: "user_name", model: "user" });
     return product.length > 0
       ? res.status(200).json({ message: "Data Found", product, status: true })
       : res.status(404).json({ message: "Not Found", status: false });
@@ -90,34 +92,5 @@ export const demoProduct = async (req, res, next) => {
     res.status(500).json({ error: "Internal Server Error", status: false });
   }
 };
-
-
 /*
-// Function to move an element up
-function moveUp(arr, index) {
-  if (index <= 0 || index >= arr.length) return arr; // Out of bounds, no action
-  // Swap current element with the previous one
-  [arr[index - 1], arr[index]] = [arr[index], arr[index - 1]];
-  return arr;
-}
-
-// Function to move an element down
-function moveDown(arr, index) {
-  if (index < 0 || index >= arr.length - 1) return arr; // Out of bounds, no action
-  // Swap current element with the next one
-  [arr[index + 1], arr[index]] = [arr[index], arr[index + 1]];
-  return arr;
-}
-
-// Example usage:
-let array = [10, 20, 30, 40, 50];
-
-console.log("Initial Array:", array);
-
-array = moveUp(array, 2);  // Move the element at index 2 (30) up
-console.log("After Moving Up:", array);
-
-array = moveDown(array, 1);  // Move the element at index 1 (30) down
-console.log("After Moving Down:", array);
-
 */
