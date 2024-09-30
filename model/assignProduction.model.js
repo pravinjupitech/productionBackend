@@ -108,7 +108,7 @@ const assignProductSchema = new mongoose.Schema(
       type: Number,
     },
     currentStep: {
-      type: Number,
+      type: String,
     },
   },
   { timestamps: true }
