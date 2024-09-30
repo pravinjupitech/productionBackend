@@ -32,7 +32,10 @@ export const viewProduct = async (req, res, next) => {
 
 export const viewByIdProduct = async (req, res, next) => {
   try {
-    const product = await AssignProduction.findById(req.params.id);
+    const product = await AssignProduction.findById(req.params.id).populate({
+      path: "user_name",
+      model: "user",
+    });
     return product
       ? res.status(200).json({ message: "Data Found", product, status: true })
       : res.status(404).json({ message: "Not Found", status: false });
@@ -92,5 +95,14 @@ export const demoProduct = async (req, res, next) => {
     res.status(500).json({ error: "Internal Server Error", status: false });
   }
 };
+
 /*
-*/
+let arr=[1,2,3,4,5,2,1,3,8];
+for(let i=0;i<ar.length;i++){
+for(let j=i+1;j<arr.length;i++){
+if(arr[i]===arr[j]){
+
+}
+}
+}
+ */
