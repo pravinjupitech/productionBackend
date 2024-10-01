@@ -1,6 +1,9 @@
 import mongoose from "mongoose";
 const stepsSchema = new mongoose.Schema(
   {
+    processName: {
+      type: String,
+    },
     steps: [
       {
         note: {
