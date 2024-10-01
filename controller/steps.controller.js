@@ -2,8 +2,8 @@ import { StepsModel } from "../model/steps.model.js";
 
 export const createSteps = async (req, res, next) => {
   try {
-    const { createdBy, steps } = req.body;
-    const findSteps = await StepsModel.findOne({ createdBy });
+    const { processName, steps } = req.body;
+    const findSteps = await StepsModel.findOne({ processName });
     if (findSteps) {
       if (steps.length > 0) {
         steps.forEach((step) => {
@@ -35,9 +35,11 @@ export const createSteps = async (req, res, next) => {
 export const viewSteps = async (req, res, next) => {
   try {
     const id = req.params.createdBy;
-    const steps = await StepsModel.find({ createdBy: id }).sort({
-      sortorder: -1,
-    });
+    const steps = await StepsModel.find({ createdBy: id })
+      .sort({
+        sortorder: -1,
+      })
+      .populate({ path: "processName", model: "category" });
     return steps.length > 0
       ? res.status(200).json({ message: "Data Found", steps, status: true })
       : res.status(404).json({ message: "Not Found", status: false });
