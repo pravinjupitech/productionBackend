@@ -20,7 +20,13 @@ export const viewProduct = async (req, res, next) => {
       database: req.params.database,
     })
       .sort({ sortorder: -1 })
-      .populate({ path: "user_name", model: "user" });
+      .populate({ path: "user_name", model: "user" })
+      .populate({
+        path: "user_name",
+        model: "user",
+      })
+      .populate({ path: "product_details.fProduct_name", model: "product" })
+      .populate({ path: "processName", model: "category" });
     return product.length > 0
       ? res.status(200).json({ message: "Data Found", product, status: true })
       : res.status(404).json({ message: "Not Found", status: false });
