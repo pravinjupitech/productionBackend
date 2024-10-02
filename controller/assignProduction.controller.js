@@ -83,7 +83,8 @@ export const viewByIdProduct2 = async (req, res, next) => {
         path: "user_name",
         model: "user",
       })
-      .populate({ path: "product_details.fProduct_name", model: "product" });
+      .populate({ path: "product_details.fProduct_name", model: "product" })
+      .populate({ path: "processName", model: "category" });
     return product
       ? res.status(200).json({ message: "Data Found", product, status: true })
       : res.status(404).json({ message: "Not Found", status: false });
@@ -114,32 +115,6 @@ export const demoProduct = async (req, res, next) => {
 };
 
 /*
-mysql -u pravin -p
-
-SHOW DATABASES
-
-CREATE DATABASE user
-
-USE user
-
-DROP DATABASE user
-
-CREATE TABLE demo(
-id INT AUTO INCREMENT PRIMARY KEY,
-name VARCHAR(50) NOT NULL,
-email VARCHAR(50) NOT NULL UNIQUE,
-)
-
-SHOW TABLES
-
-DESCRIBE demo
-
-DROP TABLE table_name;
-
-ALTER TABLE employees ADD COLUMN email VARCHAR(100);
-
-ALTER TABLE employees DROP COLUMN email;
-
 CREATE TABLE tasks (
     id INT AUTO_INCREMENT PRIMARY KEY,   -- Unique ID for each task
     name VARCHAR(100)                    -- Name of the task
