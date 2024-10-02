@@ -114,5 +114,43 @@ export const demoProduct = async (req, res, next) => {
 };
 
 /*
- mys
+mysql -u pravin -p
+
+SHOW DATABASES
+
+CREATE DATABASE user
+
+USE user
+
+DROP DATABASE user
+
+CREATE TABLE demo(
+id INT AUTO INCREMENT PRIMARY KEY,
+name VARCHAR(50) NOT NULL,
+email VARCHAR(50) NOT NULL UNIQUE,
+)
+
+SHOW TABLES
+
+DESCRIBE demo
+
+DROP TABLE table_name;
+
+ALTER TABLE employees ADD COLUMN email VARCHAR(100);
+
+ALTER TABLE employees DROP COLUMN email;
+
+CREATE TABLE tasks (
+    id INT AUTO_INCREMENT PRIMARY KEY,   -- Unique ID for each task
+    name VARCHAR(100)                    -- Name of the task
+);
+
+CREATE TABLE steps (
+    id INT AUTO_INCREMENT PRIMARY KEY,          -- Unique ID for each step
+    task_id INT,                                -- Foreign key linking to the tasks table
+    step_number INT,                            -- Step number within the task
+    description VARCHAR(255),                   -- Description of the step
+    FOREIGN KEY (task_id) REFERENCES tasks(id)  -- Foreign key relationship
+);
+
 */

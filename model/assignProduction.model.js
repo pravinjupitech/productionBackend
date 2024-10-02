@@ -7,6 +7,9 @@ const assignProductSchema = new mongoose.Schema(
     user_name: {
       type: String,
     },
+    processName: {
+      type: String,
+    },
     database: {
       type: String,
     },
