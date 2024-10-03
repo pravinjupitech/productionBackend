@@ -207,3 +207,53 @@ export const UpdateProduct = async (req, res, next) => {
       .json({ error: "Internal Server Error", status: false });
   }
 };
+
+export const addProductInWarehouse1 = async (warehouse, warehouseId, id) => {
+  try {
+    const user = await Warehouse.findById({ _id: warehouseId });
+    if (!user) {
+      return console.log("warehouse not found");
+    }
+    const sourceProductItem = user.productItems.find(
+      (pItem) => pItem.productId === id.productId
+    );
+    if (sourceProductItem) {
+      // sourceProductItem.Size += warehouse.Size;
+      sourceProductItem.currentStock = warehouse.qty;
+      sourceProductItem.price = warehouse.Purchase_Rate;
+      sourceProductItem.totalPrice = warehouse.qty * warehouse.Purchase_Rate;
+      sourceProductItem.transferQty = warehouse.qty;
+      user.markModified("productItems");
+      await user.save();
+    } else {
+      let ware = {
+        productId: id._id.toString(),
+        // Size: warehouse.Size,
+        // unitType: warehouse.unitType,
+        primaryUnit: warehouse.primaryUnit,
+        secondaryUnit: warehouse.secondaryUnit,
+        secondarySize: warehouse.secondarySize,
+        currentStock: warehouse.qty,
+        transferQty: warehouse.qty,
+        price: warehouse.Purchase_Rate,
+        totalPrice: warehouse.qty * warehouse.Purchase_Rate,
+        gstPercentage: warehouse.GSTRate,
+        igstType: warehouse.igstType,
+        oQty: warehouse.qty,
+        oRate: warehouse.Purchase_Rate,
+        oBAmount:
+          (warehouse.qty * warehouse.Purchase_Rate * 100) /
+          (warehouse.GSTRate + 100),
+        oTaxRate: warehouse.GSTRate,
+        oTotal: warehouse.qty * warehouse.Purchase_Rate,
+      };
+      const updated = await Warehouse.updateOne(
+        { _id: warehouseId },
+        { $push: { productItems: ware } },
+        { upsert: true }
+      );
+    }
+  } catch (error) {
+    console.error(error);
+  }
+};
