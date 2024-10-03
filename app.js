@@ -79,6 +79,7 @@ import { StockClose } from "./controller/warehouse.controller.js";
 //-------------------------------------------------------------------------------------
 import StepsRouter from "./routes/steps.route.js";
 import AssignProductionRouter from "./routes/assignProduction.route.js";
+import RowProductRouter from "./routes/rowProduct.route.js";
 const app = express();
 app.use(cors());
 dotenv.config();
@@ -170,7 +171,7 @@ app.use("/branch", UserBranchRouter);
 //----------------------------------------------------------
 app.use("/production-step", StepsRouter);
 app.use("/production-assign", AssignProductionRouter);
-
+app.use("/rowProduct", RowProductRouter);
 mongoose
   .connect(process.env.DATABASE_URL, {
     useUnifiedTopology: true,

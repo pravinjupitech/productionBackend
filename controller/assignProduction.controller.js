@@ -121,17 +121,17 @@ export const demoProduct = async (req, res, next) => {
 };
 
 /*
-CREATE TABLE tasks (
-    id INT AUTO_INCREMENT PRIMARY KEY,   -- Unique ID for each task
-    name VARCHAR(100)                    -- Name of the task
-);
 
-CREATE TABLE steps (
-    id INT AUTO_INCREMENT PRIMARY KEY,          -- Unique ID for each step
-    task_id INT,                                -- Foreign key linking to the tasks table
-    step_number INT,                            -- Step number within the task
-    description VARCHAR(255),                   -- Description of the step
-    FOREIGN KEY (task_id) REFERENCES tasks(id)  -- Foreign key relationship
-);
 
+The event loop is a core concept in JavaScript, particularly in how asynchronous operations are handled. JavaScript is single-threaded, meaning it can execute only one task at a time. However, with the event loop, it can manage asynchronous tasks like I/O operations, timers, and callbacks without blocking the main thread.
+
+ 
+package.json->  This file lists the metadata for your project, including the project name, version, description, and dependencies.
+while package-lock.json this file lock exact verison of  every installed package ,including you sub dependency. 
+
+In summary, package.json is a high-level overview of the project and its dependencies, while package-lock.json locks down the exact versions of those dependencies for reproducibility and consistency.
+
+
+package.json file list of meta data of project ,including project name ,version , description , dependencies.
+package-lock.json is lock exact version of every package 
 */
