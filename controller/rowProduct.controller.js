@@ -6,7 +6,7 @@ import { CustomerGroup } from "../model/customerGroup.model.js";
 import { Stock } from "../model/stock.js";
 export const addProduct = async (req, res) => {
   try {
-    let groupDiscount = 0;
+    // let groupDiscount = 0;
     if (req.body.id) {
       const existing = await RowProduct.findOne({
         status: "Active",
@@ -23,23 +23,23 @@ export const addProduct = async (req, res) => {
         .status(400)
         .json({ message: "product id required", status: false });
     }
-    const group = await CustomerGroup.find({
-      database: req.body.database,
-      status: "Active",
-    });
-    if (group.length > 0) {
-      const maxDiscount = group.reduce((max, group) => {
-        return group.discount > max.discount ? group : max;
-      });
-      groupDiscount = maxDiscount.discount;
-    }
-    if (req.files) {
-      let images = [];
-      req.files.map((file) => {
-        images.push(file.filename);
-      });
-      req.body.Product_image = images;
-    }
+    // const group = await CustomerGroup.find({
+    //   database: req.body.database,
+    //   status: "Active",
+    // });
+    // if (group.length > 0) {
+    //   const maxDiscount = group.reduce((max, group) => {
+    //     return group.discount > max.discount ? group : max;
+    //   });
+    //   groupDiscount = maxDiscount.discount;
+    // }
+    // if (req.files) {
+    //   let images = [];
+    //   req.files.map((file) => {
+    //     images.push(file.filename);
+    //   });
+    //   req.body.Product_image = images;
+    // }
     // if (!req.body.ProfitPercentage || req.body.ProfitPercentage === 0) {
     //   req.body.SalesRate = req.body.Purchase_Rate * 1.03;
     //   req.body.Product_MRP =
