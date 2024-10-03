@@ -127,11 +127,8 @@ The event loop is a core concept in JavaScript, particularly in how asynchronous
 
  
 package.json->  This file lists the metadata for your project, including the project name, version, description, and dependencies.
-while package-lock.json this file lock exact verison of  every installed package ,including you sub dependency. 
+while package-lock.json This file locks the exact versions of every installed package, including their sub-dependencies. 
 
 In summary, package.json is a high-level overview of the project and its dependencies, while package-lock.json locks down the exact versions of those dependencies for reproducibility and consistency.
 
-
-package.json file list of meta data of project ,including project name ,version , description , dependencies.
-package-lock.json is lock exact version of every package 
 */
