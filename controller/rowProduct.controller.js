@@ -72,7 +72,7 @@ export const addProduct = async (req, res) => {
 
 export const ViewProduct = async (req, res, next) => {
   try {
-    const userId = req.params.id;
+    // const userId = req.params.id;
     const database = req.params.database;
     const product = await RowProduct.find({
       database: database,
@@ -146,16 +146,16 @@ export const UpdateProduct = async (req, res, next) => {
         .status(404)
         .json({ error: "product not found", status: false });
     } else {
-      const group = await CustomerGroup.find({
-        database: existingProduct.database,
-        status: "Active",
-      });
-      if (group.length > 0) {
-        const maxDiscount = group.reduce((max, group) => {
-          return group.discount > max.discount ? group : max;
-        });
-        groupDiscount = maxDiscount?.discount ? maxDiscount?.discount : 0;
-      }
+      //   const group = await CustomerGroup.find({
+      //     database: existingProduct.database,
+      //     status: "Active",
+      //   });
+      //   if (group.length > 0) {
+      //     const maxDiscount = group.reduce((max, group) => {
+      //       return group.discount > max.discount ? group : max;
+      //     });
+      //     groupDiscount = maxDiscount?.discount ? maxDiscount?.discount : 0;
+      //   }
       //   if (parseInt(req.body.Purchase_Rate) > existingProduct.landedCost) {
       //     req.body.landedCost = parseInt(req.body.Purchase_Rate);
       //     req.body.Purchase_Rate = parseInt(req.body.Purchase_Rate);
@@ -220,8 +220,8 @@ export const addProductInWarehouse1 = async (warehouse, warehouseId, id) => {
     if (sourceProductItem) {
       // sourceProductItem.Size += warehouse.Size;
       sourceProductItem.currentStock = warehouse.qty;
-      sourceProductItem.price = warehouse.Purchase_Rate;
-      sourceProductItem.totalPrice = warehouse.qty * warehouse.Purchase_Rate;
+      //   sourceProductItem.price = warehouse.Purchase_Rate;
+      //   sourceProductItem.totalPrice = warehouse.qty * warehouse.Purchase_Rate;
       sourceProductItem.transferQty = warehouse.qty;
       user.markModified("productItems");
       await user.save();
@@ -235,17 +235,17 @@ export const addProductInWarehouse1 = async (warehouse, warehouseId, id) => {
         secondarySize: warehouse.secondarySize,
         currentStock: warehouse.qty,
         transferQty: warehouse.qty,
-        price: warehouse.Purchase_Rate,
-        totalPrice: warehouse.qty * warehouse.Purchase_Rate,
-        gstPercentage: warehouse.GSTRate,
-        igstType: warehouse.igstType,
+        // price: warehouse.Purchase_Rate,
+        // totalPrice: warehouse.qty * warehouse.Purchase_Rate,
+        // gstPercentage: warehouse.GSTRate,
+        // igstType: warehouse.igstType,
         oQty: warehouse.qty,
-        oRate: warehouse.Purchase_Rate,
-        oBAmount:
-          (warehouse.qty * warehouse.Purchase_Rate * 100) /
-          (warehouse.GSTRate + 100),
-        oTaxRate: warehouse.GSTRate,
-        oTotal: warehouse.qty * warehouse.Purchase_Rate,
+        //     oRate: warehouse.Purchase_Rate,
+        //     oBAmount:
+        //       (warehouse.qty * warehouse.Purchase_Rate * 100) /
+        //       (warehouse.GSTRate + 100),
+        //     oTaxRate: warehouse.GSTRate,
+        //     oTotal: warehouse.qty * warehouse.Purchase_Rate,
       };
       const updated = await Warehouse.updateOne(
         { _id: warehouseId },
@@ -272,22 +272,22 @@ export const addProductInWarehouse = async (
       (pItem) => pItem.productId.toString() === productId._id.toString()
     );
     if (sourceProductItem) {
-      sourceProductItem.gstPercentage = parseInt(warehouse.GSTRate);
+      //   sourceProductItem.gstPercentage = parseInt(warehouse.GSTRate);
       sourceProductItem.currentStock = parseInt(warehouse.qty);
-      sourceProductItem.price = parseInt(warehouse.Purchase_Rate);
-      sourceProductItem.totalPrice =
-        parseInt(warehouse.qty) * parseInt(warehouse.Purchase_Rate);
+      //   sourceProductItem.price = parseInt(warehouse.Purchase_Rate);
+      //   sourceProductItem.totalPrice =
+      //     parseInt(warehouse.qty) * parseInt(warehouse.Purchase_Rate);
       sourceProductItem.transferQty = parseInt(warehouse.qty);
       sourceProductItem.oQty = parseInt(warehouse.Opening_Stock);
-      sourceProductItem.oRate = parseInt(warehouse.Purchase_Rate);
-      sourceProductItem.oBAmount =
-        (parseInt(warehouse.Opening_Stock) *
-          parseInt(warehouse.Purchase_Rate) *
-          100) /
-        (parseInt(warehouse.GSTRate) + 100);
-      sourceProductItem.oTaxRate = parseInt(warehouse.GSTRate);
-      sourceProductItem.oTotal =
-        parseInt(warehouse.Opening_Stock) * parseInt(warehouse.Purchase_Rate);
+      //   sourceProductItem.oRate = parseInt(warehouse.Purchase_Rate);
+      //   sourceProductItem.oBAmount =
+      //     (parseInt(warehouse.Opening_Stock) *
+      //       parseInt(warehouse.Purchase_Rate) *
+      //       100) /
+      //     (parseInt(warehouse.GSTRate) + 100);
+      //   sourceProductItem.oTaxRate = parseInt(warehouse.GSTRate);
+      //   sourceProductItem.oTotal =
+      //     parseInt(warehouse.Opening_Stock) * parseInt(warehouse.Purchase_Rate);
       user.markModified("productItems");
       await user.save();
     }
