@@ -10,6 +10,9 @@ const rowProductSchema = new mongoose.Schema(
     database: {
       type: String,
     },
+    qty: {
+      type: Number,
+    },
     warehouse: {
       type: String,
     },
