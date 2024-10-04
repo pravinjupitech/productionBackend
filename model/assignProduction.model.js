@@ -72,39 +72,18 @@ const assignProductSchema = new mongoose.Schema(
         rProduct_name: {
           type: String,
         },
-        rHeading1Value: {
-          type: Number,
-        },
-        rHeading2Value: {
-          type: Number,
-        },
-        rHeading3Value: {
-          type: Number,
-        },
+        rProduct_name_Units: [],
         fProduct_name: {
           type: String,
         },
-        fHeading1Value: {
+        fProduct_name_Units: {
           type: Number,
         },
-        fHeading2Value: {
-          type: Number,
-        },
-        fHeading3Value: {
-          type: Number,
-        },
+        fProduct_name_Units: [],
         wProduct_name: {
           type: String,
         },
-        wHeading1Value: {
-          type: Number,
-        },
-        wHeading2Value: {
-          type: Number,
-        },
-        wHeading3Value: {
-          type: Number,
-        },
+        wProduct_name_Units: [],
       },
     ],
     totalStep: {
