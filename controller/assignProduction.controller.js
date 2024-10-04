@@ -121,10 +121,7 @@ export const demoProduct = async (req, res, next) => {
 };
 
 /*
-
-
-The event loop is a core concept in JavaScript, particularly in how asynchronous operations are handled. JavaScript is single-threaded, meaning it can execute only one task at a time. However, with the event loop, it can manage asynchronous tasks like I/O operations, timers, and callbacks without blocking the main thread.
-
+The event loop is a core concept in JavaScript, particularly in how asynchronous operations are handled. JavaScript is single-threaded, meaning it can execute only one task at a time. However, with the event loop, it can manage asynchronous tasks like I/O operations, timers, and callbacks without blocking the main thread. call stack and callback queue.to 
  
 package.json->  This file lists the metadata for your project, including the project name, version, description, and dependencies.
 while package-lock.json This file locks the exact versions of every installed package, including their sub-dependencies. 

@@ -133,11 +133,16 @@ export const innerDelete = async (req, res, next) => {
       const findIndex = OuterSteps.steps.findIndex(
         (item) => item._id.toString() === innerId
       );
-
       if (findIndex !== -1) {
         OuterSteps.steps.splice(findIndex, 1);
         await OuterSteps.save();
-
+        if (OuterSteps.steps.length === 0) {
+          await StepsModel.findByIdAndDelete(id);
+          return res.status(200).json({
+            message: "Parent data deleted because no steps remain",
+            status: true,
+          });
+        }
         return res
           .status(200)
           .json({ message: "Inner data deleted successfully", status: true });
