@@ -1,7 +1,33 @@
 import { AssignProduction } from "../model/assignProduction.model.js";
+import { RowProduct } from "../model/rowProduct.model.js";
+import { StepsModel } from "../model/steps.model.js";
+import { Warehouse } from "../model/warehouse.model.js";
 
 export const assignProduct = async (req, res, next) => {
   try {
+    // const { currentStep, processName, product_details } = req.body;
+    // const productsteps = await StepsModel.findOne({ processName: processName });
+    // if (productsteps.steps[0]._id.toString() === currentStep) {
+    //   product_details.forEach((item) => {
+    //     if (item.rProduct_name) {
+    //       console.log("risings");
+    //     }
+    //   });
+    // } else {
+    //   product_details.forEach(async (item) => {
+    //     if (item.rProduct_name) {
+    //       const Rowproduct = await RowProduct.findById(item.rProduct_name);
+    //       item.fProduct_name_Units.map((item) => {
+    //         console.log(item);
+    //         console.log(item.unit);
+    //         if (item.unit == Rowproduct.stockUnit) {
+    //           // console.log("how are you");
+    //         }
+    //       });
+    //     }
+    //   });
+    // }
+
     const product = await AssignProduction.create(req.body);
     return product
       ? res.status(200).json({ message: "Data Added", status: true })
@@ -89,7 +115,9 @@ export const viewByIdProduct2 = async (req, res, next) => {
         path: "user_name",
         model: "user",
       })
-      .populate({ path: "product_details.fProduct_name", model: "product" })
+      .populate({ path: "product_details.fProduct_name", model: "rowProduct" })
+      .populate({ path: "product_details.rProduct_name", model: "rowProduct" })
+      .populate({ path: "product_details.wProduct_name", model: "rowProduct" })
       .populate({ path: "processName", model: "category" });
     return product
       ? res.status(200).json({ message: "Data Found", product, status: true })
@@ -97,6 +125,32 @@ export const viewByIdProduct2 = async (req, res, next) => {
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: "Internal Server Error", status: false });
+  }
+};
+
+export const productionWarehouse = async (
+  productData,
+  warehouseId,
+  productId
+) => {
+  try {
+    const warehouse = await Warehouse.findById(warehouseId);
+    if (!warehouse) {
+      return res
+        .status(404)
+        .json({ message: "warehouse not found", status: false });
+    }
+    const sourceProductItem = warehouse.productItems.find(
+      (pItem) => pItem.productId === productId
+    );
+    if (sourceProductItem) {
+      sourceProductItem.currentStock = productData.qty;
+      sourceProductItem.transferQty = productData.qty;
+      warehouse.markModified("productItems");
+      await warehouse.save();
+    }
+  } catch (error) {
+    console.log(error);
   }
 };
 
