@@ -8,6 +8,11 @@ export const assignProduct = async (req, res, next) => {
   try {
     const { currentStep, processName, product_details } = req.body;
     const productsteps = await StepsModel.findOne({ processName: processName });
+    if (!productsteps) {
+      return res
+        .status(404)
+        .json({ message: "Proccess Not Found", status: "false" });
+    }
     if (productsteps.steps[0]._id.toString() === currentStep) {
       product_details.forEach(async (item) => {
         if (item.rProduct_name !== null) {
@@ -143,9 +148,181 @@ export const viewByIdProduct = async (req, res, next) => {
 export const updateProduct = async (req, res, next) => {
   try {
     let id = req.params.id;
-    const product = await AssignProduction.findById(id);
-    if (!product) {
+    const Productfind = await AssignProduction.findById(id);
+    if (!Productfind) {
       return res.status(404).json({ message: "Not Found", status: false });
+    }
+    const { product_details } = req.body;
+    const productsteps = await StepsModel.findOne({
+      processName: Productfind.processName,
+    });
+    if (!productsteps) {
+      return res
+        .status(404)
+        .json({ message: "Proccess Not Found", status: "false" });
+    }
+    if (productsteps.steps[0]._id.toString() === Productfind.currentStep) {
+      product_details.forEach(async (item) => {
+        if (item.rProduct_name !== null) {
+          const Rowproduct = await Product.findById(item.rProduct_name);
+          item.rProduct_name_Units.map(async (data) => {
+            if (data.unit === Rowproduct.stockUnit) {
+              Productfind.product_details.map((item1) => {
+                item1.rProduct_name_Units.map(async (data1) => {
+                  if (data.value > data1.value) {
+                    let qty = data.value - data1.value;
+                    await productionlapseWarehouse(
+                      qty,
+                      Rowproduct.warehouse,
+                      item.rProduct_name
+                    );
+                  } else {
+                    let qty = data1.value - data.value;
+                    await productionAddWarehouse(
+                      qty,
+                      Rowproduct.warehouse,
+                      item.rProduct_name
+                    );
+                  }
+                });
+              });
+            }
+          });
+        }
+        if (item.fProduct_name !== null) {
+          const Rowproduct = await RowProduct.findById(item.fProduct_name);
+          item.fProduct_name_Units.map(async (data) => {
+            if (data.unit === Rowproduct.stockUnit) {
+              Productfind.product_details.map((item1) => {
+                item1.fProduct_name_Units.map(async (data1) => {
+                  if (data.value > data1.value) {
+                    let qty = data.value - data1.value;
+                    await productionlapseWarehouse(
+                      qty,
+                      Rowproduct.warehouse,
+                      item.fProduct_name
+                    );
+                  } else {
+                    let qty = data1.value - data.value;
+                    await productionAddWarehouse(
+                      qty,
+                      Rowproduct.warehouse,
+                      item.fProduct_name
+                    );
+                  }
+                });
+              });
+            }
+          });
+        }
+        if (item.wProduct_name !== null) {
+          const Rowproduct = await RowProduct.findById(item.wProduct_name);
+          item.wProduct_name_Units.map(async (data) => {
+            if (data.unit === Rowproduct.stockUnit) {
+              Productfind.product_details.map((item1) => {
+                item1.wProduct_name_Units.map(async (data1) => {
+                  if (data.value > data1.value) {
+                    let qty = data.value - data1.value;
+                    await productionlapseWarehouse(
+                      qty,
+                      Rowproduct.warehouse,
+                      item.wProduct_name
+                    );
+                  } else {
+                    let qty = data1.value - data.value;
+                    await productionAddWarehouse(
+                      qty,
+                      Rowproduct.warehouse,
+                      item.wProduct_name
+                    );
+                  }
+                });
+              });
+            }
+          });
+        }
+      });
+    } else {
+      product_details.forEach(async (item) => {
+        if (item.rProduct_name !== null) {
+          const Rowproduct = await RowProduct.findById(item.rProduct_name);
+          item.rProduct_name_Units.map(async (data) => {
+            if (data.unit === Rowproduct.stockUnit) {
+              Productfind.product_details.map((item1) => {
+                item1.rProduct_name_Units.map(async (data1) => {
+                  if (data.value > data1.value) {
+                    let qty = data.value - data1.value;
+                    await productionlapseWarehouse(
+                      qty,
+                      Rowproduct.warehouse,
+                      item.rProduct_name
+                    );
+                  } else {
+                    let qty = data1.value - data.value;
+                    await productionAddWarehouse(
+                      qty,
+                      Rowproduct.warehouse,
+                      item.rProduct_name
+                    );
+                  }
+                });
+              });
+            }
+          });
+        }
+        if (item.fProduct_name !== null) {
+          const Rowproduct = await RowProduct.findById(item.fProduct_name);
+          item.fProduct_name_Units.map(async (data) => {
+            if (data.unit === Rowproduct.stockUnit) {
+              Productfind.product_details.map((item1) => {
+                item1.fProduct_name_Units.map(async (data1) => {
+                  if (data.value > data1.value) {
+                    let qty = data.value - data1.value;
+                    await productionlapseWarehouse(
+                      qty,
+                      Rowproduct.warehouse,
+                      item.fProduct_name
+                    );
+                  } else {
+                    let qty = data1.value - data.value;
+                    await productionAddWarehouse(
+                      qty,
+                      Rowproduct.warehouse,
+                      item.fProduct_name
+                    );
+                  }
+                });
+              });
+            }
+          });
+        }
+        if (item.wProduct_name !== null) {
+          const Rowproduct = await RowProduct.findById(item.wProduct_name);
+          item.wProduct_name_Units.map(async (data) => {
+            if (data.unit === Rowproduct.stockUnit) {
+              Productfind.product_details.map((item1) => {
+                item1.wProduct_name_Units.map(async (data1) => {
+                  if (data.value > data1.value) {
+                    let qty = data.value - data1.value;
+                    await productionlapseWarehouse(
+                      qty,
+                      Rowproduct.warehouse,
+                      item.wProduct_name
+                    );
+                  } else {
+                    let qty = data1.value - data.value;
+                    await productionAddWarehouse(
+                      qty,
+                      Rowproduct.warehouse,
+                      item.wProduct_name
+                    );
+                  }
+                });
+              });
+            }
+          });
+        }
+      });
     }
     const updateData = req.body;
     await AssignProduction.findByIdAndUpdate(id, updateData, { new: true });
@@ -158,10 +335,127 @@ export const updateProduct = async (req, res, next) => {
 
 export const deleteProduct = async (req, res, next) => {
   try {
-    const id = req.params.id;
-    const product = await AssignProduction.findById(id);
-    if (!product) {
+    let id = req.params.id;
+    const Productfind = await AssignProduction.findById(id);
+    if (!Productfind) {
       return res.status(404).json({ message: "Not Found", status: false });
+    }
+    const productsteps = await StepsModel.findOne({
+      processName: Productfind.processName,
+    });
+    if (!productsteps) {
+      return res
+        .status(404)
+        .json({ message: "Proccess Not Found", status: "false" });
+    }
+    if (productsteps.steps[0]._id.toString() === Productfind.currentStep) {
+      Productfind.product_details.forEach(async (item) => {
+        if (item.rProduct_name !== null) {
+          const Rowproduct = await Product.findById(item.rProduct_name);
+          item.rProduct_name_Units.map(async (data) => {
+            if (data.unit === Rowproduct.stockUnit) {
+              Productfind.product_details.map((item1) => {
+                item1.rProduct_name_Units.map(async (data1) => {
+                  let qty = data1.value;
+                  await productionAddWarehouse(
+                    qty,
+                    Rowproduct.warehouse,
+                    item.rProduct_name
+                  );
+                });
+              });
+            }
+          });
+        }
+        if (item.fProduct_name !== null) {
+          const Rowproduct = await RowProduct.findById(item.fProduct_name);
+          item.fProduct_name_Units.map(async (data) => {
+            if (data.unit === Rowproduct.stockUnit) {
+              Productfind.product_details.map((item1) => {
+                item1.fProduct_name_Units.map(async (data1) => {
+                  let qty = data1.value;
+                  await productionAddWarehouse(
+                    qty,
+                    Rowproduct.warehouse,
+                    item.fProduct_name
+                  );
+                });
+              });
+            }
+          });
+        }
+        if (item.wProduct_name !== null) {
+          const Rowproduct = await RowProduct.findById(item.wProduct_name);
+          item.wProduct_name_Units.map(async (data) => {
+            if (data.unit === Rowproduct.stockUnit) {
+              Productfind.product_details.map((item1) => {
+                item1.wProduct_name_Units.map(async (data1) => {
+                  let qty = data1.value;
+                  await productionAddWarehouse(
+                    qty,
+                    Rowproduct.warehouse,
+                    item.wProduct_name
+                  );
+                });
+              });
+            }
+          });
+        }
+      });
+    } else {
+      Productfind.product_details.forEach(async (item) => {
+        if (item.rProduct_name !== null) {
+          const Rowproduct = await RowProduct.findById(item.rProduct_name);
+          item.rProduct_name_Units.map(async (data) => {
+            if (data.unit === Rowproduct.stockUnit) {
+              Productfind.product_details.map((item1) => {
+                item1.rProduct_name_Units.map(async (data1) => {
+                  let qty = data1.value;
+                  await productionAddWarehouse(
+                    qty,
+                    Rowproduct.warehouse,
+                    item.rProduct_name
+                  );
+                });
+              });
+            }
+          });
+        }
+        if (item.fProduct_name !== null) {
+          const Rowproduct = await RowProduct.findById(item.fProduct_name);
+          item.fProduct_name_Units.map(async (data) => {
+            if (data.unit === Rowproduct.stockUnit) {
+              Productfind.product_details.map((item1) => {
+                item1.fProduct_name_Units.map(async (data1) => {
+                  let qty = data1.value;
+                  await productionAddWarehouse(
+                    qty,
+                    Rowproduct.warehouse,
+                    item.fProduct_name
+                  );
+                });
+              });
+            }
+          });
+        }
+        if (item.wProduct_name !== null) {
+          const Rowproduct = await RowProduct.findById(item.wProduct_name);
+          item.wProduct_name_Units.map(async (data) => {
+            if (data.unit === Rowproduct.stockUnit) {
+              Productfind.product_details.map((item1) => {
+                item1.wProduct_name_Units.map(async (data1) => {
+                  let qty = data1.value;
+                  await productionAddWarehouse(
+                    qty,
+                    Rowproduct.warehouse,
+                    item.wProduct_name
+                  );
+                });
+              });
+            }
+          });
+        }
+      });
     }
     await AssignProduction.findByIdAndDelete(id);
     res.status(200).json({ message: "Data Deleted", status: false });
