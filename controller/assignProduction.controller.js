@@ -1,33 +1,96 @@
 import { AssignProduction } from "../model/assignProduction.model.js";
+import { Product } from "../model/product.model.js";
 import { RowProduct } from "../model/rowProduct.model.js";
 import { StepsModel } from "../model/steps.model.js";
 import { Warehouse } from "../model/warehouse.model.js";
 
 export const assignProduct = async (req, res, next) => {
   try {
-    // const { currentStep, processName, product_details } = req.body;
-    // const productsteps = await StepsModel.findOne({ processName: processName });
-    // if (productsteps.steps[0]._id.toString() === currentStep) {
-    //   product_details.forEach((item) => {
-    //     if (item.rProduct_name) {
-    //       console.log("risings");
-    //     }
-    //   });
-    // } else {
-    //   product_details.forEach(async (item) => {
-    //     if (item.rProduct_name) {
-    //       const Rowproduct = await RowProduct.findById(item.rProduct_name);
-    //       item.fProduct_name_Units.map((item) => {
-    //         console.log(item);
-    //         console.log(item.unit);
-    //         if (item.unit == Rowproduct.stockUnit) {
-    //           // console.log("how are you");
-    //         }
-    //       });
-    //     }
-    //   });
-    // }
-
+    const { currentStep, processName, product_details } = req.body;
+    const productsteps = await StepsModel.findOne({ processName: processName });
+    if (productsteps.steps[0]._id.toString() === currentStep) {
+      product_details.forEach(async (item) => {
+        if (item.rProduct_name !== null) {
+          product_details.forEach(async (item) => {
+            if (item.rProduct_name) {
+              const Rowproduct = await Product.findById(item.rProduct_name);
+              item.rProduct_name_Units.map(async (data) => {
+                if (data.unit === Rowproduct.stockUnit) {
+                  await productionlapseWarehouse(
+                    data.value,
+                    Rowproduct.warehouse,
+                    item.rProduct_name
+                  );
+                }
+              });
+            }
+          });
+        }
+        if (item.fProduct_name !== null) {
+          const Rowproduct = await RowProduct.findById(item.fProduct_name);
+          item.fProduct_name_Units.map(async (data) => {
+            if (data.unit === Rowproduct.stockUnit) {
+              await productionAddWarehouse(
+                data.value,
+                Rowproduct.warehouse,
+                item.fProduct_name
+              );
+            }
+          });
+        }
+        if (item.wProduct_name !== null) {
+          const Rowproduct = await RowProduct.findById(item.wProduct_name);
+          item.wProduct_name_Units.map(async (data) => {
+            if (data.unit === Rowproduct.stockUnit) {
+              await productionAddWarehouse(
+                data.value,
+                Rowproduct.warehouse,
+                item.wProduct_name
+              );
+            }
+          });
+        }
+      });
+    } else {
+      product_details.forEach(async (item) => {
+        if (item.rProduct_name !== null) {
+          const Rowproduct = await RowProduct.findById(item.rProduct_name);
+          item.rProduct_name_Units.map(async (data) => {
+            if (data.unit === Rowproduct.stockUnit) {
+              await productionlapseWarehouse(
+                data.value,
+                Rowproduct.warehouse,
+                item.rProduct_name
+              );
+            }
+          });
+        }
+        if (item.fProduct_name !== null) {
+          const Rowproduct = await RowProduct.findById(item.fProduct_name);
+          item.fProduct_name_Units.map(async (data) => {
+            if (data.unit === Rowproduct.stockUnit) {
+              await productionAddWarehouse(
+                data.value,
+                Rowproduct.warehouse,
+                item.fProduct_name
+              );
+            }
+          });
+        }
+        if (item.wProduct_name !== null) {
+          const Rowproduct = await RowProduct.findById(item.wProduct_name);
+          item.wProduct_name_Units.map(async (data) => {
+            if (data.unit === Rowproduct.stockUnit) {
+              await productionAddWarehouse(
+                data.value,
+                Rowproduct.warehouse,
+                item.wProduct_name
+              );
+            }
+          });
+        }
+      });
+    }
     const product = await AssignProduction.create(req.body);
     return product
       ? res.status(200).json({ message: "Data Added", status: true })
@@ -128,11 +191,7 @@ export const viewByIdProduct2 = async (req, res, next) => {
   }
 };
 
-export const productionWarehouse = async (
-  productData,
-  warehouseId,
-  productId
-) => {
+export const productionlapseWarehouse = async (qty, warehouseId, productId) => {
   try {
     const warehouse = await Warehouse.findById(warehouseId);
     if (!warehouse) {
@@ -144,8 +203,29 @@ export const productionWarehouse = async (
       (pItem) => pItem.productId === productId
     );
     if (sourceProductItem) {
-      sourceProductItem.currentStock = productData.qty;
-      sourceProductItem.transferQty = productData.qty;
+      sourceProductItem.currentStock -= qty;
+      sourceProductItem.transferQty -= qty;
+      warehouse.markModified("productItems");
+      await warehouse.save();
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
+export const productionAddWarehouse = async (qty, warehouseId, productId) => {
+  try {
+    const warehouse = await Warehouse.findById(warehouseId);
+    if (!warehouse) {
+      return res
+        .status(404)
+        .json({ message: "warehouse not found", status: false });
+    }
+    const sourceProductItem = warehouse.productItems.find(
+      (pItem) => pItem.productId === productId
+    );
+    if (sourceProductItem) {
+      sourceProductItem.currentStock += qty;
+      sourceProductItem.transferQty += qty;
       warehouse.markModified("productItems");
       await warehouse.save();
     }
