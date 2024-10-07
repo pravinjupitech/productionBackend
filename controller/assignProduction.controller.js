@@ -21,6 +21,7 @@ export const assignProduct = async (req, res, next) => {
               const Rowproduct = await Product.findById(item.rProduct_name);
               item.rProduct_name_Units.map(async (data) => {
                 if (data.unit === Rowproduct.stockUnit) {
+                  RowProduct.qty -= data.value;
                   await productionlapseWarehouse(
                     data.value,
                     Rowproduct.warehouse,
@@ -35,6 +36,7 @@ export const assignProduct = async (req, res, next) => {
           const Rowproduct = await RowProduct.findById(item.fProduct_name);
           item.fProduct_name_Units.map(async (data) => {
             if (data.unit === Rowproduct.stockUnit) {
+              RowProduct.qty += data.value;
               await productionAddWarehouse(
                 data.value,
                 Rowproduct.warehouse,
@@ -47,6 +49,7 @@ export const assignProduct = async (req, res, next) => {
           const Rowproduct = await RowProduct.findById(item.wProduct_name);
           item.wProduct_name_Units.map(async (data) => {
             if (data.unit === Rowproduct.stockUnit) {
+              RowProduct.qty += data.value;
               await productionAddWarehouse(
                 data.value,
                 Rowproduct.warehouse,
@@ -62,6 +65,7 @@ export const assignProduct = async (req, res, next) => {
           const Rowproduct = await RowProduct.findById(item.rProduct_name);
           item.rProduct_name_Units.map(async (data) => {
             if (data.unit === Rowproduct.stockUnit) {
+              RowProduct.qty -= data.value;
               await productionlapseWarehouse(
                 data.value,
                 Rowproduct.warehouse,
@@ -74,6 +78,7 @@ export const assignProduct = async (req, res, next) => {
           const Rowproduct = await RowProduct.findById(item.fProduct_name);
           item.fProduct_name_Units.map(async (data) => {
             if (data.unit === Rowproduct.stockUnit) {
+              RowProduct.qty += data.value;
               await productionAddWarehouse(
                 data.value,
                 Rowproduct.warehouse,
@@ -86,6 +91,7 @@ export const assignProduct = async (req, res, next) => {
           const Rowproduct = await RowProduct.findById(item.wProduct_name);
           item.wProduct_name_Units.map(async (data) => {
             if (data.unit === Rowproduct.stockUnit) {
+              RowProduct.qty += data.value;
               await productionAddWarehouse(
                 data.value,
                 Rowproduct.warehouse,
@@ -506,6 +512,7 @@ export const productionlapseWarehouse = async (qty, warehouseId, productId) => {
     console.log(error);
   }
 };
+
 export const productionAddWarehouse = async (qty, warehouseId, productId) => {
   try {
     const warehouse = await Warehouse.findById(warehouseId);
@@ -552,6 +559,7 @@ export const demoProduct = async (req, res, next) => {
 The event loop is a core concept in JavaScript, particularly in how asynchronous operations are handled. JavaScript is single-threaded, meaning it can execute only one task at a time. However, with the event loop, it can manage asynchronous tasks like I/O operations, timers, and callbacks without blocking the main thread. call stack and callback queue.to 
  
 package.json->  This file lists the metadata for your project, including the project name, version, description, and dependencies.
+
 while package-lock.json This file locks the exact versions of every installed package, including their sub-dependencies. 
 
 In summary, package.json is a high-level overview of the project and its dependencies, while package-lock.json locks down the exact versions of those dependencies for reproducibility and consistency.

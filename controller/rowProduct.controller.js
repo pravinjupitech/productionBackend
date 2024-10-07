@@ -90,7 +90,10 @@ export const ViewProduct = async (req, res, next) => {
 };
 export const ViewProductById = async (req, res, next) => {
   try {
-    let product = await RowProduct.findById({ _id: req.params.id });
+    let product = await RowProduct.findById({ _id: req.params.id }).populate({
+      path: "warehouse",
+      model: "warehouse",
+    });
     return product
       ? res.status(200).json({ Product: product, status: true })
       : res.status(404).json({ error: "Not Found", status: false });
