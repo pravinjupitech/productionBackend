@@ -12,6 +12,9 @@ const stepsSchema = new mongoose.Schema(
         step_Name: {
           type: String,
         },
+        step_No: {
+          type: Number,
+        },
       },
     ],
     createdBy: {
