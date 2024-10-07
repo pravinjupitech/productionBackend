@@ -21,7 +21,7 @@ export const assignProduct = async (req, res, next) => {
               const Rowproduct = await Product.findById(item.rProduct_name);
               item.rProduct_name_Units.map(async (data) => {
                 if (data.unit === Rowproduct.stockUnit) {
-                  RowProduct.qty -= data.value;
+                  Rowproduct.qty -= data.value;
                   await productionlapseWarehouse(
                     data.value,
                     Rowproduct.warehouse,
@@ -36,7 +36,7 @@ export const assignProduct = async (req, res, next) => {
           const Rowproduct = await RowProduct.findById(item.fProduct_name);
           item.fProduct_name_Units.map(async (data) => {
             if (data.unit === Rowproduct.stockUnit) {
-              RowProduct.qty += data.value;
+              Rowproduct.qty += data.value;
               await productionAddWarehouse(
                 data.value,
                 Rowproduct.warehouse,
@@ -49,7 +49,7 @@ export const assignProduct = async (req, res, next) => {
           const Rowproduct = await RowProduct.findById(item.wProduct_name);
           item.wProduct_name_Units.map(async (data) => {
             if (data.unit === Rowproduct.stockUnit) {
-              RowProduct.qty += data.value;
+              Rowproduct.qty += data.value;
               await productionAddWarehouse(
                 data.value,
                 Rowproduct.warehouse,
@@ -65,7 +65,7 @@ export const assignProduct = async (req, res, next) => {
           const Rowproduct = await RowProduct.findById(item.rProduct_name);
           item.rProduct_name_Units.map(async (data) => {
             if (data.unit === Rowproduct.stockUnit) {
-              RowProduct.qty -= data.value;
+              Rowproduct.qty -= data.value;
               await productionlapseWarehouse(
                 data.value,
                 Rowproduct.warehouse,
@@ -78,7 +78,7 @@ export const assignProduct = async (req, res, next) => {
           const Rowproduct = await RowProduct.findById(item.fProduct_name);
           item.fProduct_name_Units.map(async (data) => {
             if (data.unit === Rowproduct.stockUnit) {
-              RowProduct.qty += data.value;
+              Rowproduct.qty += data.value;
               await productionAddWarehouse(
                 data.value,
                 Rowproduct.warehouse,
@@ -91,7 +91,7 @@ export const assignProduct = async (req, res, next) => {
           const Rowproduct = await RowProduct.findById(item.wProduct_name);
           item.wProduct_name_Units.map(async (data) => {
             if (data.unit === Rowproduct.stockUnit) {
-              RowProduct.qty += data.value;
+              Rowproduct.qty += data.value;
               await productionAddWarehouse(
                 data.value,
                 Rowproduct.warehouse,
@@ -177,6 +177,7 @@ export const updateProduct = async (req, res, next) => {
                 item1.rProduct_name_Units.map(async (data1) => {
                   if (data.value > data1.value) {
                     let qty = data.value - data1.value;
+                    Rowproduct.qty -= qty;
                     await productionlapseWarehouse(
                       qty,
                       Rowproduct.warehouse,
@@ -184,6 +185,7 @@ export const updateProduct = async (req, res, next) => {
                     );
                   } else {
                     let qty = data1.value - data.value;
+                    Rowproduct.qty += qty;
                     await productionAddWarehouse(
                       qty,
                       Rowproduct.warehouse,
@@ -203,6 +205,7 @@ export const updateProduct = async (req, res, next) => {
                 item1.fProduct_name_Units.map(async (data1) => {
                   if (data.value > data1.value) {
                     let qty = data.value - data1.value;
+                    Rowproduct.qty -= qty;
                     await productionlapseWarehouse(
                       qty,
                       Rowproduct.warehouse,
@@ -210,6 +213,7 @@ export const updateProduct = async (req, res, next) => {
                     );
                   } else {
                     let qty = data1.value - data.value;
+                    Rowproduct.qty += qty;
                     await productionAddWarehouse(
                       qty,
                       Rowproduct.warehouse,
@@ -229,6 +233,7 @@ export const updateProduct = async (req, res, next) => {
                 item1.wProduct_name_Units.map(async (data1) => {
                   if (data.value > data1.value) {
                     let qty = data.value - data1.value;
+                    Rowproduct.qty -= qty;
                     await productionlapseWarehouse(
                       qty,
                       Rowproduct.warehouse,
@@ -236,6 +241,7 @@ export const updateProduct = async (req, res, next) => {
                     );
                   } else {
                     let qty = data1.value - data.value;
+                    Rowproduct.qty += qty;
                     await productionAddWarehouse(
                       qty,
                       Rowproduct.warehouse,
@@ -258,6 +264,7 @@ export const updateProduct = async (req, res, next) => {
                 item1.rProduct_name_Units.map(async (data1) => {
                   if (data.value > data1.value) {
                     let qty = data.value - data1.value;
+                    Rowproduct.qty -= qty;
                     await productionlapseWarehouse(
                       qty,
                       Rowproduct.warehouse,
@@ -265,6 +272,7 @@ export const updateProduct = async (req, res, next) => {
                     );
                   } else {
                     let qty = data1.value - data.value;
+                    Rowproduct.qty += qty;
                     await productionAddWarehouse(
                       qty,
                       Rowproduct.warehouse,
@@ -284,6 +292,7 @@ export const updateProduct = async (req, res, next) => {
                 item1.fProduct_name_Units.map(async (data1) => {
                   if (data.value > data1.value) {
                     let qty = data.value - data1.value;
+                    Rowproduct.qty -= qty;
                     await productionlapseWarehouse(
                       qty,
                       Rowproduct.warehouse,
@@ -291,6 +300,7 @@ export const updateProduct = async (req, res, next) => {
                     );
                   } else {
                     let qty = data1.value - data.value;
+                    Rowproduct.qty += qty;
                     await productionAddWarehouse(
                       qty,
                       Rowproduct.warehouse,
@@ -310,6 +320,7 @@ export const updateProduct = async (req, res, next) => {
                 item1.wProduct_name_Units.map(async (data1) => {
                   if (data.value > data1.value) {
                     let qty = data.value - data1.value;
+                    Rowproduct.qty -= qty;
                     await productionlapseWarehouse(
                       qty,
                       Rowproduct.warehouse,
@@ -317,6 +328,7 @@ export const updateProduct = async (req, res, next) => {
                     );
                   } else {
                     let qty = data1.value - data.value;
+                    Rowproduct.qty += qty;
                     await productionAddWarehouse(
                       qty,
                       Rowproduct.warehouse,
@@ -363,6 +375,7 @@ export const deleteProduct = async (req, res, next) => {
               Productfind.product_details.map((item1) => {
                 item1.rProduct_name_Units.map(async (data1) => {
                   let qty = data1.value;
+                  Rowproduct.qty += qty;
                   await productionAddWarehouse(
                     qty,
                     Rowproduct.warehouse,
@@ -380,7 +393,8 @@ export const deleteProduct = async (req, res, next) => {
               Productfind.product_details.map((item1) => {
                 item1.fProduct_name_Units.map(async (data1) => {
                   let qty = data1.value;
-                  await productionAddWarehouse(
+                  Rowproduct.qty -= qty;
+                  await productionlapseWarehouse(
                     qty,
                     Rowproduct.warehouse,
                     item.fProduct_name
@@ -397,7 +411,8 @@ export const deleteProduct = async (req, res, next) => {
               Productfind.product_details.map((item1) => {
                 item1.wProduct_name_Units.map(async (data1) => {
                   let qty = data1.value;
-                  await productionAddWarehouse(
+                  Rowproduct.qty -= qty;
+                  await productionlapseWarehouse(
                     qty,
                     Rowproduct.warehouse,
                     item.wProduct_name
@@ -417,6 +432,7 @@ export const deleteProduct = async (req, res, next) => {
               Productfind.product_details.map((item1) => {
                 item1.rProduct_name_Units.map(async (data1) => {
                   let qty = data1.value;
+                  Rowproduct.qty += qty;
                   await productionAddWarehouse(
                     qty,
                     Rowproduct.warehouse,
@@ -434,7 +450,8 @@ export const deleteProduct = async (req, res, next) => {
               Productfind.product_details.map((item1) => {
                 item1.fProduct_name_Units.map(async (data1) => {
                   let qty = data1.value;
-                  await productionAddWarehouse(
+                  Rowproduct.qty -= qty;
+                  await productionlapseWarehouse(
                     qty,
                     Rowproduct.warehouse,
                     item.fProduct_name
@@ -451,7 +468,8 @@ export const deleteProduct = async (req, res, next) => {
               Productfind.product_details.map((item1) => {
                 item1.wProduct_name_Units.map(async (data1) => {
                   let qty = data1.value;
-                  await productionAddWarehouse(
+                  Rowproduct.qty -= qty;
+                  await productionlapseWarehouse(
                     qty,
                     Rowproduct.warehouse,
                     item.wProduct_name
