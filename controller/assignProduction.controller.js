@@ -14,16 +14,15 @@ export const assignProduct = async (req, res, next) => {
         .json({ message: "Proccess Not Found", status: "false" });
     }
     if (productsteps.steps[0]._id.toString() === currentStep) {
-      console.log("first Step");
       product_details.forEach(async (item) => {
         if (item.rProduct_name !== null) {
           product_details.forEach(async (item) => {
             if (item.rProduct_name) {
               const Rowproduct = await Product.findById(item.rProduct_name);
-              console.log("rowProduct", Rowproduct);
               item.rProduct_name_Units.map(async (data) => {
                 if (data.unit === Rowproduct.stockUnit) {
                   Rowproduct.qty -= data.value;
+                  Rowproduct.save();
                   console.log("first Step r value", Rowproduct.qty);
                   await productionlapseWarehouse(
                     data.value,
@@ -40,6 +39,7 @@ export const assignProduct = async (req, res, next) => {
           item.fProduct_name_Units.map(async (data) => {
             if (data.unit === Rowproduct.stockUnit) {
               Rowproduct.qty += data.value;
+              Rowproduct.save();
               await productionAddWarehouse(
                 data.value,
                 Rowproduct.warehouse,
@@ -53,6 +53,7 @@ export const assignProduct = async (req, res, next) => {
           item.wProduct_name_Units.map(async (data) => {
             if (data.unit === Rowproduct.stockUnit) {
               Rowproduct.qty += data.value;
+              Rowproduct.save();
               await productionAddWarehouse(
                 data.value,
                 Rowproduct.warehouse,
@@ -66,14 +67,10 @@ export const assignProduct = async (req, res, next) => {
       product_details.forEach(async (item) => {
         if (item.rProduct_name !== null) {
           const Rowproduct = await RowProduct.findById(item.rProduct_name);
-          console.log(Rowproduct);
           item.rProduct_name_Units.map(async (data) => {
             if (data.unit === Rowproduct.stockUnit) {
               Rowproduct.qty -= data.value;
-              console.log(
-                "second------------------- Step r value",
-                Rowproduct.qty
-              );
+              Rowproduct.save();
               await productionlapseWarehouse(
                 data.value,
                 Rowproduct.warehouse,
@@ -87,6 +84,7 @@ export const assignProduct = async (req, res, next) => {
           item.fProduct_name_Units.map(async (data) => {
             if (data.unit === Rowproduct.stockUnit) {
               Rowproduct.qty += data.value;
+              Rowproduct.save();
               await productionAddWarehouse(
                 data.value,
                 Rowproduct.warehouse,
@@ -100,6 +98,7 @@ export const assignProduct = async (req, res, next) => {
           item.wProduct_name_Units.map(async (data) => {
             if (data.unit === Rowproduct.stockUnit) {
               Rowproduct.qty += data.value;
+              Rowproduct.save();
               await productionAddWarehouse(
                 data.value,
                 Rowproduct.warehouse,
@@ -186,6 +185,7 @@ export const updateProduct = async (req, res, next) => {
                   if (data.value > data1.value) {
                     let qty = data.value - data1.value;
                     Rowproduct.qty -= qty;
+                    Rowproduct.save();
                     await productionlapseWarehouse(
                       qty,
                       Rowproduct.warehouse,
@@ -194,6 +194,7 @@ export const updateProduct = async (req, res, next) => {
                   } else {
                     let qty = data1.value - data.value;
                     Rowproduct.qty += qty;
+                    Rowproduct.save();
                     await productionAddWarehouse(
                       qty,
                       Rowproduct.warehouse,
@@ -214,6 +215,7 @@ export const updateProduct = async (req, res, next) => {
                   if (data.value > data1.value) {
                     let qty = data.value - data1.value;
                     Rowproduct.qty -= qty;
+                    Rowproduct.save();
                     await productionlapseWarehouse(
                       qty,
                       Rowproduct.warehouse,
@@ -222,6 +224,7 @@ export const updateProduct = async (req, res, next) => {
                   } else {
                     let qty = data1.value - data.value;
                     Rowproduct.qty += qty;
+                    Rowproduct.save();
                     await productionAddWarehouse(
                       qty,
                       Rowproduct.warehouse,
@@ -242,6 +245,7 @@ export const updateProduct = async (req, res, next) => {
                   if (data.value > data1.value) {
                     let qty = data.value - data1.value;
                     Rowproduct.qty -= qty;
+                    Rowproduct.save();
                     await productionlapseWarehouse(
                       qty,
                       Rowproduct.warehouse,
@@ -250,6 +254,7 @@ export const updateProduct = async (req, res, next) => {
                   } else {
                     let qty = data1.value - data.value;
                     Rowproduct.qty += qty;
+                    Rowproduct.save();
                     await productionAddWarehouse(
                       qty,
                       Rowproduct.warehouse,
@@ -273,6 +278,7 @@ export const updateProduct = async (req, res, next) => {
                   if (data.value > data1.value) {
                     let qty = data.value - data1.value;
                     Rowproduct.qty -= qty;
+                    Rowproduct.save();
                     await productionlapseWarehouse(
                       qty,
                       Rowproduct.warehouse,
@@ -281,6 +287,7 @@ export const updateProduct = async (req, res, next) => {
                   } else {
                     let qty = data1.value - data.value;
                     Rowproduct.qty += qty;
+                    Rowproduct.save();
                     await productionAddWarehouse(
                       qty,
                       Rowproduct.warehouse,
@@ -301,6 +308,7 @@ export const updateProduct = async (req, res, next) => {
                   if (data.value > data1.value) {
                     let qty = data.value - data1.value;
                     Rowproduct.qty -= qty;
+                    Rowproduct.save();
                     await productionlapseWarehouse(
                       qty,
                       Rowproduct.warehouse,
@@ -309,6 +317,7 @@ export const updateProduct = async (req, res, next) => {
                   } else {
                     let qty = data1.value - data.value;
                     Rowproduct.qty += qty;
+                    Rowproduct.save();
                     await productionAddWarehouse(
                       qty,
                       Rowproduct.warehouse,
@@ -329,6 +338,7 @@ export const updateProduct = async (req, res, next) => {
                   if (data.value > data1.value) {
                     let qty = data.value - data1.value;
                     Rowproduct.qty -= qty;
+                    Rowproduct.save();
                     await productionlapseWarehouse(
                       qty,
                       Rowproduct.warehouse,
@@ -337,6 +347,7 @@ export const updateProduct = async (req, res, next) => {
                   } else {
                     let qty = data1.value - data.value;
                     Rowproduct.qty += qty;
+                    Rowproduct.save();
                     await productionAddWarehouse(
                       qty,
                       Rowproduct.warehouse,
@@ -384,6 +395,7 @@ export const deleteProduct = async (req, res, next) => {
                 item1.rProduct_name_Units.map(async (data1) => {
                   let qty = data1.value;
                   Rowproduct.qty += qty;
+                  Rowproduct.save();
                   await productionAddWarehouse(
                     qty,
                     Rowproduct.warehouse,
@@ -402,6 +414,7 @@ export const deleteProduct = async (req, res, next) => {
                 item1.fProduct_name_Units.map(async (data1) => {
                   let qty = data1.value;
                   Rowproduct.qty -= qty;
+                  Rowproduct.save();
                   await productionlapseWarehouse(
                     qty,
                     Rowproduct.warehouse,
@@ -420,6 +433,7 @@ export const deleteProduct = async (req, res, next) => {
                 item1.wProduct_name_Units.map(async (data1) => {
                   let qty = data1.value;
                   Rowproduct.qty -= qty;
+                  Rowproduct.save();
                   await productionlapseWarehouse(
                     qty,
                     Rowproduct.warehouse,
@@ -441,6 +455,7 @@ export const deleteProduct = async (req, res, next) => {
                 item1.rProduct_name_Units.map(async (data1) => {
                   let qty = data1.value;
                   Rowproduct.qty += qty;
+                  Rowproduct.save();
                   await productionAddWarehouse(
                     qty,
                     Rowproduct.warehouse,
@@ -459,6 +474,7 @@ export const deleteProduct = async (req, res, next) => {
                 item1.fProduct_name_Units.map(async (data1) => {
                   let qty = data1.value;
                   Rowproduct.qty -= qty;
+                  Rowproduct.save();
                   await productionlapseWarehouse(
                     qty,
                     Rowproduct.warehouse,
@@ -477,6 +493,7 @@ export const deleteProduct = async (req, res, next) => {
                 item1.wProduct_name_Units.map(async (data1) => {
                   let qty = data1.value;
                   Rowproduct.qty -= qty;
+                  Rowproduct.save();
                   await productionlapseWarehouse(
                     qty,
                     Rowproduct.warehouse,
@@ -528,16 +545,12 @@ export const productionlapseWarehouse = async (qty, warehouseId, productId) => {
     const sourceProductItem = warehouse.productItems.find(
       (pItem) => pItem.productId === productId
     );
-    console.log(
-      "------------Lapse---------SourceProductItem---------",
-      sourceProductItem
-    );
     if (sourceProductItem) {
       sourceProductItem.currentStock -= qty;
       sourceProductItem.transferQty -= qty;
       warehouse.markModified("productItems");
       await warehouse.save();
-      console.log("lapse", warehouse);
+      console.log("lapsewarehouse", warehouse);
     }
   } catch (error) {
     console.log(error);
@@ -555,16 +568,12 @@ export const productionAddWarehouse = async (qty, warehouseId, productId) => {
     const sourceProductItem = warehouse.productItems.find(
       (pItem) => pItem.productId === productId
     );
-    console.log(
-      "------------Add---------SourceProductItem---------",
-      sourceProductItem
-    );
     if (sourceProductItem) {
       sourceProductItem.currentStock += qty;
       sourceProductItem.transferQty += qty;
       warehouse.markModified("productItems");
       await warehouse.save();
-      console.log("add", warehouse);
+      console.log("addwarehouse", warehouse);
     }
   } catch (error) {
     console.log(error);
