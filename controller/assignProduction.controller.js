@@ -14,6 +14,7 @@ export const assignProduct = async (req, res, next) => {
         .json({ message: "Proccess Not Found", status: "false" });
     }
     if (productsteps.steps[0]._id.toString() === currentStep) {
+      console.log("first Step");
       product_details.forEach(async (item) => {
         if (item.rProduct_name !== null) {
           product_details.forEach(async (item) => {
@@ -22,6 +23,7 @@ export const assignProduct = async (req, res, next) => {
               item.rProduct_name_Units.map(async (data) => {
                 if (data.unit === Rowproduct.stockUnit) {
                   Rowproduct.qty -= data.value;
+                  console.log("first Step r value", data.value);
                   await productionlapseWarehouse(
                     data.value,
                     Rowproduct.warehouse,
@@ -61,11 +63,13 @@ export const assignProduct = async (req, res, next) => {
       });
     } else {
       product_details.forEach(async (item) => {
+        console.log("not a first step");
         if (item.rProduct_name !== null) {
           const Rowproduct = await RowProduct.findById(item.rProduct_name);
           item.rProduct_name_Units.map(async (data) => {
             if (data.unit === Rowproduct.stockUnit) {
               Rowproduct.qty -= data.value;
+              console.log("sec", data.value);
               await productionlapseWarehouse(
                 data.value,
                 Rowproduct.warehouse,
