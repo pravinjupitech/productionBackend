@@ -63,13 +63,11 @@ export const assignProduct = async (req, res, next) => {
       });
     } else {
       product_details.forEach(async (item) => {
-        console.log("not a first step");
         if (item.rProduct_name !== null) {
           const Rowproduct = await RowProduct.findById(item.rProduct_name);
           item.rProduct_name_Units.map(async (data) => {
             if (data.unit === Rowproduct.stockUnit) {
               Rowproduct.qty -= data.value;
-              console.log("sec", data.value);
               await productionlapseWarehouse(
                 data.value,
                 Rowproduct.warehouse,
@@ -524,8 +522,13 @@ export const productionlapseWarehouse = async (qty, warehouseId, productId) => {
     const sourceProductItem = warehouse.productItems.find(
       (pItem) => pItem.productId === productId
     );
+    console.log(
+      "---------Lapse------------SourceProductItem---------",
+      sourceProductItem
+    );
     if (sourceProductItem) {
       sourceProductItem.currentStock -= qty;
+      console.log(sourceProductItem.currentStock);
       sourceProductItem.transferQty -= qty;
       warehouse.markModified("productItems");
       await warehouse.save();
@@ -546,9 +549,14 @@ export const productionAddWarehouse = async (qty, warehouseId, productId) => {
     const sourceProductItem = warehouse.productItems.find(
       (pItem) => pItem.productId === productId
     );
+    console.log(
+      "------------Add---------SourceProductItem---------",
+      sourceProductItem
+    );
     if (sourceProductItem) {
       sourceProductItem.currentStock += qty;
       sourceProductItem.transferQty += qty;
+      console.log(sourceProductItem.currentStock);
       warehouse.markModified("productItems");
       await warehouse.save();
     }
