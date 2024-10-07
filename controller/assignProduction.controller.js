@@ -20,10 +20,11 @@ export const assignProduct = async (req, res, next) => {
           product_details.forEach(async (item) => {
             if (item.rProduct_name) {
               const Rowproduct = await Product.findById(item.rProduct_name);
+              console.log("rowProduct", Rowproduct);
               item.rProduct_name_Units.map(async (data) => {
                 if (data.unit === Rowproduct.stockUnit) {
                   Rowproduct.qty -= data.value;
-                  console.log("first Step r value", data.value);
+                  console.log("first Step r value", Rowproduct.qty);
                   await productionlapseWarehouse(
                     data.value,
                     Rowproduct.warehouse,
@@ -65,9 +66,14 @@ export const assignProduct = async (req, res, next) => {
       product_details.forEach(async (item) => {
         if (item.rProduct_name !== null) {
           const Rowproduct = await RowProduct.findById(item.rProduct_name);
+          console.log(Rowproduct);
           item.rProduct_name_Units.map(async (data) => {
             if (data.unit === Rowproduct.stockUnit) {
               Rowproduct.qty -= data.value;
+              console.log(
+                "second------------------- Step r value",
+                Rowproduct.qty
+              );
               await productionlapseWarehouse(
                 data.value,
                 Rowproduct.warehouse,
@@ -523,15 +529,15 @@ export const productionlapseWarehouse = async (qty, warehouseId, productId) => {
       (pItem) => pItem.productId === productId
     );
     console.log(
-      "---------Lapse------------SourceProductItem---------",
+      "------------Lapse---------SourceProductItem---------",
       sourceProductItem
     );
     if (sourceProductItem) {
       sourceProductItem.currentStock -= qty;
-      console.log(sourceProductItem.currentStock);
       sourceProductItem.transferQty -= qty;
       warehouse.markModified("productItems");
       await warehouse.save();
+      console.log("lapse", warehouse);
     }
   } catch (error) {
     console.log(error);
@@ -556,9 +562,9 @@ export const productionAddWarehouse = async (qty, warehouseId, productId) => {
     if (sourceProductItem) {
       sourceProductItem.currentStock += qty;
       sourceProductItem.transferQty += qty;
-      console.log(sourceProductItem.currentStock);
       warehouse.markModified("productItems");
       await warehouse.save();
+      console.log("add", warehouse);
     }
   } catch (error) {
     console.log(error);
