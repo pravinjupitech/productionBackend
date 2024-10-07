@@ -35,6 +35,9 @@ const assignProductSchema = new mongoose.Schema(
     totalStep: {
       type: Number,
     },
+    step_No: {
+      type: Number,
+    },
     currentStep: {
       type: String,
     },
