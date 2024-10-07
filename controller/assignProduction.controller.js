@@ -21,6 +21,7 @@ export const assignProduct = async (req, res, next) => {
               const Rowproduct = await Product.findById(item.rProduct_name);
               item.rProduct_name_Units.map(async (data) => {
                 if (data.unit === Rowproduct.stockUnit) {
+                  RowProduct.qty -= data.value;
                   await productionlapseWarehouse(
                     data.value,
                     Rowproduct.warehouse,
@@ -35,6 +36,7 @@ export const assignProduct = async (req, res, next) => {
           const Rowproduct = await RowProduct.findById(item.fProduct_name);
           item.fProduct_name_Units.map(async (data) => {
             if (data.unit === Rowproduct.stockUnit) {
+              RowProduct.qty += data.value;
               await productionAddWarehouse(
                 data.value,
                 Rowproduct.warehouse,
@@ -47,6 +49,7 @@ export const assignProduct = async (req, res, next) => {
           const Rowproduct = await RowProduct.findById(item.wProduct_name);
           item.wProduct_name_Units.map(async (data) => {
             if (data.unit === Rowproduct.stockUnit) {
+              RowProduct.qty += data.value;
               await productionAddWarehouse(
                 data.value,
                 Rowproduct.warehouse,
@@ -62,6 +65,7 @@ export const assignProduct = async (req, res, next) => {
           const Rowproduct = await RowProduct.findById(item.rProduct_name);
           item.rProduct_name_Units.map(async (data) => {
             if (data.unit === Rowproduct.stockUnit) {
+              RowProduct.qty -= data.value;
               await productionlapseWarehouse(
                 data.value,
                 Rowproduct.warehouse,
@@ -74,6 +78,7 @@ export const assignProduct = async (req, res, next) => {
           const Rowproduct = await RowProduct.findById(item.fProduct_name);
           item.fProduct_name_Units.map(async (data) => {
             if (data.unit === Rowproduct.stockUnit) {
+              RowProduct.qty += data.value;
               await productionAddWarehouse(
                 data.value,
                 Rowproduct.warehouse,
@@ -86,6 +91,7 @@ export const assignProduct = async (req, res, next) => {
           const Rowproduct = await RowProduct.findById(item.wProduct_name);
           item.wProduct_name_Units.map(async (data) => {
             if (data.unit === Rowproduct.stockUnit) {
+              RowProduct.qty += data.value;
               await productionAddWarehouse(
                 data.value,
                 Rowproduct.warehouse,
