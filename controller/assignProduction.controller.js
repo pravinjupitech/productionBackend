@@ -721,36 +721,6 @@ export const productionAddWarehouse = async (qty, warehouseId, productId) => {
   }
 };
 
-export const demoProduct = async (req, res, next) => {
-  try {
-    let arr = [1, 2, 3, 3, 4, 5, 5, 5];
-    let frequency = {};
-    let repeatedNumbers = [];
-    for (let num of arr) {
-      frequency[num] = (frequency[num] || 0) + 1;
-    }
-    for (let num in frequency) {
-      if (frequency[num] > 1) {
-        repeatedNumbers.push(Number(num));
-      }
-    }
-    console.log("Repeated numbers:", repeatedNumbers);
-  } catch (error) {
-    console.log(error);
-    res.status(500).json({ error: "Internal Server Error", status: false });
-  }
-};
-
-/*
-The event loop is a core concept in JavaScript, particularly in how asynchronous operations are handled. JavaScript is single-threaded, meaning it can execute only one task at a time. However, with the event loop, it can manage asynchronous tasks like I/O operations, timers, and callbacks without blocking the main thread. call stack and callback queue.to 
- 
-package.json->  This file lists the metadata for your project, including the project name, version, description, and dependencies.
-
-while package-lock.json This file locks the exact versions of every installed package, including their sub-dependencies. 
-
-In summary, package.json is a high-level overview of the project and its dependencies, while package-lock.json locks down the exact versions of those dependencies for reproducibility and consistency.
-
-*/
 export const deleteProduct = async (req, res, next) => {
   try {
     let id = req.params.id;
@@ -819,3 +789,34 @@ const revertStockUnits = async (units, product, actionType) => {
     }
   }
 };
+
+export const demoProduct = async (req, res, next) => {
+  try {
+    let arr = [1, 2, 3, 3, 4, 5, 5, 5];
+    let frequency = {};
+    let repeatedNumbers = [];
+    for (let num of arr) {
+      frequency[num] = (frequency[num] || 0) + 1;
+    }
+    for (let num in frequency) {
+      if (frequency[num] > 1) {
+        repeatedNumbers.push(Number(num));
+      }
+    }
+    console.log("Repeated numbers:", repeatedNumbers);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Internal Server Error", status: false });
+  }
+};
+
+/*
+The event loop is a core concept in JavaScript, particularly in how asynchronous operations are handled. JavaScript is single-threaded, meaning it can execute only one task at a time. However, with the event loop, it can manage asynchronous tasks like I/O operations, timers, and callbacks without blocking the main thread. call stack and callback queue.to 
+ 
+package.json->  This file lists the metadata for your project, including the project name, version, description, and dependencies.
+
+while package-lock.json This file locks the exact versions of every installed package, including their sub-dependencies. 
+
+In summary, package.json is a high-level overview of the project and its dependencies, while package-lock.json locks down the exact versions of those dependencies for reproducibility and consistency.
+
+*/
