@@ -4,6 +4,7 @@ import { CreateOrder } from "../model/createOrder.model.js";
 import { PurchaseOrder } from "../model/purchaseOrder.model.js";
 import { CustomerGroup } from "../model/customerGroup.model.js";
 import { Stock } from "../model/stock.js";
+
 export const addProduct = async (req, res) => {
   try {
     // let groupDiscount = 0;
@@ -88,6 +89,7 @@ export const ViewProduct = async (req, res, next) => {
       .json({ error: "Internal Server Error", status: false });
   }
 };
+
 export const ViewProductById = async (req, res, next) => {
   try {
     let product = await RowProduct.findById({ _id: req.params.id }).populate({
@@ -132,6 +134,7 @@ export const DeleteProduct = async (req, res, next) => {
       .json({ error: "Internal server error", status: false });
   }
 };
+
 export const UpdateProduct = async (req, res, next) => {
   try {
     let groupDiscount = 0;
