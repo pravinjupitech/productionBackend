@@ -14,9 +14,7 @@ export const assignProduct = async (req, res, next) => {
         .status(404)
         .json({ message: "Process Not Found", status: false });
     }
-
     const isFirstStep = productsteps.steps[0]._id.toString() === currentStep;
-
     for (const item of product_details) {
       if (item.rProduct_name !== null) {
         if (isFirstStep) {
@@ -37,7 +35,6 @@ export const assignProduct = async (req, res, next) => {
           );
         }
       }
-
       if (item.fProduct_name !== null) {
         await updateProductQty(
           item.fProduct_name,
@@ -79,11 +76,10 @@ const updateProductQty = async (
 ) => {
   const ProductModel = modelType === "Product" ? Product : RowProduct;
   const product = await ProductModel.findById(productId);
-
   if (!product) {
     return res
       .status(404)
-      .json({ message: `${modelType} not found`, status: false });
+      .json({ message: "Product not found", status: false });
   }
 
   for (const unit of productUnits) {
@@ -101,6 +97,352 @@ const updateProductQty = async (
         await product.save();
         await productionAddWarehouse(unit.value, product.warehouse, productId);
       }
+    }
+  }
+};
+
+export const viewProduct = async (req, res, next) => {
+  try {
+    const product = await AssignProduction.find({
+      database: req.params.database,
+    })
+      .sort({ sortorder: -1 })
+      .populate({ path: "user_name", model: "user" })
+      .populate({
+        path: "user_name",
+        model: "user",
+      })
+      .populate({ path: "product_details.fProduct_name", model: "product" })
+      .populate({ path: "processName", model: "category" });
+    return product.length > 0
+      ? res.status(200).json({ message: "Data Found", product, status: true })
+      : res.status(404).json({ message: "Not Found", status: false });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Internal Server Error", status: false });
+  }
+};
+
+export const viewByIdProduct = async (req, res, next) => {
+  try {
+    const product = await AssignProduction.findById(req.params.id).populate({
+      path: "user_name",
+      model: "user",
+    });
+    return product
+      ? res.status(200).json({ message: "Data Found", product, status: true })
+      : res.status(404).json({ message: "Not Found", status: false });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Internal Server Error", status: false });
+  }
+};
+
+export const updateProduct = async (req, res, next) => {
+  try {
+    const id = req.params.id;
+    const Productfind = await AssignProduction.findById(id);
+    if (!Productfind) {
+      return res.status(404).json({ message: "Not Found", status: false });
+    }
+
+    const { product_details } = req.body;
+    const productsteps = await StepsModel.findOne({
+      processName: Productfind.processName,
+    });
+    if (!productsteps) {
+      return res
+        .status(404)
+        .json({ message: "Process Not Found", status: false });
+    }
+
+    const processRowProductUpdate = async (item, productType, typeUnits) => {
+      if (item[productType] !== null) {
+        const Rowproduct = await RowProduct.findById(item[productType]);
+        if (Rowproduct) {
+          await Promise.all(
+            item[typeUnits].map(async (data) => {
+              if (data.unit === Rowproduct.stockUnit) {
+                const existingProduct = Productfind.product_details.find(
+                  (existingItem) =>
+                    existingItem[productType] === item[productType]
+                );
+
+                if (existingProduct) {
+                  const existingUnit = existingProduct[typeUnits].find(
+                    (exitingData) => exitingData.unit === data.unit
+                  );
+
+                  if (existingUnit) {
+                    let qty;
+                    if (data.value > existingUnit.value) {
+                      qty = data.value - existingUnit.value;
+                      Rowproduct.qty +=
+                        productType === "rProduct_name" ? -qty : qty;
+                      // console.log("RowProduct", Rowproduct, productType);
+                      // console.log("lapseQty", Rowproduct.qty);
+                      if (productType === "rProduct_name") {
+                        await productionlapseWarehouse(
+                          qty,
+                          Rowproduct.warehouse,
+                          item[productType]
+                        );
+                      } else {
+                        await productionAddWarehouse(
+                          qty,
+                          Rowproduct.warehouse,
+                          item[productType]
+                        );
+                      }
+                    } else if (data.value < existingUnit.value) {
+                      qty = existingUnit.value - data.value;
+                      Rowproduct.qty +=
+                        productType === "rProduct_name" ? qty : -qty;
+                      // console.log("RowProduct", Rowproduct, productType);
+                      // console.log("addQty", Rowproduct.qty);
+                      if (productType === "rProduct_name") {
+                        await productionAddWarehouse(
+                          qty,
+                          Rowproduct.warehouse,
+                          item[productType]
+                        );
+                      } else {
+                        await productionlapseWarehouse(
+                          qty,
+                          Rowproduct.warehouse,
+                          item[productType]
+                        );
+                      }
+                    }
+                    await Rowproduct.save();
+                  }
+                }
+              }
+            })
+          );
+        }
+      }
+    };
+
+    const processRProductUpdate = async (item, productType, typeUnits) => {
+      if (item[productType] !== null) {
+        const ProductModel = await Product.findById(item[productType]);
+        if (ProductModel) {
+          await Promise.all(
+            item[typeUnits].map(async (data) => {
+              const existingProduct = Productfind.product_details.find(
+                (existingItem) =>
+                  existingItem[productType] === item[productType]
+              );
+              if (existingProduct) {
+                const existingUnit = existingProduct[typeUnits].find(
+                  (exitingData) => exitingData.unit === data.unit
+                );
+
+                if (existingUnit) {
+                  let qty;
+                  if (data.value > existingUnit.value) {
+                    qty = data.value - existingUnit.value;
+                    ProductModel.qty += qty;
+                    await productionlapseWarehouse(
+                      qty,
+                      ProductModel.warehouse,
+                      item[productType]
+                    );
+                  } else if (data.value < existingUnit.value) {
+                    qty = existingUnit.value - data.value;
+                    ProductModel.qty -= qty;
+                    await productionAddWarehouse(
+                      qty,
+                      ProductModel.warehouse,
+                      item[productType]
+                    );
+                  }
+                  await ProductModel.save();
+                }
+              }
+            })
+          );
+        }
+      }
+    };
+
+    const updateProductDetails = async (isFirstStep) => {
+      await Promise.all(
+        product_details.map(async (item) => {
+          if (isFirstStep) {
+            await processRProductUpdate(
+              item,
+              "rProduct_name",
+              "rProduct_name_Units"
+            );
+          } else {
+            await processRowProductUpdate(
+              item,
+              "rProduct_name",
+              "rProduct_name_Units"
+            );
+          }
+          await processRowProductUpdate(
+            item,
+            "fProduct_name",
+            "fProduct_name_Units"
+          );
+          await processRowProductUpdate(
+            item,
+            "wProduct_name",
+            "wProduct_name_Units"
+          );
+        })
+      );
+    };
+
+    const isFirstStep =
+      productsteps.steps[0]._id.toString() === Productfind.currentStep;
+    await updateProductDetails(isFirstStep);
+
+    const updateData = req.body;
+    await AssignProduction.findByIdAndUpdate(id, updateData, { new: true });
+    res.status(200).json({ message: "Data Updated", status: true });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Internal Server Error", status: false });
+  }
+};
+
+export const viewByIdProduct2 = async (req, res, next) => {
+  try {
+    const product = await AssignProduction.findById(req.params.id)
+      .populate({
+        path: "user_name",
+        model: "user",
+      })
+      .populate({ path: "product_details.fProduct_name", model: "rowProduct" })
+      .populate({ path: "product_details.rProduct_name", model: "rowProduct" })
+      .populate({ path: "product_details.wProduct_name", model: "rowProduct" })
+      .populate({ path: "processName", model: "category" });
+    return product
+      ? res.status(200).json({ message: "Data Found", product, status: true })
+      : res.status(404).json({ message: "Not Found", status: false });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Internal Server Error", status: false });
+  }
+};
+
+export const productionlapseWarehouse = async (qty, warehouseId, productId) => {
+  try {
+    const warehouse = await Warehouse.findById(warehouseId);
+    if (!warehouse) {
+      return res
+        .status(404)
+        .json({ message: "warehouse not found", status: false });
+    }
+    const sourceProductItem = warehouse.productItems.find(
+      (pItem) => pItem.productId.toString() === productId.toString()
+    );
+    if (sourceProductItem) {
+      sourceProductItem.currentStock -= qty;
+      sourceProductItem.transferQty -= qty;
+      warehouse.markModified("productItems");
+      await warehouse.save();
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const productionAddWarehouse = async (qty, warehouseId, productId) => {
+  try {
+    const warehouse = await Warehouse.findById(warehouseId);
+    if (!warehouse) {
+      return res
+        .status(404)
+        .json({ message: "warehouse not found", status: false });
+    }
+    const sourceProductItem = warehouse.productItems.find(
+      (pItem) => pItem.productId.toString() === productId.toString()
+    );
+    if (sourceProductItem) {
+      sourceProductItem.currentStock += qty;
+      sourceProductItem.transferQty += qty;
+      warehouse.markModified("productItems");
+      await warehouse.save();
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const deleteProduct = async (req, res, next) => {
+  try {
+    let id = req.params.id;
+    const Productfind = await AssignProduction.findById(id);
+    if (!Productfind) {
+      return res.status(404).json({ message: "Not Found", status: false });
+    }
+
+    const productsteps = await StepsModel.findOne({
+      processName: Productfind.processName,
+    });
+
+    if (!productsteps) {
+      return res
+        .status(404)
+        .json({ message: "Process Not Found", status: false });
+    }
+
+    const isFirstStep =
+      productsteps.steps[0]._id.toString() === Productfind.currentStep;
+
+    for (const item of Productfind.product_details) {
+      await handleProductRevert(item, isFirstStep);
+    }
+
+    await AssignProduction.findByIdAndDelete(id);
+    res.status(200).json({ message: "Product Deleted ", status: true });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal Server Error", status: false });
+  }
+};
+
+const handleProductRevert = async (item, isFirstStep) => {
+  const modelType = isFirstStep ? Product : RowProduct;
+
+  if (item.rProduct_name !== null) {
+    const Rowproduct = await modelType.findById(item.rProduct_name);
+    await revertStockUnits(item.rProduct_name_Units, Rowproduct, "add");
+  }
+
+  if (item.fProduct_name !== null) {
+    const Rowproduct = await RowProduct.findById(item.fProduct_name);
+    await revertStockUnits(item.fProduct_name_Units, Rowproduct, "deduct");
+  }
+
+  if (item.wProduct_name !== null) {
+    const Rowproduct = await RowProduct.findById(item.wProduct_name);
+    await revertStockUnits(item.wProduct_name_Units, Rowproduct, "deduct");
+  }
+};
+
+const revertStockUnits = async (units, product, actionType) => {
+  if (!product) {
+    return res
+      .status(404)
+      .json({ message: "Product Not Found", status: false });
+  }
+
+  for (const unit of units) {
+    if (unit.unit === product.stockUnit) {
+      product.qty =
+        actionType === "add"
+          ? product.qty + unit.value
+          : product.qty - unit.value;
+      await product.save();
+      await (actionType === "add"
+        ? productionAddWarehouse(unit.value, product.warehouse, product._id)
+        : productionlapseWarehouse(unit.value, product.warehouse, product._id));
     }
   }
 };
@@ -213,43 +555,6 @@ export const assignProducted = async (req, res, next) => {
       : res
           .status(404)
           .json({ message: "Something Went Wrong", status: false });
-  } catch (error) {
-    console.log(error);
-    res.status(500).json({ error: "Internal Server Error", status: false });
-  }
-};
-
-export const viewProduct = async (req, res, next) => {
-  try {
-    const product = await AssignProduction.find({
-      database: req.params.database,
-    })
-      .sort({ sortorder: -1 })
-      .populate({ path: "user_name", model: "user" })
-      .populate({
-        path: "user_name",
-        model: "user",
-      })
-      .populate({ path: "product_details.fProduct_name", model: "product" })
-      .populate({ path: "processName", model: "category" });
-    return product.length > 0
-      ? res.status(200).json({ message: "Data Found", product, status: true })
-      : res.status(404).json({ message: "Not Found", status: false });
-  } catch (error) {
-    console.log(error);
-    res.status(500).json({ error: "Internal Server Error", status: false });
-  }
-};
-
-export const viewByIdProduct = async (req, res, next) => {
-  try {
-    const product = await AssignProduction.findById(req.params.id).populate({
-      path: "user_name",
-      model: "user",
-    });
-    return product
-      ? res.status(200).json({ message: "Data Found", product, status: true })
-      : res.status(404).json({ message: "Not Found", status: false });
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: "Internal Server Error", status: false });
@@ -515,178 +820,6 @@ export const updateProducted = async (req, res, next) => {
   }
 };
 
-export const updateProduct = async (req, res, next) => {
-  try {
-    const id = req.params.id;
-    const Productfind = await AssignProduction.findById(id);
-    if (!Productfind) {
-      return res.status(404).json({ message: "Not Found", status: false });
-    }
-
-    const { product_details } = req.body;
-    const productsteps = await StepsModel.findOne({
-      processName: Productfind.processName,
-    });
-    if (!productsteps) {
-      return res
-        .status(404)
-        .json({ message: "Process Not Found", status: false });
-    }
-
-    const processRowProductUpdate = async (item, productType, typeUnits) => {
-      if (item[productType] !== null) {
-        const Rowproduct = await RowProduct.findById(item[productType]);
-        if (Rowproduct) {
-          await Promise.all(
-            item[typeUnits].map(async (data) => {
-              if (data.unit === Rowproduct.stockUnit) {
-                const existingProduct = Productfind.product_details.find(
-                  (existingItem) =>
-                    existingItem[productType] === item[productType]
-                );
-
-                if (existingProduct) {
-                  const existingUnit = existingProduct[typeUnits].find(
-                    (exitingData) => exitingData.unit === data.unit
-                  );
-
-                  if (existingUnit) {
-                    let qty;
-                    if (data.value > existingUnit.value) {
-                      qty = data.value - existingUnit.value;
-                      Rowproduct.qty +=
-                        productType === "rProduct_name" ? -qty : qty;
-                      // console.log("RowProduct", Rowproduct, productType);
-                      // console.log("lapseQty", Rowproduct.qty);
-                      if (productType === "rProduct_name") {
-                        await productionlapseWarehouse(
-                          qty,
-                          Rowproduct.warehouse,
-                          item[productType]
-                        );
-                      } else {
-                        await productionAddWarehouse(
-                          qty,
-                          Rowproduct.warehouse,
-                          item[productType]
-                        );
-                      }
-                    } else if (data.value < existingUnit.value) {
-                      qty = existingUnit.value - data.value;
-                      Rowproduct.qty +=
-                        productType === "rProduct_name" ? qty : -qty;
-                      // console.log("RowProduct", Rowproduct, productType);
-                      // console.log("addQty", Rowproduct.qty);
-                      if (productType === "rProduct_name") {
-                        await productionAddWarehouse(
-                          qty,
-                          Rowproduct.warehouse,
-                          item[productType]
-                        );
-                      } else {
-                        await productionlapseWarehouse(
-                          qty,
-                          Rowproduct.warehouse,
-                          item[productType]
-                        );
-                      }
-                    }
-                    await Rowproduct.save();
-                  }
-                }
-              }
-            })
-          );
-        }
-      }
-    };
-
-    const processRProductUpdate = async (item, productType, typeUnits) => {
-      if (item[productType] !== null) {
-        const ProductModel = await Product.findById(item[productType]);
-        if (ProductModel) {
-          await Promise.all(
-            item[typeUnits].map(async (data) => {
-              const existingProduct = Productfind.product_details.find(
-                (existingItem) =>
-                  existingItem[productType] === item[productType]
-              );
-              if (existingProduct) {
-                const existingUnit = existingProduct[typeUnits].find(
-                  (exitingData) => exitingData.unit === data.unit
-                );
-
-                if (existingUnit) {
-                  let qty;
-                  if (data.value > existingUnit.value) {
-                    qty = data.value - existingUnit.value;
-                    ProductModel.qty += qty;
-                    await productionlapseWarehouse(
-                      qty,
-                      ProductModel.warehouse,
-                      item[productType]
-                    );
-                  } else if (data.value < existingUnit.value) {
-                    qty = existingUnit.value - data.value;
-                    ProductModel.qty -= qty;
-                    await productionAddWarehouse(
-                      qty,
-                      ProductModel.warehouse,
-                      item[productType]
-                    );
-                  }
-                  await ProductModel.save();
-                }
-              }
-            })
-          );
-        }
-      }
-    };
-
-    const updateProductDetails = async (isFirstStep) => {
-      await Promise.all(
-        product_details.map(async (item) => {
-          if (isFirstStep) {
-            await processRProductUpdate(
-              item,
-              "rProduct_name",
-              "rProduct_name_Units"
-            );
-          } else {
-            await processRowProductUpdate(
-              item,
-              "rProduct_name",
-              "rProduct_name_Units"
-            );
-          }
-          await processRowProductUpdate(
-            item,
-            "fProduct_name",
-            "fProduct_name_Units"
-          );
-          await processRowProductUpdate(
-            item,
-            "wProduct_name",
-            "wProduct_name_Units"
-          );
-        })
-      );
-    };
-
-    const isFirstStep =
-      productsteps.steps[0]._id.toString() === Productfind.currentStep;
-    await updateProductDetails(isFirstStep);
-
-    const updateData = req.body;
-    await AssignProduction.findByIdAndUpdate(id, updateData, { new: true });
-    res.status(200).json({ message: "Data Updated", status: true });
-  } catch (error) {
-    console.log(error);
-    res.status(500).json({ message: "Internal Server Error", status: false });
-  }
-};
-
 export const deleteProducted = async (req, res, next) => {
   try {
     let id = req.params.id;
@@ -828,139 +961,6 @@ export const deleteProducted = async (req, res, next) => {
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: "Internal Server Error", status: false });
-  }
-};
-
-export const viewByIdProduct2 = async (req, res, next) => {
-  try {
-    const product = await AssignProduction.findById(req.params.id)
-      .populate({
-        path: "user_name",
-        model: "user",
-      })
-      .populate({ path: "product_details.fProduct_name", model: "rowProduct" })
-      .populate({ path: "product_details.rProduct_name", model: "rowProduct" })
-      .populate({ path: "product_details.wProduct_name", model: "rowProduct" })
-      .populate({ path: "processName", model: "category" });
-    return product
-      ? res.status(200).json({ message: "Data Found", product, status: true })
-      : res.status(404).json({ message: "Not Found", status: false });
-  } catch (error) {
-    console.log(error);
-    res.status(500).json({ error: "Internal Server Error", status: false });
-  }
-};
-
-export const productionlapseWarehouse = async (qty, warehouseId, productId) => {
-  try {
-    const warehouse = await Warehouse.findById(warehouseId);
-    if (!warehouse) {
-      return res
-        .status(404)
-        .json({ message: "warehouse not found", status: false });
-    }
-    const sourceProductItem = warehouse.productItems.find(
-      (pItem) => pItem.productId.toString() === productId.toString()
-    );
-    if (sourceProductItem) {
-      sourceProductItem.currentStock -= qty;
-      sourceProductItem.transferQty -= qty;
-      warehouse.markModified("productItems");
-      await warehouse.save();
-    }
-  } catch (error) {
-    console.log(error);
-  }
-};
-
-export const productionAddWarehouse = async (qty, warehouseId, productId) => {
-  try {
-    const warehouse = await Warehouse.findById(warehouseId);
-    if (!warehouse) {
-      return res
-        .status(404)
-        .json({ message: "warehouse not found", status: false });
-    }
-    const sourceProductItem = warehouse.productItems.find(
-      (pItem) => pItem.productId.toString() === productId.toString()
-    );
-    if (sourceProductItem) {
-      sourceProductItem.currentStock += qty;
-      sourceProductItem.transferQty += qty;
-      warehouse.markModified("productItems");
-      await warehouse.save();
-    }
-  } catch (error) {
-    console.log(error);
-  }
-};
-
-export const deleteProduct = async (req, res, next) => {
-  try {
-    let id = req.params.id;
-    const Productfind = await AssignProduction.findById(id);
-    if (!Productfind) {
-      return res.status(404).json({ message: "Not Found", status: false });
-    }
-
-    const productsteps = await StepsModel.findOne({
-      processName: Productfind.processName,
-    });
-
-    if (!productsteps) {
-      return res
-        .status(404)
-        .json({ message: "Process Not Found", status: false });
-    }
-
-    const isFirstStep =
-      productsteps.steps[0]._id.toString() === Productfind.currentStep;
-
-    for (const item of Productfind.product_details) {
-      await handleProductRevert(item, isFirstStep);
-    }
-
-    await AssignProduction.findByIdAndDelete(id);
-    res.status(200).json({ message: "Product Deleted ", status: true });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Internal Server Error", status: false });
-  }
-};
-
-const handleProductRevert = async (item, isFirstStep) => {
-  const modelType = isFirstStep ? Product : RowProduct;
-
-  if (item.rProduct_name !== null) {
-    const Rowproduct = await modelType.findById(item.rProduct_name);
-    await revertStockUnits(item.rProduct_name_Units, Rowproduct, "add");
-  }
-
-  if (item.fProduct_name !== null) {
-    const Rowproduct = await RowProduct.findById(item.fProduct_name);
-    await revertStockUnits(item.fProduct_name_Units, Rowproduct, "deduct");
-  }
-
-  if (item.wProduct_name !== null) {
-    const Rowproduct = await RowProduct.findById(item.wProduct_name);
-    await revertStockUnits(item.wProduct_name_Units, Rowproduct, "deduct");
-  }
-};
-
-const revertStockUnits = async (units, product, actionType) => {
-  if (!product) return;
-
-  for (const unit of units) {
-    if (unit.unit === product.stockUnit) {
-      product.qty =
-        actionType === "add"
-          ? product.qty + unit.value
-          : product.qty - unit.value;
-      await product.save();
-      await (actionType === "add"
-        ? productionAddWarehouse(unit.value, product.warehouse, product._id)
-        : productionlapseWarehouse(unit.value, product.warehouse, product._id));
-    }
   }
 };
 
