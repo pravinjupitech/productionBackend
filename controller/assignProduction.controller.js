@@ -22,6 +22,9 @@ export const assignProduct = async (req, res, next) => {
     //     .json({ message: "Already Step Created", status: false });
     // }
     const isFirstStep = productsteps.steps[0]._id.toString() === currentStep;
+    const isLastStep =
+      productsteps.steps[productsteps.steps.length - 1]._id.toString() ===
+      currentStep;
     for (const item of product_details) {
       if (item?.rProduct_name != null) {
         if (isFirstStep) {
@@ -43,13 +46,23 @@ export const assignProduct = async (req, res, next) => {
         }
       }
       if (item?.fProduct_name != null) {
-        await updateProductQty(
-          item?.fProduct_name,
-          item?.fProduct_name_Units,
-          "add",
-          "RowProduct",
-          res
-        );
+        if (isLastStep) {
+          await updateProductQty(
+            item?.fProduct_name,
+            item?.fProduct_name_Units,
+            "add",
+            "Product",
+            res
+          );
+        } else {
+          await updateProductQty(
+            item?.fProduct_name,
+            item?.fProduct_name_Units,
+            "add",
+            "RowProduct",
+            res
+          );
+        }
       }
 
       if (item?.wProduct_name) {
@@ -274,7 +287,7 @@ export const updateProduct = async (req, res, next) => {
       }
     };
 
-    const updateProductDetails = async (isFirstStep) => {
+    const updateProductDetails = async (isFirstStep, isLastStep) => {
       await Promise.all(
         product_details.map(async (item) => {
           if (isFirstStep) {
@@ -290,11 +303,19 @@ export const updateProduct = async (req, res, next) => {
               "rProduct_name_Units"
             );
           }
-          await processRowProductUpdate(
-            item,
-            "fProduct_name",
-            "fProduct_name_Units"
-          );
+          if (isLastStep) {
+            await processRProductUpdate(
+              item,
+              "fProduct_name",
+              "fProduct_name_Units"
+            );
+          } else {
+            await processRowProductUpdate(
+              item,
+              "fProduct_name",
+              "fProduct_name_Units"
+            );
+          }
           await processRowProductUpdate(
             item,
             "wProduct_name",
@@ -306,7 +327,10 @@ export const updateProduct = async (req, res, next) => {
 
     const isFirstStep =
       productsteps.steps[0]._id.toString() === Productfind.currentStep;
-    await updateProductDetails(isFirstStep);
+    const isLastStep =
+      productsteps.steps[productsteps.steps.length - 1]._id.toString() ===
+      currentStep;
+    await updateProductDetails(isFirstStep, isLastStep);
 
     const updateData = req.body;
     await AssignProduction.findByIdAndUpdate(id, updateData, { new: true });
@@ -400,9 +424,11 @@ export const deleteProduct = async (req, res, next) => {
 
     const isFirstStep =
       productsteps.steps[0]._id.toString() === Productfind.currentStep;
-
+    const isLastStep =
+      productsteps.steps[productsteps.steps.length - 1]._id.toString() ===
+      currentStep;
     for (const item of Productfind.product_details) {
-      await handleProductRevert(item, isFirstStep);
+      await handleProductRevert(item, isFirstStep, isLastStep);
     }
     await AssignProduction.findByIdAndDelete(id);
     res.status(200).json({ message: "Product Deleted ", status: true });
@@ -412,16 +438,16 @@ export const deleteProduct = async (req, res, next) => {
   }
 };
 
-const handleProductRevert = async (item, isFirstStep) => {
+const handleProductRevert = async (item, isFirstStep, isLastStep) => {
   const modelType = isFirstStep ? Product : RowProduct;
-
+  const modelType1 = isLastStep ? Product : RowProduct;
   if (item.rProduct_name !== null) {
     const Rowproduct = await modelType.findById(item.rProduct_name);
     await revertStockUnits(item.rProduct_name_Units, Rowproduct, "add");
   }
 
   if (item.fProduct_name !== null) {
-    const Rowproduct = await RowProduct.findById(item.fProduct_name);
+    const Rowproduct = await modelType1.findById(item.fProduct_name);
     await revertStockUnits(item.fProduct_name_Units, Rowproduct, "deduct");
   }
 
