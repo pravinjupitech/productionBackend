@@ -432,11 +432,6 @@ const handleProductRevert = async (item, isFirstStep) => {
 };
 
 const revertStockUnits = async (units, product, actionType) => {
-  if (!product) {
-    return res
-      .status(404)
-      .json({ message: "Product Not Found", status: false });
-  }
   for (const unit of units) {
     if (unit.unit === product.stockUnit) {
       product.qty =
