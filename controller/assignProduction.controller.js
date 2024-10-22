@@ -23,39 +23,39 @@ export const assignProduct = async (req, res, next) => {
     // }
     const isFirstStep = productsteps.steps[0]._id.toString() === currentStep;
     for (const item of product_details) {
-      if (item.rProduct_name !== null) {
+      if (item?.rProduct_name != null) {
         if (isFirstStep) {
           await updateProductQty(
-            item.rProduct_name,
-            item.rProduct_name_Units,
+            item?.rProduct_name,
+            item?.rProduct_name_Units,
             "deduct",
             "Product",
             res
           );
         } else {
           await updateProductQty(
-            item.rProduct_name,
-            item.rProduct_name_Units,
+            item?.rProduct_name,
+            item?.rProduct_name_Units,
             "deduct",
             "RowProduct",
             res
           );
         }
       }
-      if (item.fProduct_name !== null) {
+      if (item?.fProduct_name != null) {
         await updateProductQty(
-          item.fProduct_name,
-          item.fProduct_name_Units,
+          item?.fProduct_name,
+          item?.fProduct_name_Units,
           "add",
           "RowProduct",
           res
         );
       }
 
-      if (item.wProduct_name !== null) {
+      if (item?.wProduct_name != null) {
         await updateProductQty(
-          item.wProduct_name,
-          item.wProduct_name_Units,
+          item?.wProduct_name,
+          item?.wProduct_name_Units,
           "add",
           "RowProduct",
           res
@@ -82,8 +82,8 @@ const updateProductQty = async (
   res
 ) => {
   const ProductModel = modelType === "Product" ? Product : RowProduct;
-  console.log("ProductModel", ProductModel);
   const product = await ProductModel.findById(productId);
+  console.log(product);
   if (!product) {
     return res
       .status(404)
