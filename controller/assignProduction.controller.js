@@ -82,6 +82,7 @@ const updateProductQty = async (
   res
 ) => {
   const ProductModel = modelType === "Product" ? Product : RowProduct;
+  console.log("ProductModel", ProductModel);
   const product = await ProductModel.findById(productId);
   if (!product) {
     return res
