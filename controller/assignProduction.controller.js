@@ -15,12 +15,12 @@ export const assignProduct = async (req, res, next) => {
         .json({ message: "Process Not Found", status: false });
     }
 
-    const exitingData = await AssignProduction.findOne({ processName });
-    if (exitingData.step_name === step_name) {
-      return res
-        .status(404)
-        .json({ message: "Already Step Created", status: false });
-    }
+    // const exitingData = await AssignProduction.findOne({ processName });
+    // if (exitingData.step_name === step_name) {
+    //   return res
+    //     .status(404)
+    //     .json({ message: "Already Step Created", status: false });
+    // }
     const isFirstStep = productsteps.steps[0]._id.toString() === currentStep;
     for (const item of product_details) {
       if (item.rProduct_name !== null) {
