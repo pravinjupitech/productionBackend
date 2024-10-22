@@ -52,7 +52,7 @@ export const assignProduct = async (req, res, next) => {
         );
       }
 
-      if (item?.wProduct_name != null) {
+      if (item?.wProduct_name) {
         await updateProductQty(
           item?.wProduct_name,
           item?.wProduct_name_Units,
@@ -82,8 +82,7 @@ const updateProductQty = async (
   res
 ) => {
   const ProductModel = modelType === "Product" ? Product : RowProduct;
-  const product = await ProductModel.findById(productId);
-  console.log(product);
+  const product = await ProductModel?.findById(productId);
   if (!product) {
     return res
       .status(404)
