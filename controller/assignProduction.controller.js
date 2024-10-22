@@ -17,7 +17,9 @@ export const assignProduct = async (req, res, next) => {
 
     const exitingData = await AssignProduction.findOne({ processName });
     if (exitingData.step_name === step_name) {
-      res.status(404).json({ message: "Alredy Step Created", status: false });
+      return res
+        .status(404)
+        .json({ message: "Alredy Step Created", status: false });
     }
     const isFirstStep = productsteps.steps[0]._id.toString() === currentStep;
     for (const item of product_details) {
