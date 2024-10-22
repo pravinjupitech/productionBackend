@@ -6,7 +6,7 @@ import { Warehouse } from "../model/warehouse.model.js";
 
 export const assignProduct = async (req, res, next) => {
   try {
-    const { currentStep, processName, product_details, step_name } = req.body;
+    const { currentStep, processName, product_details } = req.body;
 
     const productsteps = await StepsModel.findOne({ processName: processName });
     if (!productsteps) {
