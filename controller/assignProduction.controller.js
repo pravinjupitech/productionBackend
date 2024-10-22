@@ -6,13 +6,18 @@ import { Warehouse } from "../model/warehouse.model.js";
 
 export const assignProduct = async (req, res, next) => {
   try {
-    const { currentStep, processName, product_details } = req.body;
+    const { currentStep, processName, product_details, step_name } = req.body;
 
     const productsteps = await StepsModel.findOne({ processName: processName });
     if (!productsteps) {
       return res
         .status(404)
         .json({ message: "Process Not Found", status: false });
+    }
+
+    const exitingData = await AssignProduction.findOne({ processName });
+    if (exitingData.step_name === step_name) {
+      res.status(404).json({ message: "Alredy Step Created", status: false });
     }
     const isFirstStep = productsteps.steps[0]._id.toString() === currentStep;
     for (const item of product_details) {
@@ -385,7 +390,6 @@ export const deleteProduct = async (req, res, next) => {
     const productsteps = await StepsModel.findOne({
       processName: Productfind.processName,
     });
-
     if (!productsteps) {
       return res
         .status(404)
@@ -398,7 +402,6 @@ export const deleteProduct = async (req, res, next) => {
     for (const item of Productfind.product_details) {
       await handleProductRevert(item, isFirstStep);
     }
-
     await AssignProduction.findByIdAndDelete(id);
     res.status(200).json({ message: "Product Deleted ", status: true });
   } catch (error) {
@@ -432,7 +435,6 @@ const revertStockUnits = async (units, product, actionType) => {
       .status(404)
       .json({ message: "Product Not Found", status: false });
   }
-
   for (const unit of units) {
     if (unit.unit === product.stockUnit) {
       product.qty =
