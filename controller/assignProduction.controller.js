@@ -65,7 +65,7 @@ export const assignProduct = async (req, res, next) => {
         }
       }
 
-      if (item?.wProduct_name && item?.wProduct_name) {
+      if (item?.wProduct_name != null && item?.wProduct_name) {
         await updateProductQty(
           item?.wProduct_name,
           item?.wProduct_name_Units,
