@@ -128,10 +128,6 @@ export const viewProduct = async (req, res, next) => {
     })
       .sort({ sortorder: -1 })
       .populate({ path: "user_name", model: "user" })
-      .populate({
-        path: "user_name",
-        model: "user",
-      })
       .populate({ path: "product_details.fProduct_name", model: "product" })
       .populate({ path: "processName", model: "category" });
     return product.length > 0
@@ -451,7 +447,7 @@ const handleProductRevert = async (item, isFirstStep, isLastStep) => {
     await revertStockUnits(item.fProduct_name_sUnits, Rowproduct, "deduct");
   }
 
-  if (item.wProduct_name !== null) {
+  if (item.wProduct_name) {
     const Rowproduct = await RowProduct.findById(item.wProduct_name);
     await revertStockUnits(item.wProduct_name_Units, Rowproduct, "deduct");
   }
@@ -1001,7 +997,7 @@ export const demoProduct = async (req, res, next) => {
       if (frequency[num] > 1) {
         repeatedNumbers.push(Number(num));
       }
-    }
+    } 
     console.log("Repeated numbers:", repeatedNumbers);
   } catch (error) {
     console.log(error);
@@ -1009,8 +1005,7 @@ export const demoProduct = async (req, res, next) => {
   }
 };
 
-/* 
-
+/*
 The event loop is a core concept in JavaScript, particularly in how asynchronous operations are handled. JavaScript is single-threaded, meaning it can execute only one task at a time. However, with the event loop, it can manage asynchronous tasks like I/O operations, timers, and callbacks without blocking the main thread. call stack and callback queue.
  
 package.json->  This file lists the metadata for your project, including the project name, version, description, and dependencies.
