@@ -26,7 +26,7 @@ export const assignProduct = async (req, res, next) => {
       productsteps.steps[productsteps.steps.length - 1]._id.toString() ===
       currentStep;
     for (const item of product_details) {
-      if (item?.rProduct_name != null) {
+      if (item?.rProduct_name != null && item?.rProduct_name) {
         if (isFirstStep) {
           await updateProductQty(
             item?.rProduct_name,
@@ -45,7 +45,7 @@ export const assignProduct = async (req, res, next) => {
           );
         }
       }
-      if (item?.fProduct_name != null) {
+      if (item?.fProduct_name != null && item?.fProduct_name) {
         if (isLastStep) {
           await updateProductQty(
             item?.fProduct_name,
@@ -65,7 +65,7 @@ export const assignProduct = async (req, res, next) => {
         }
       }
 
-      if (item?.wProduct_name) {
+      if (item?.wProduct_name && item?.wProduct_name) {
         await updateProductQty(
           item?.wProduct_name,
           item?.wProduct_name_Units,
@@ -448,7 +448,7 @@ const handleProductRevert = async (item, isFirstStep, isLastStep) => {
 
   if (item.fProduct_name !== null) {
     const Rowproduct = await modelType1.findById(item.fProduct_name);
-    await revertStockUnits(item.fProduct_name_Units, Rowproduct, "deduct");
+    await revertStockUnits(item.fProduct_name_sUnits, Rowproduct, "deduct");
   }
 
   if (item.wProduct_name !== null) {
