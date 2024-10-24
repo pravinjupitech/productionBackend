@@ -440,17 +440,17 @@ const handleProductRevert = async (item, isFirstStep, isLastStep) => {
   const modelType1 = isLastStep ? Product : RowProduct;
   if (item.rProduct_name) {
     const Rowproduct = await modelType.findById(item.rProduct_name);
-    await revertStockUnits(item.rProduct_name_Units, Rowproduct, "add");
+    await revertStockUnits(item?.rProduct_name_Units, Rowproduct, "add");
   }
 
   if (item.fProduct_name) {
     const Rowproduct = await modelType1.findById(item.fProduct_name);
-    await revertStockUnits(item.fProduct_name_sUnits, Rowproduct, "deduct");
+    await revertStockUnits(item?.fProduct_name_sUnits, Rowproduct, "deduct");
   }
 
   if (item.wProduct_name) {
     const Rowproduct = await RowProduct.findById(item.wProduct_name);
-    await revertStockUnits(item.wProduct_name_Units, Rowproduct, "deduct");
+    await revertStockUnits(item?.wProduct_name_Units, Rowproduct, "deduct");
   }
 };
 
