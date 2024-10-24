@@ -21,6 +21,7 @@ export const assignProduct = async (req, res, next) => {
     //     .status(404)
     //     .json({ message: "Already Step Created", status: false });
     // }
+
     const isFirstStep = productsteps.steps[0]._id.toString() === currentStep;
     const isLastStep =
       productsteps.steps[productsteps.steps.length - 1]._id.toString() ===
@@ -325,7 +326,7 @@ export const updateProduct = async (req, res, next) => {
       productsteps.steps[0]._id.toString() === Productfind.currentStep;
     const isLastStep =
       productsteps.steps[productsteps.steps.length - 1]._id.toString() ===
-      currentStep;
+      Productfind.currentStep;
     await updateProductDetails(isFirstStep, isLastStep);
 
     const updateData = req.body;
@@ -422,7 +423,7 @@ export const deleteProduct = async (req, res, next) => {
       productsteps.steps[0]._id.toString() === Productfind.currentStep;
     const isLastStep =
       productsteps.steps[productsteps.steps.length - 1]._id.toString() ===
-      currentStep;
+      Productfind.currentStep;
     for (const item of Productfind.product_details) {
       await handleProductRevert(item, isFirstStep, isLastStep);
     }
@@ -997,7 +998,7 @@ export const demoProduct = async (req, res, next) => {
       if (frequency[num] > 1) {
         repeatedNumbers.push(Number(num));
       }
-    } 
+    }
     console.log("Repeated numbers:", repeatedNumbers);
   } catch (error) {
     console.log(error);
@@ -1006,6 +1007,28 @@ export const demoProduct = async (req, res, next) => {
 };
 
 /*
+array is time complexity of o(1),differance between array and list is array is static data structure and it is fixed and continueslty while list is dynamic data structure and it is grow and not required continuslty.
+
+linked list is linear Data structure is consistance of a squevance of elements ,where each element point to next one.forming a chain. 
+ linkedlist is three types use first singly linkedlist,doubly linkedlist and circular linkedlist 
+ advantange of linkedlist:- dynamic memory allocation , efficient insertion and deletion , can represent complex data structures , can be used to impliment queues and stacks , can be used for memory management and caching , can be used gerbage collections 
+
+linked list time complexity or singly linked list or ->
+insertion->{
+at the begining-o(1)
+at the end- o(n)
+at the specificPosition - o(n)
+}
+
+deletion->{
+at the begining - o(1)
+at the end - o(n)
+at the specificPosition - 0(n)
+}
+search- o(n),
+travesal - o(n)
+
+
 The event loop is a core concept in JavaScript, particularly in how asynchronous operations are handled. JavaScript is single-threaded, meaning it can execute only one task at a time. However, with the event loop, it can manage asynchronous tasks like I/O operations, timers, and callbacks without blocking the main thread. call stack and callback queue.
  
 package.json->  This file lists the metadata for your project, including the project name, version, description, and dependencies.
