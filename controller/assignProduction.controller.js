@@ -438,12 +438,12 @@ export const deleteProduct = async (req, res, next) => {
 const handleProductRevert = async (item, isFirstStep, isLastStep) => {
   const modelType = isFirstStep ? Product : RowProduct;
   const modelType1 = isLastStep ? Product : RowProduct;
-  if (item.rProduct_name !== null) {
+  if (item.rProduct_name) {
     const Rowproduct = await modelType.findById(item.rProduct_name);
     await revertStockUnits(item.rProduct_name_Units, Rowproduct, "add");
   }
 
-  if (item.fProduct_name !== null) {
+  if (item.fProduct_name) {
     const Rowproduct = await modelType1.findById(item.fProduct_name);
     await revertStockUnits(item.fProduct_name_sUnits, Rowproduct, "deduct");
   }
