@@ -424,9 +424,11 @@ export const deleteProduct = async (req, res, next) => {
     const isLastStep =
       productsteps.steps[productsteps.steps.length - 1]._id.toString() ===
       Productfind.currentStep;
+
     for (const item of Productfind.product_details) {
       await handleProductRevert(item, isFirstStep, isLastStep);
     }
+
     await AssignProduction.findByIdAndDelete(id);
     res.status(200).json({ message: "Product Deleted ", status: true });
   } catch (error) {
@@ -438,34 +440,55 @@ export const deleteProduct = async (req, res, next) => {
 const handleProductRevert = async (item, isFirstStep, isLastStep) => {
   const modelType = isFirstStep ? Product : RowProduct;
   const modelType1 = isLastStep ? Product : RowProduct;
-  if (item.rProduct_name) {
+
+  if (
+    item.rProduct_name &&
+    Array.isArray(item.rProduct_name_Units) &&
+    item.rProduct_name_Units.length > 0
+  ) {
     const Rowproduct = await modelType.findById(item.rProduct_name);
     await revertStockUnits(item?.rProduct_name_Units, Rowproduct, "add");
   }
 
-  if (item.fProduct_name) {
+  if (
+    item.fProduct_name &&
+    Array.isArray(item.fProduct_name_Units) &&
+    item.fProduct_name_Units.length > 0
+  ) {
     const Rowproduct = await modelType1.findById(item.fProduct_name);
     await revertStockUnits(item?.fProduct_name_sUnits, Rowproduct, "deduct");
   }
 
-  if (item.wProduct_name) {
+  if (
+    item.wProduct_name &&
+    Array.isArray(item.wProduct_name_Units) &&
+    item.wProduct_name_Units.length > 0
+  ) {
     const Rowproduct = await RowProduct.findById(item.wProduct_name);
     await revertStockUnits(item?.wProduct_name_Units, Rowproduct, "deduct");
   }
 };
 
 const revertStockUnits = async (units, product, actionType) => {
-  for (const unit of units) {
-    if (unit.unit === product.stockUnit) {
-      product.qty =
-        actionType === "add"
-          ? product.qty + unit.value
-          : product.qty - unit.value;
-      await product.save();
-      await (actionType === "add"
-        ? productionAddWarehouse(unit.value, product.warehouse, product._id)
-        : productionlapseWarehouse(unit.value, product.warehouse, product._id));
+  if (Array.isArray(units)) {
+    for (const unit of units) {
+      if (unit.unit === product.stockUnit) {
+        product.qty =
+          actionType === "add"
+            ? product.qty + unit.value
+            : product.qty - unit.value;
+        await product.save();
+        await (actionType === "add"
+          ? productionAddWarehouse(unit.value, product.warehouse, product._id)
+          : productionlapseWarehouse(
+              unit.value,
+              product.warehouse,
+              product._id
+            ));
+      }
     }
+  } else {
+    console.error("Expected 'units' to be an array, but got:", units);
   }
 };
 
