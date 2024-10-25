@@ -113,7 +113,7 @@ export const deleteProduct = async (req, res, next) => {
     if (!FindProduct) {
       return res.status(404).json({ message: "Not Found", status: false });
     }
-    for (const item of Productfind.product_details) {
+    for (const item of FindProduct.product_details) {
       await handleProductRevert(item);
     }
     await StartProduction.findByIdAndDelete(id);
