@@ -121,6 +121,22 @@ export const deleteProduct = async (req, res, next) => {
   }
 };
 
+export const updateProduct = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const FindProduct = await StartProduction.findById(id);
+    if (!FindProduct) {
+      res.status(404).json({ message: "Not Found", status: false });
+    }
+    const updatedData = req.body;
+    await StartProduction.findByIdAndUpdate(id, updatedData, { new: true });
+    res.status(200).json({ message: "Data Updated", status: true });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Internal Server Error", status: false });
+  }
+};
+
 export const productionlapseWarehouse = async (qty, warehouseId, productId) => {
   try {
     const warehouse = await Warehouse.findById(warehouseId);
