@@ -113,11 +113,66 @@ export const deleteProduct = async (req, res, next) => {
     if (!FindProduct) {
       return res.status(404).json({ message: "Not Found", status: false });
     }
+    for (const item of Productfind.product_details) {
+      await handleProductRevert(item);
+    }
     await StartProduction.findByIdAndDelete(id);
     res.status(200).json({ message: "Data Deleted", status: false });
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: "Internal Server Error", status: false });
+  }
+};
+
+const handleProductRevert = async (item) => {
+  if (
+    item.rProduct_name &&
+    Array.isArray(item.rProduct_name_Units) &&
+    item.rProduct_name_Units.length > 0
+  ) {
+    const Rowproduct = await RowProduct.findById(item.rProduct_name);
+    await revertStockUnits(item?.rProduct_name_Units, Rowproduct, "add");
+  }
+
+  if (
+    item.fProduct_name &&
+    Array.isArray(item.fProduct_name_Units) &&
+    item.fProduct_name_Units.length > 0
+  ) {
+    const Rowproduct = await RowProduct.findById(item.fProduct_name);
+    await revertStockUnits(item?.fProduct_name_sUnits, Rowproduct, "deduct");
+  }
+
+  if (
+    item.wProduct_name &&
+    Array.isArray(item.wProduct_name_Units) &&
+    item.wProduct_name_Units.length > 0
+  ) {
+    const Rowproduct = await RowProduct.findById(item.wProduct_name);
+    await revertStockUnits(item?.wProduct_name_Units, Rowproduct, "deduct");
+  }
+};
+
+const revertStockUnits = async (units, product, actionType) => {
+  if (Array.isArray(units)) {
+    for (const unit of units) {
+      if (unit.unit === product.stockUnit) {
+        product.qty =
+          actionType === "add"
+            ? product.qty + unit.value
+            : product.qty - unit.value;
+        await product.save();
+        await (actionType === "add"
+          ? productionAddWarehouse(unit.value, product.warehouse, product._id)
+          : productionlapseWarehouse(
+              unit.value,
+              product.warehouse,
+              product._id
+            ));
+      }
+    }
+  } else {
+    console.error("Expected 'units' to be an array, but got:", units);
   }
 };
 
@@ -128,6 +183,7 @@ export const updateProduct = async (req, res, next) => {
     if (!FindProduct) {
       res.status(404).json({ message: "Not Found", status: false });
     }
+    const { product_details } = req.body;
     const updatedData = req.body;
     await StartProduction.findByIdAndUpdate(id, updatedData, { new: true });
     res.status(200).json({ message: "Data Updated", status: true });
