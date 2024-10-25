@@ -1,3 +1,4 @@
+import { Product } from "../model/product.model.js";
 import { RowProduct } from "../model/rowProduct.model.js";
 import { StartProduction } from "../model/startProduction.model.js";
 import { Warehouse } from "../model/warehouse.model.js";
@@ -84,6 +85,36 @@ export const viewProduct = async (req, res, next) => {
     return product.length > 0
       ? res.status(200).json({ message: "Data Found", product, status: true })
       : res.status(404).json({ message: "Not Found", status: false });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Internal Server Error", status: false });
+  }
+};
+
+export const viewByIdProduct = async (req, res, next) => {
+  try {
+    const product = await StartProduction.findById(req.params.id).populate({
+      path: "user_name",
+      model: "user",
+    });
+    return product
+      ? res.status(200).json({ message: "Data Found", product, status: true })
+      : res.status(404).json({ message: "Not Found", status: false });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Internal Server Error", status: false });
+  }
+};
+
+export const deleteProduct = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const FindProduct = await StartProduction.findById(id);
+    if (!FindProduct) {
+      return res.status(404).json({ message: "Not Found", status: false });
+    }
+    await StartProduction.findByIdAndDelete(id);
+    res.status(200).json({ message: "Data Deleted", status: false });
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: "Internal Server Error", status: false });
