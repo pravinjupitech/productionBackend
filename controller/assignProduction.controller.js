@@ -7,7 +7,6 @@ import { Warehouse } from "../model/warehouse.model.js";
 export const assignProduct = async (req, res, next) => {
   try {
     const { currentStep, processName, product_details } = req.body;
-
     const productsteps = await StepsModel.findOne({ processName: processName });
     if (!productsteps) {
       return res
@@ -65,7 +64,6 @@ export const assignProduct = async (req, res, next) => {
           );
         }
       }
-
       if (item?.wProduct_name) {
         await updateProductQty(
           item?.wProduct_name,

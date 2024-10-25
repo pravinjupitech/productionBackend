@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
-const assignProductSchema = new mongoose.Schema(
+
+const productionSchema = new mongoose.Schema(
   {
     step_name: {
       type: String,
@@ -41,7 +42,8 @@ const assignProductSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
-export const AssignProduction = mongoose.model(
-  "assignProduction",
-  assignProductSchema
+
+export const StartProduction = mongoose.model(
+  "startProduction",
+  productionSchema
 );
