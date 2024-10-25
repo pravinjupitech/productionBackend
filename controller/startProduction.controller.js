@@ -181,14 +181,88 @@ export const updateProduct = async (req, res, next) => {
     const { id } = req.params;
     const FindProduct = await StartProduction.findById(id);
     if (!FindProduct) {
-      res.status(404).json({ message: "Not Found", status: false });
+      return res.status(404).json({ message: "Not Found", status: false });
     }
+
     const { product_details } = req.body;
+
+    const processRowProductUpdate = async (item, productType, typeUnits) => {
+      if (item[productType]) {
+        const Rowproduct = await RowProduct.findById(item[productType]);
+        if (Rowproduct) {
+          await Promise.all(
+            item[typeUnits].map(async (data) => {
+              if (data.unit === Rowproduct.stockUnit) {
+                const existingProduct = FindProduct.product_details.find(
+                  (existingItem) =>
+                    existingItem[productType] === item[productType]
+                );
+
+                if (existingProduct) {
+                  const existingUnit = existingProduct[typeUnits].find(
+                    (existingData) => existingData.unit === data.unit
+                  );
+
+                  if (existingUnit) {
+                    let qty = data.value - existingUnit.value;
+                    Rowproduct.qty +=
+                      productType === "rProduct_name" ? -qty : qty;
+
+                    if (qty !== 0) {
+                      const warehouseFunc =
+                        productType === "rProduct_name"
+                          ? qty > 0
+                            ? productionlapseWarehouse
+                            : productionAddWarehouse
+                          : qty > 0
+                          ? productionAddWarehouse
+                          : productionlapseWarehouse;
+
+                      await warehouseFunc(
+                        Math.abs(qty),
+                        Rowproduct.warehouse,
+                        item[productType]
+                      );
+                    }
+                    await Rowproduct.save();
+                  }
+                }
+              }
+            })
+          );
+        }
+      }
+    };
+
+    const updateProductDetails = async () => {
+      await Promise.all(
+        product_details.map(async (item) => {
+          await processRowProductUpdate(
+            item,
+            "rProduct_name",
+            "rProduct_name_Units"
+          );
+          await processRowProductUpdate(
+            item,
+            "fProduct_name",
+            "fProduct_name_Units"
+          );
+          await processRowProductUpdate(
+            item,
+            "wProduct_name",
+            "wProduct_name_Units"
+          );
+        })
+      );
+    };
+
+    await updateProductDetails();
+
     const updatedData = req.body;
     await StartProduction.findByIdAndUpdate(id, updatedData, { new: true });
     res.status(200).json({ message: "Data Updated", status: true });
   } catch (error) {
-    console.log(error);
+    console.error(error);
     res.status(500).json({ error: "Internal Server Error", status: false });
   }
 };
