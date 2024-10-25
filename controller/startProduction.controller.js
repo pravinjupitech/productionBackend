@@ -178,48 +178,66 @@ const revertStockUnits = async (units, product, actionType) => {
 
 export const updateProduct = async (req, res, next) => {
   try {
-    const { id } = req.params;
-    const FindProduct = await StartProduction.findById(id);
-    if (!FindProduct) {
+    const id = req.params.id;
+    const Productfind = await AssignProduction.findById(id);
+    if (!Productfind) {
       return res.status(404).json({ message: "Not Found", status: false });
     }
 
     const { product_details } = req.body;
+    const productsteps = await StepsModel.findOne({
+      processName: Productfind.processName,
+    });
+    if (!productsteps) {
+      return res
+        .status(404)
+        .json({ message: "Process Not Found", status: false });
+    }
 
     const processRowProductUpdate = async (item, productType, typeUnits) => {
-      if (item[productType]) {
+      if (item[productType] !== null) {
         const Rowproduct = await RowProduct.findById(item[productType]);
         if (Rowproduct) {
           await Promise.all(
             item[typeUnits].map(async (data) => {
               if (data.unit === Rowproduct.stockUnit) {
-                const existingProduct = FindProduct.product_details.find(
+                const existingProduct = Productfind.product_details.find(
                   (existingItem) =>
                     existingItem[productType] === item[productType]
                 );
 
                 if (existingProduct) {
                   const existingUnit = existingProduct[typeUnits].find(
-                    (existingData) => existingData.unit === data.unit
+                    (exitingData) => exitingData.unit === data.unit
                   );
 
                   if (existingUnit) {
-                    let qty = data.value - existingUnit.value;
-                    Rowproduct.qty +=
-                      productType === "rProduct_name" ? -qty : qty;
+                    let qty;
+                    if (data.value > existingUnit.value) {
+                      qty = data.value - existingUnit.value;
+                      Rowproduct.qty +=
+                        productType === "rProduct_name" ? -qty : qty;
 
-                    if (qty !== 0) {
                       const warehouseFunc =
                         productType === "rProduct_name"
-                          ? qty > 0
-                            ? productionlapseWarehouse
-                            : productionAddWarehouse
-                          : qty > 0
+                          ? productionlapseWarehouse
+                          : productionAddWarehouse;
+                      await warehouseFunc(
+                        qty,
+                        Rowproduct.warehouse,
+                        item[productType]
+                      );
+                    } else if (data.value < existingUnit.value) {
+                      qty = existingUnit.value - data.value;
+                      Rowproduct.qty +=
+                        productType === "rProduct_name" ? qty : -qty;
+
+                      const warehouseFunc =
+                        productType === "rProduct_name"
                           ? productionAddWarehouse
                           : productionlapseWarehouse;
-
                       await warehouseFunc(
-                        Math.abs(qty),
+                        qty,
                         Rowproduct.warehouse,
                         item[productType]
                       );
@@ -258,12 +276,12 @@ export const updateProduct = async (req, res, next) => {
 
     await updateProductDetails();
 
-    const updatedData = req.body;
-    await StartProduction.findByIdAndUpdate(id, updatedData, { new: true });
+    const updateData = req.body;
+    await AssignProduction.findByIdAndUpdate(id, updateData, { new: true });
     res.status(200).json({ message: "Data Updated", status: true });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "Internal Server Error", status: false });
+    console.log(error);
+    res.status(500).json({ message: "Internal Server Error", status: false });
   }
 };
 
