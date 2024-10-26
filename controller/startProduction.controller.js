@@ -222,52 +222,130 @@ export const updateProduct = async (req, res, next) => {
 
     const updateProductDetails = async () => {
       if (product_details.length > Productfind.product_details.length) {
+        // Add new products and lapse existing ones
+        const existingProductNames = Productfind.product_details.map(
+          (item) => item.rProduct_name
+        );
+
         await Promise.all(
           product_details.map(async (item) => {
-            await processRowProductUpdate(
-              item,
-              "rProduct_name",
-              "rProduct_name_Units",
-              true
-            );
-            await processRowProductUpdate(
-              item,
-              "fProduct_name",
-              "fProduct_name_Units",
-              true
-            );
-            await processRowProductUpdate(
-              item,
-              "wProduct_name",
-              "wProduct_name_Units",
-              true
-            );
+            if (!existingProductNames.includes(item.rProduct_name)) {
+              // If product is new, add it
+              await processRowProductUpdate(
+                item,
+                "rProduct_name",
+                "rProduct_name_Units",
+                false
+              );
+              await processRowProductUpdate(
+                item,
+                "fProduct_name",
+                "fProduct_name_Units",
+                true
+              );
+              await processRowProductUpdate(
+                item,
+                "wProduct_name",
+                "wProduct_name_Units",
+                true
+              );
+            }
+          })
+        );
+
+        // Lapse the existing ones
+        await Promise.all(
+          Productfind.product_details.map(async (item) => {
+            if (
+              !product_details.some(
+                (newItem) => newItem.rProduct_name === item.rProduct_name
+              )
+            ) {
+              await processRowProductUpdate(
+                item,
+                "rProduct_name",
+                "rProduct_name_Units",
+                true
+              );
+              await processRowProductUpdate(
+                item,
+                "fProduct_name",
+                "fProduct_name_Units",
+                false
+              );
+              await processRowProductUpdate(
+                item,
+                "wProduct_name",
+                "wProduct_name_Units",
+                false
+              );
+            }
           })
         );
       } else if (product_details.length < Productfind.product_details.length) {
+        // Add new products and lapse existing ones
+        const incomingProductNames = product_details.map(
+          (item) => item.rProduct_name
+        );
+
         await Promise.all(
           Productfind.product_details.map(async (item) => {
-            await processRowProductUpdate(
-              item,
-              "rProduct_name",
-              "rProduct_name_Units",
-              false
-            );
-            await processRowProductUpdate(
-              item,
-              "fProduct_name",
-              "fProduct_name_Units",
-              false
-            );
-            await processRowProductUpdate(
-              item,
-              "wProduct_name",
-              "wProduct_name_Units",
-              false
-            );
+            if (!incomingProductNames.includes(item.rProduct_name)) {
+              // If product is not in incoming, lapse it
+              await processRowProductUpdate(
+                item,
+                "rProduct_name",
+                "rProduct_name_Units",
+                true
+              );
+              await processRowProductUpdate(
+                item,
+                "fProduct_name",
+                "fProduct_name_Units",
+                false
+              );
+              await processRowProductUpdate(
+                item,
+                "wProduct_name",
+                "wProduct_name_Units",
+                false
+              );
+            }
+          })
+        );
+
+        // Add the incoming products
+        await Promise.all(
+          product_details.map(async (item) => {
+            if (
+              !Productfind.product_details.some(
+                (existingItem) =>
+                  existingItem.rProduct_name === item.rProduct_name
+              )
+            ) {
+              await processRowProductUpdate(
+                item,
+                "rProduct_name",
+                "rProduct_name_Units",
+                false
+              );
+              await processRowProductUpdate(
+                item,
+                "fProduct_name",
+                "fProduct_name_Units",
+                true
+              );
+              await processRowProductUpdate(
+                item,
+                "wProduct_name",
+                "wProduct_name_Units",
+                true
+              );
+            }
           })
         );
       } else {
+        // If lengths are equal, update the existing products
         await Promise.all(
           product_details.map(async (item) => {
             await processRowProductUpdate(
@@ -292,7 +370,7 @@ export const updateProduct = async (req, res, next) => {
 
     await updateProductDetails();
 
-    const updateData = { product_details };
+    const updateData = { product_details: Productfind.product_details }; // Keeping existing product_details
     await StartProduction.findByIdAndUpdate(id, updateData, { new: true });
     res.status(200).json({ message: "Data Updated", status: true });
   } catch (error) {
