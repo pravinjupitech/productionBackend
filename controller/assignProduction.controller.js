@@ -1059,3 +1059,117 @@ while package-lock.json This file locks the exact versions of every installed pa
 In summary, package.json is a high-level overview of the project and its dependencies, while package-lock.json locks down the exact versions of those dependencies for reproducibility and consistency.
 
 */
+// export const updateProduct = async (req, res, next) => {
+//   try {
+//     const id = req.params.id;
+//     const Productfind = await StartProduction.findById(id);
+//     if (!Productfind) {
+//       return res
+//         .status(404)
+//         .json({ message: "Product Not Found", status: false });
+//     }
+
+//     const { product_details } = req.body;
+
+//     const processRowProductUpdate = async (item, productType, typeUnits) => {
+//       if (item[productType] !== null && item[productType]) {
+//         const Rowproduct = await RowProduct.findById(item[productType]);
+//         if (Rowproduct) {
+//           await Promise.all(
+//             item[typeUnits].map(async (data) => {
+//               if (data.unit === Rowproduct.stockUnit) {
+//                 const existingProduct = Productfind.product_details.find(
+//                   (existingItem) =>
+//                     existingItem[productType] === item[productType]
+//                 );
+
+//                 if (existingProduct) {
+//                   const existingUnit = existingProduct[typeUnits].find(
+//                     (existingData) => existingData.unit === data.unit
+//                   );
+
+//                   if (existingUnit) {
+//                     let qty;
+//                     const qtyDifference = data.value - existingUnit.value;
+
+//                     if (qtyDifference !== 0) {
+//                       qty = Math.abs(qtyDifference);
+//                       Rowproduct.qty +=
+//                         (productType === "rProduct_name" ? -1 : 1) *
+//                         qtyDifference;
+
+//                       if (qtyDifference > 0) {
+//                         if (productType === "rProduct_name") {
+//                           await productionlapseWarehouse(
+//                             qty,
+//                             Rowproduct.warehouse,
+//                             item[productType]
+//                           );
+//                         } else {
+//                           await productionAddWarehouse(
+//                             qty,
+//                             Rowproduct.warehouse,
+//                             item[productType]
+//                           );
+//                         }
+//                       } else {
+//                         if (productType === "rProduct_name") {
+//                           await productionAddWarehouse(
+//                             qty,
+//                             Rowproduct.warehouse,
+//                             item[productType]
+//                           );
+//                         } else {
+//                           await productionlapseWarehouse(
+//                             qty,
+//                             Rowproduct.warehouse,
+//                             item[productType]
+//                           );
+//                         }
+//                       }
+//                       await Rowproduct.save();
+//                     }
+//                   }
+//                 }
+//               }
+//             })
+//           );
+//         }
+//       }
+//     };
+
+//     const updateProductDetails = async () => {
+//       await Promise.all(
+//         product_details.map(async (item) => {
+//           await processRowProductUpdate(
+//             item,
+//             "rProduct_name",
+//             "rProduct_name_Units"
+//           );
+//           await processRowProductUpdate(
+//             item,
+//             "fProduct_name",
+//             "fProduct_name_Units"
+//           );
+//           await processRowProductUpdate(
+//             item,
+//             "wProduct_name",
+//             "wProduct_name_Units"
+//           );
+//         })
+//       );
+//     };
+
+//     await updateProductDetails();
+
+//     const updateData = { product_details };
+//     await StartProduction.findByIdAndUpdate(id, updateData, { new: true });
+
+//     res
+//       .status(200)
+//       .json({ message: "Data Updated Successfully", status: true });
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).json({ message: "Internal Server Error", status: false });
+//   }
+// };
