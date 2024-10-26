@@ -190,6 +190,226 @@ export const updateProduct = async (req, res, next) => {
       item,
       productType,
       typeUnits,
+      Action
+    ) => {
+      if (item[productType]) {
+        const Rowproduct = await RowProduct.findById(item[productType]);
+        if (Rowproduct) {
+          await Promise.all(
+            item[typeUnits].map(async (data) => {
+              if (data.unit === Rowproduct.stockUnit) {
+                const qty = data.value; 
+                if (Action === "Lapse") {
+                  Rowproduct.qty -= qty;
+                } else {
+                  Rowproduct.qty += qty; 
+                }
+                const warehouseFunc =
+                  Action === "Add"
+                    ? productionAddWarehouse
+                    : productionlapseWarehouse;
+                await warehouseFunc(
+                  Math.abs(qty),
+                  Rowproduct.warehouse,
+                  item[productType]
+                );
+                await Rowproduct.save();
+              }
+            })
+          );
+        }
+      }
+    };
+
+    const updateProductDetails = async () => {
+      if (product_details.length > Productfind.product_details.length) {
+        await Promise.all(
+          product_details.map(async (item) => {
+            await processRowProductUpdate(
+              item,
+              "rProduct_name",
+              "rProduct_name_Units",
+              "Add"
+            );
+            await processRowProductUpdate(
+              item,
+              "fProduct_name",
+              "fProduct_name_Units",
+              "Add"
+            );
+            await processRowProductUpdate(
+              item,
+              "wProduct_name",
+              "wProduct_name_Units",
+              "Add"
+            );
+          })
+        );
+      } else if (product_details.length < Productfind.product_details.length) {
+        await Promise.all(
+          Productfind.product_details.map(async (item) => {
+            await processRowProductUpdate(
+              item,
+              "rProduct_name",
+              "rProduct_name_Units",
+              "Lapse"
+            );
+            await processRowProductUpdate(
+              item,
+              "fProduct_name",
+              "fProduct_name_Units",
+              "Lapse"
+            );
+            await processRowProductUpdate(
+              item,
+              "wProduct_name",
+              "wProduct_name_Units",
+              "Lapse"
+            );
+          })
+        );
+      } else {
+        // When the product count remains the same
+        await Promise.all(
+          product_details.map(async (item) => {
+            const existingItem = Productfind.product_details.find(
+              (prod) => prod.rProduct_name === item.rProduct_name
+            );
+
+            if (existingItem) {
+              const existingQty = existingItem.rProduct_name_Units.reduce(
+                (total, unit) => total + unit.value,
+                0
+              );
+              const currentQty = item.rProduct_name_Units.reduce(
+                (total, unit) => total + unit.value,
+                0
+              );
+
+              let qtyDifference = 0;
+
+              if (existingQty > currentQty) {
+                qtyDifference = existingQty - currentQty;
+                await processRowProductUpdate(
+                  item,
+                  "rProduct_name",
+                  "rProduct_name_Units",
+                  "Add",
+                  qtyDifference
+                );
+                await processRowProductUpdate(
+                  item,
+                  "fProduct_name",
+                  "fProduct_name_Units",
+                  "Lapse",
+                  qtyDifference
+                );
+                await processRowProductUpdate(
+                  item,
+                  "wProduct_name",
+                  "wProduct_name_Units",
+                  "Lapse",
+                  qtyDifference
+                );
+              } else if (currentQty > existingQty) {
+                qtyDifference = currentQty - existingQty;
+                await processRowProductUpdate(
+                  item,
+                  "rProduct_name",
+                  "rProduct_name_Units",
+                  "Lapse",
+                  qtyDifference
+                );
+                await processRowProductUpdate(
+                  item,
+                  "fProduct_name",
+                  "fProduct_name_Units",
+                  "Add",
+                  qtyDifference
+                );
+                await processRowProductUpdate(
+                  item,
+                  "wProduct_name",
+                  "wProduct_name_Units",
+                  "Add",
+                  qtyDifference
+                );
+              }
+            }
+          })
+        );
+      }
+    };
+
+    await updateProductDetails();
+
+    const updateData = { product_details };
+    await StartProduction.findByIdAndUpdate(id, updateData, { new: true });
+    res.status(200).json({ message: "Data Updated", status: true });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal Server Error", status: false });
+  }
+};
+
+export const productionlapseWarehouse = async (qty, warehouseId, productId) => {
+  try {
+    const warehouse = await Warehouse.findById(warehouseId);
+    if (!warehouse) {
+      return res
+        .status(404)
+        .json({ message: "warehouse not found", status: false });
+    }
+    const sourceProductItem = warehouse.productItems.find(
+      (pItem) => pItem.productId.toString() === productId.toString()
+    );
+    if (sourceProductItem) {
+      sourceProductItem.currentStock -= qty;
+      sourceProductItem.transferQty -= qty;
+      warehouse.markModified("productItems");
+      await warehouse.save();
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const productionAddWarehouse = async (qty, warehouseId, productId) => {
+  try {
+    const warehouse = await Warehouse.findById(warehouseId);
+    if (!warehouse) {
+      return res
+        .status(404)
+        .json({ message: "warehouse not found", status: false });
+    }
+    const sourceProductItem = warehouse.productItems.find(
+      (pItem) => pItem.productId.toString() === productId.toString()
+    );
+    if (sourceProductItem) {
+      sourceProductItem.currentStock += qty;
+      sourceProductItem.transferQty += qty;
+      warehouse.markModified("productItems");
+      await warehouse.save();
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
+/*
+export const updateProduct = async (req, res, next) => {
+  try {
+    const id = req.params.id;
+    const Productfind = await StartProduction.findById(id);
+    if (!Productfind) {
+      return res.status(404).json({ message: "Not Found", status: false });
+    }
+
+    const { product_details } = req.body;
+
+    const processRowProductUpdate = async (
+      item,
+      productType,
+      typeUnits,
       Action,
       qty
     ) => {
@@ -348,47 +568,4 @@ export const updateProduct = async (req, res, next) => {
     res.status(500).json({ message: "Internal Server Error", status: false });
   }
 };
-
-export const productionlapseWarehouse = async (qty, warehouseId, productId) => {
-  try {
-    const warehouse = await Warehouse.findById(warehouseId);
-    if (!warehouse) {
-      return res
-        .status(404)
-        .json({ message: "warehouse not found", status: false });
-    }
-    const sourceProductItem = warehouse.productItems.find(
-      (pItem) => pItem.productId.toString() === productId.toString()
-    );
-    if (sourceProductItem) {
-      sourceProductItem.currentStock -= qty;
-      sourceProductItem.transferQty -= qty;
-      warehouse.markModified("productItems");
-      await warehouse.save();
-    }
-  } catch (error) {
-    console.log(error);
-  }
-};
-
-export const productionAddWarehouse = async (qty, warehouseId, productId) => {
-  try {
-    const warehouse = await Warehouse.findById(warehouseId);
-    if (!warehouse) {
-      return res
-        .status(404)
-        .json({ message: "warehouse not found", status: false });
-    }
-    const sourceProductItem = warehouse.productItems.find(
-      (pItem) => pItem.productId.toString() === productId.toString()
-    );
-    if (sourceProductItem) {
-      sourceProductItem.currentStock += qty;
-      sourceProductItem.transferQty += qty;
-      warehouse.markModified("productItems");
-      await warehouse.save();
-    }
-  } catch (error) {
-    console.log(error);
-  }
-};
+*/
