@@ -179,7 +179,7 @@ const revertStockUnits = async (units, product, actionType) => {
 export const updateProduct = async (req, res, next) => {
   try {
     const id = req.params.id;
-    const Productfind = await AssignProduction.findById(id);
+    const Productfind = await StartProduction.findById(id);
     if (!Productfind) {
       return res.status(404).json({ message: "Not Found", status: false });
     }
@@ -287,7 +287,7 @@ export const updateProduct = async (req, res, next) => {
     await updateProductDetails();
 
     const updateData = req.body;
-    await AssignProduction.findByIdAndUpdate(id, updateData, { new: true });
+    await StartProduction.findByIdAndUpdate(id, updateData, { new: true });
     res.status(200).json({ message: "Data Updated", status: true });
   } catch (error) {
     console.log(error);
@@ -343,7 +343,7 @@ export const productionAddWarehouse = async (qty, warehouseId, productId) => {
 export const updateProduct = async (req, res, next) => {
   try {
     const id = req.params.id;
-    const Productfind = await AssignProduction.findById(id);
+    const Productfind = await StartProduction.findById(id);
     if (!Productfind) {
       return res.status(404).json({ message: "Not Found", status: false });
     }
@@ -458,7 +458,7 @@ export const updateProduct = async (req, res, next) => {
 
     // Update product details in the database
     const updateData = { product_details };
-    await AssignProduction.findByIdAndUpdate(id, updateData, { new: true });
+    await StartProduction.findByIdAndUpdate(id, updateData, { new: true });
     res.status(200).json({ message: "Data Updated", status: true });
   } catch (error) {
     console.log(error);
