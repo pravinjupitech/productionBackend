@@ -303,14 +303,14 @@ export const updateProduct = async (req, res, next) => {
                   "fProduct_name",
                   "fProduct_name_Units",
                   "Lapse",
-                  currentQty
+                  qtyDifference
                 );
                 await processRowProductUpdate(
                   item,
                   "wProduct_name",
                   "wProduct_name_Units",
                   "Lapse",
-                  currentQty
+                  qtyDifference
                 );
               } else if (currentQty > existingQty) {
                 qtyDifference = currentQty - existingQty;
@@ -326,14 +326,14 @@ export const updateProduct = async (req, res, next) => {
                   "fProduct_name",
                   "fProduct_name_Units",
                   "Add",
-                  currentQty
+                  qtyDifference
                 );
                 await processRowProductUpdate(
                   item,
                   "wProduct_name",
                   "wProduct_name_Units",
                   "Add",
-                  currentQty
+                  qtyDifference
                 );
               }
             }
