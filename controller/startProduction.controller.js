@@ -250,7 +250,8 @@ export const updateProduct = async (req, res, next) => {
             await processRowProductUpdate(
               item,
               "rProduct_name",
-              "rProduct_name_Units"
+              "rProduct_name_Units",
+              true
             );
             await processRowProductUpdate(
               item,
