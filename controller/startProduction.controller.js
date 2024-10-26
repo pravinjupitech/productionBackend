@@ -186,7 +186,6 @@ export const updateProduct = async (req, res, next) => {
     }
 
     const { product_details } = req.body;
-
     const processRowProductUpdate = async (
       item,
       productType,
@@ -201,7 +200,6 @@ export const updateProduct = async (req, res, next) => {
             item[typeUnits].map(async (data) => {
               if (data.unit === Rowproduct.stockUnit) {
                 Rowproduct.qty += Action === "Lapse" ? -qty : qty;
-
                 const warehouseFunc =
                   Action === "Add"
                     ? productionAddWarehouse
@@ -221,7 +219,6 @@ export const updateProduct = async (req, res, next) => {
 
     const updateProductDetails = async () => {
       const existingProductDetails = Productfind.product_details;
-
       if (product_details.length > existingProductDetails.length) {
         await Promise.all(
           product_details.map(async (item) => {
@@ -276,7 +273,6 @@ export const updateProduct = async (req, res, next) => {
               0
             );
             const qtyDifference = Math.abs(existingQty - currentQty);
-
             await processRowProductUpdate(
               item,
               "rProduct_name",
@@ -374,7 +370,6 @@ export const updateProduct = async (req, res, next) => {
         );
       }
     };
-
     await updateProductDetails();
     const updateData = { product_details };
     await StartProduction.findByIdAndUpdate(id, updateData, { new: true });
