@@ -193,6 +193,11 @@ export const updateProduct = async (req, res, next) => {
       Action,
       qty
     ) => {
+      console.log("item", item);
+      console.log("productType", productType);
+      console.log("typeUnits", typeUnits);
+      console.log("Action", Action);
+      console.log("qty", qty);
       if (item[productType]) {
         const Rowproduct = await RowProduct.findById(item[productType]);
         if (Rowproduct) {
@@ -223,7 +228,6 @@ export const updateProduct = async (req, res, next) => {
         }
       }
     };
-
     const updateProductDetails = async () => {
       if (product_details.length > Productfind.product_details.length) {
         await Promise.all(
