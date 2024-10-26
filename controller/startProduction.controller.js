@@ -198,15 +198,7 @@ export const updateProduct = async (req, res, next) => {
           await Promise.all(
             item[typeUnits].map(async (data) => {
               if (data.unit === Rowproduct.stockUnit) {
-                let fixQty;
-                if (Rowproduct.qty > data.value) {
-                  fixQty = RowProduct.qty - data.value;
-                } else if (Rowproduct.qty < data.value) {
-                  fixQty = data.value - RowProduct.qty;
-                } else {
-                  fixQty = 0;
-                }
-                const qty = fixQty * (isAdd ? 1 : -1);
+                const qty = data.value * (isAdd ? 1 : -1);
                 console.log("qty", qty);
                 console.log("Before Add ExitingProduct qty", Rowproduct.qty);
                 Rowproduct.qty += productType === "rProduct_name" ? -qty : qty;
