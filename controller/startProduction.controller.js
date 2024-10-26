@@ -190,7 +190,8 @@ export const updateProduct = async (req, res, next) => {
       item,
       productType,
       typeUnits,
-      Action
+      Action,
+      qty
     ) => {
       if (item[productType]) {
         const Rowproduct = await RowProduct.findById(item[productType]);
@@ -198,11 +199,10 @@ export const updateProduct = async (req, res, next) => {
           await Promise.all(
             item[typeUnits].map(async (data) => {
               if (data.unit === Rowproduct.stockUnit) {
-                const qty = data.value; 
                 if (Action === "Lapse") {
                   Rowproduct.qty -= qty;
                 } else {
-                  Rowproduct.qty += qty; 
+                  Rowproduct.qty += qty;
                 }
                 const warehouseFunc =
                   Action === "Add"
@@ -229,7 +229,7 @@ export const updateProduct = async (req, res, next) => {
               item,
               "rProduct_name",
               "rProduct_name_Units",
-              "Add"
+              "Lapse"
             );
             await processRowProductUpdate(
               item,
@@ -252,7 +252,7 @@ export const updateProduct = async (req, res, next) => {
               item,
               "rProduct_name",
               "rProduct_name_Units",
-              "Lapse"
+              "Add"
             );
             await processRowProductUpdate(
               item,
@@ -269,7 +269,6 @@ export const updateProduct = async (req, res, next) => {
           })
         );
       } else {
-        // When the product count remains the same
         await Promise.all(
           product_details.map(async (item) => {
             const existingItem = Productfind.product_details.find(
@@ -285,7 +284,6 @@ export const updateProduct = async (req, res, next) => {
                 (total, unit) => total + unit.value,
                 0
               );
-
               let qtyDifference = 0;
 
               if (existingQty > currentQty) {
@@ -340,7 +338,6 @@ export const updateProduct = async (req, res, next) => {
         );
       }
     };
-
     await updateProductDetails();
 
     const updateData = { product_details };
