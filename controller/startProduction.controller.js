@@ -180,6 +180,7 @@ export const updateProduct = async (req, res, next) => {
   try {
     const id = req.params.id;
     const Productfind = await StartProduction.findById(id);
+
     if (!Productfind) {
       return res.status(404).json({ message: "Not Found", status: false });
     }
@@ -199,11 +200,8 @@ export const updateProduct = async (req, res, next) => {
           await Promise.all(
             item[typeUnits].map(async (data) => {
               if (data.unit === Rowproduct.stockUnit) {
-                if (Action === "Lapse") {
-                  Rowproduct.qty -= qty;
-                } else {
-                  Rowproduct.qty += qty;
-                }
+                Rowproduct.qty += Action === "Lapse" ? -qty : qty;
+
                 const warehouseFunc =
                   Action === "Add"
                     ? productionAddWarehouse
@@ -222,83 +220,111 @@ export const updateProduct = async (req, res, next) => {
     };
 
     const updateProductDetails = async () => {
-      if (product_details.length > Productfind.product_details.length) {
+      const existingProductDetails = Productfind.product_details;
+
+      if (product_details.length > existingProductDetails.length) {
         await Promise.all(
           product_details.map(async (item) => {
+            const Rowproduct = await RowProduct.findById(item.rProduct_name);
+            const existingQty = existingProductDetails.reduce(
+              (total, unit) =>
+                unit.unit === Rowproduct.stockUnit ? total + unit.value : total,
+              0
+            );
+            const currentQty = item.rProduct_name_Units.reduce(
+              (total, unit) =>
+                unit.unit === Rowproduct.stockUnit ? total + unit.value : total,
+              0
+            );
+            const qtyDifference = Math.abs(existingQty - currentQty);
+
             await processRowProductUpdate(
               item,
               "rProduct_name",
               "rProduct_name_Units",
-              "Lapse"
+              "Lapse",
+              qtyDifference
             );
             await processRowProductUpdate(
               item,
               "fProduct_name",
               "fProduct_name_Units",
-              "Add"
+              "Add",
+              qtyDifference
             );
             await processRowProductUpdate(
               item,
               "wProduct_name",
               "wProduct_name_Units",
-              "Add"
+              "Add",
+              qtyDifference
             );
           })
         );
-      } else if (product_details.length < Productfind.product_details.length) {
+      } else if (product_details.length < existingProductDetails.length) {
         await Promise.all(
-          Productfind.product_details.map(async (item) => {
+          existingProductDetails.map(async (item) => {
+            const Rowproduct = await RowProduct.findById(item.rProduct_name);
+            const existingQty = existingProductDetails.reduce(
+              (total, unit) =>
+                unit.unit === Rowproduct.stockUnit ? total + unit.value : total,
+              0
+            );
+            const currentQty = item.rProduct_name_Units.reduce(
+              (total, unit) =>
+                unit.unit === Rowproduct.stockUnit ? total + unit.value : total,
+              0
+            );
+            const qtyDifference = Math.abs(existingQty - currentQty);
+
             await processRowProductUpdate(
               item,
               "rProduct_name",
               "rProduct_name_Units",
-              "Add"
+              "Add",
+              qtyDifference
             );
             await processRowProductUpdate(
               item,
               "fProduct_name",
               "fProduct_name_Units",
-              "Lapse"
+              "Lapse",
+              qtyDifference
             );
             await processRowProductUpdate(
               item,
               "wProduct_name",
               "wProduct_name_Units",
-              "Lapse"
+              "Lapse",
+              qtyDifference
             );
           })
         );
       } else {
         await Promise.all(
           product_details.map(async (item) => {
-            const existingItem = Productfind.product_details.find(
+            const existingItem = existingProductDetails.find(
               (prod) => prod.rProduct_name === item.rProduct_name
             );
-
             if (existingItem) {
               const Rowproduct = await RowProduct.findById(item.rProduct_name);
               const existingQty = existingItem.rProduct_name_Units.reduce(
-                (total, unit) => {
-                  if (unit.unit === Rowproduct.stockUnit) {
-                    return total + unit.value;
-                  }
-                  return total;
-                },
+                (total, unit) =>
+                  unit.unit === Rowproduct.stockUnit
+                    ? total + unit.value
+                    : total,
                 0
               );
               const currentQty = item.rProduct_name_Units.reduce(
-                (total, unit) => {
-                  if (unit.unit === Rowproduct.stockUnit) {
-                    return total + unit.value;
-                  }
-                  return total;
-                },
+                (total, unit) =>
+                  unit.unit === Rowproduct.stockUnit
+                    ? total + unit.value
+                    : total,
                 0
               );
-              let qtyDifference = 0;
 
+              let qtyDifference = Math.abs(existingQty - currentQty);
               if (existingQty > currentQty) {
-                qtyDifference = existingQty - currentQty;
                 await processRowProductUpdate(
                   item,
                   "rProduct_name",
@@ -321,7 +347,6 @@ export const updateProduct = async (req, res, next) => {
                   qtyDifference
                 );
               } else if (currentQty > existingQty) {
-                qtyDifference = currentQty - existingQty;
                 await processRowProductUpdate(
                   item,
                   "rProduct_name",
@@ -349,8 +374,8 @@ export const updateProduct = async (req, res, next) => {
         );
       }
     };
-    await updateProductDetails();
 
+    await updateProductDetails();
     const updateData = { product_details };
     await StartProduction.findByIdAndUpdate(id, updateData, { new: true });
     res.status(200).json({ message: "Data Updated", status: true });
