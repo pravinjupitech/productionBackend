@@ -190,7 +190,7 @@ export const updateProduct = async (req, res, next) => {
       item,
       productType,
       typeUnits,
-      isAdd
+      Action
     ) => {
       if (item[productType]) {
         const Rowproduct = await RowProduct.findById(item[productType]);
@@ -198,14 +198,18 @@ export const updateProduct = async (req, res, next) => {
           await Promise.all(
             item[typeUnits].map(async (data) => {
               if (data.unit === Rowproduct.stockUnit) {
-                const qty = data.value * (isAdd ? 1 : -1);
-                Rowproduct.qty += productType === "rProduct_name" ? -qty : qty;
+                const qty = data.value;
+                if (Action === "Lapse") {
+                  Rowproduct.qty -= qty; // Lapse means subtract quantity
+                } else {
+                  Rowproduct.qty += qty; // Add means increment quantity
+                }
 
                 const warehouseFunc =
-                  (isAdd && productType === "rProduct_name") ||
-                  (!isAdd && productType !== "rProduct_name")
-                    ? productionlapseWarehouse
-                    : productionAddWarehouse;
+                  (Action === "Add" && productType !== "rProduct_name") ||
+                  (Action === "Lapse" && productType === "rProduct_name")
+                    ? productionAddWarehouse
+                    : productionlapseWarehouse;
 
                 await warehouseFunc(
                   Math.abs(qty),
@@ -228,19 +232,19 @@ export const updateProduct = async (req, res, next) => {
               item,
               "rProduct_name",
               "rProduct_name_Units",
-              false
+              "Lapse" // Lapse rProduct_name
             );
             await processRowProductUpdate(
               item,
               "fProduct_name",
               "fProduct_name_Units",
-              true
+              "Add" // Add fProduct_name
             );
             await processRowProductUpdate(
               item,
               "wProduct_name",
               "wProduct_name_Units",
-              true
+              "Add" // Add wProduct_name
             );
           })
         );
@@ -251,39 +255,43 @@ export const updateProduct = async (req, res, next) => {
               item,
               "rProduct_name",
               "rProduct_name_Units",
-              true
+              "Add" // Add rProduct_name
             );
             await processRowProductUpdate(
               item,
               "fProduct_name",
               "fProduct_name_Units",
-              false
+              "Lapse" // Lapse fProduct_name
             );
             await processRowProductUpdate(
               item,
               "wProduct_name",
               "wProduct_name_Units",
-              false
+              "Lapse" // Lapse wProduct_name
             );
           })
         );
       } else {
+        // Lengths are equal
         await Promise.all(
           product_details.map(async (item) => {
             await processRowProductUpdate(
               item,
               "rProduct_name",
-              "rProduct_name_Units"
+              "rProduct_name_Units",
+              "Lapse" // Lapse rProduct_name
             );
             await processRowProductUpdate(
               item,
               "fProduct_name",
-              "fProduct_name_Units"
+              "fProduct_name_Units",
+              "Add" // Add fProduct_name
             );
             await processRowProductUpdate(
               item,
               "wProduct_name",
-              "wProduct_name_Units"
+              "wProduct_name_Units",
+              "Add" // Add wProduct_name
             );
           })
         );
@@ -300,6 +308,131 @@ export const updateProduct = async (req, res, next) => {
     res.status(500).json({ message: "Internal Server Error", status: false });
   }
 };
+
+// export const updateProduct = async (req, res, next) => {
+//   try {
+//     const id = req.params.id;
+//     const Productfind = await StartProduction.findById(id);
+//     if (!Productfind) {
+//       return res.status(404).json({ message: "Not Found", status: false });
+//     }
+
+//     const { product_details } = req.body;
+
+//     const processRowProductUpdate = async (
+//       item,
+//       productType,
+//       typeUnits,
+//       Action
+//     ) => {
+//       if (item[productType]) {
+//         const Rowproduct = await RowProduct.findById(item[productType]);
+//         if (Rowproduct) {
+//           await Promise.all(
+//             item[typeUnits].map(async (data) => {
+//               if (data.unit === Rowproduct.stockUnit) {
+//                 const qty = data.value * (isAdd ? 1 : -1);
+//                 Rowproduct.qty += productType === "rProduct_name" ? -qty : qty;
+
+//                 const warehouseFunc =
+//                   (isAdd && productType === "rProduct_name") ||
+//                   (!isAdd && productType !== "rProduct_name")
+//                     ? productionlapseWarehouse
+//                     : productionAddWarehouse;
+
+//                 await warehouseFunc(
+//                   Math.abs(qty),
+//                   Rowproduct.warehouse,
+//                   item[productType]
+//                 );
+//                 await Rowproduct.save();
+//               }
+//             })
+//           );
+//         }
+//       }
+//     };
+
+//     const updateProductDetails = async () => {
+//       if (product_details.length > Productfind.product_details.length) {
+//         await Promise.all(
+//           product_details.map(async (item) => {
+//             await processRowProductUpdate(
+//               item,
+//               "rProduct_name",
+//               "rProduct_name_Units",
+//               "Lapse"
+//             );
+//             await processRowProductUpdate(
+//               item,
+//               "fProduct_name",
+//               "fProduct_name_Units",
+//               "Add"
+//             );
+//             await processRowProductUpdate(
+//               item,
+//               "wProduct_name",
+//               "wProduct_name_Units",
+//               "Add"
+//             );
+//           })
+//         );
+//       } else if (product_details.length < Productfind.product_details.length) {
+//         await Promise.all(
+//           Productfind.product_details.map(async (item) => {
+//             await processRowProductUpdate(
+//               item,
+//               "rProduct_name",
+//               "rProduct_name_Units",
+//               "Add"
+//             );
+//             await processRowProductUpdate(
+//               item,
+//               "fProduct_name",
+//               "fProduct_name_Units",
+//               "Lapse"
+//             );
+//             await processRowProductUpdate(
+//               item,
+//               "wProduct_name",
+//               "wProduct_name_Units",
+//               "Lapse"
+//             );
+//           })
+//         );
+//       } else {
+//         await Promise.all(
+//           product_details.map(async (item) => {
+//             await processRowProductUpdate(
+//               item,
+//               "rProduct_name",
+//               "rProduct_name_Units"
+//             );
+//             await processRowProductUpdate(
+//               item,
+//               "fProduct_name",
+//               "fProduct_name_Units"
+//             );
+//             await processRowProductUpdate(
+//               item,
+//               "wProduct_name",
+//               "wProduct_name_Units"
+//             );
+//           })
+//         );
+//       }
+//     };
+
+//     await updateProductDetails();
+
+//     const updateData = { product_details };
+//     await StartProduction.findByIdAndUpdate(id, updateData, { new: true });
+//     res.status(200).json({ message: "Data Updated", status: true });
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).json({ message: "Internal Server Error", status: false });
+//   }
+// };
 
 export const productionlapseWarehouse = async (qty, warehouseId, productId) => {
   try {
