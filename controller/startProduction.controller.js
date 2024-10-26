@@ -276,12 +276,23 @@ export const updateProduct = async (req, res, next) => {
             );
 
             if (existingItem) {
+              const Rowproduct = await RowProduct.findById(item.rProduct_name);
               const existingQty = existingItem.rProduct_name_Units.reduce(
-                (total, unit) => total + unit.value,
+                (total, unit) => {
+                  if (unit.unit === Rowproduct.stockUnit) {
+                    return total + unit.value;
+                  }
+                  return total;
+                },
                 0
               );
               const currentQty = item.rProduct_name_Units.reduce(
-                (total, unit) => total + unit.value,
+                (total, unit) => {
+                  if (unit.unit === Rowproduct.stockUnit) {
+                    return total + unit.value;
+                  }
+                  return total;
+                },
                 0
               );
               let qtyDifference = 0;
