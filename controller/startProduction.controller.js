@@ -190,7 +190,8 @@ export const updateProduct = async (req, res, next) => {
       item,
       productType,
       typeUnits,
-      Action
+      Action,
+      qty
     ) => {
       if (item[productType]) {
         const Rowproduct = await RowProduct.findById(item[productType]);
@@ -198,11 +199,10 @@ export const updateProduct = async (req, res, next) => {
           await Promise.all(
             item[typeUnits].map(async (data) => {
               if (data.unit === Rowproduct.stockUnit) {
-                const qty = data.value;
                 if (Action === "Lapse") {
-                  Rowproduct.qty -= qty; // Lapse means subtract quantity
+                  Rowproduct.qty -= qty;
                 } else {
-                  Rowproduct.qty += qty; // Add means increment quantity
+                  Rowproduct.qty += qty;
                 }
 
                 const warehouseFunc =
@@ -232,19 +232,19 @@ export const updateProduct = async (req, res, next) => {
               item,
               "rProduct_name",
               "rProduct_name_Units",
-              "Lapse" // Lapse rProduct_name
+              "Lapse"
             );
             await processRowProductUpdate(
               item,
               "fProduct_name",
               "fProduct_name_Units",
-              "Add" // Add fProduct_name
+              "Add"
             );
             await processRowProductUpdate(
               item,
               "wProduct_name",
               "wProduct_name_Units",
-              "Add" // Add wProduct_name
+              "Add"
             );
           })
         );
@@ -255,44 +255,88 @@ export const updateProduct = async (req, res, next) => {
               item,
               "rProduct_name",
               "rProduct_name_Units",
-              "Add" // Add rProduct_name
+              "Add"
             );
             await processRowProductUpdate(
               item,
               "fProduct_name",
               "fProduct_name_Units",
-              "Lapse" // Lapse fProduct_name
+              "Lapse"
             );
             await processRowProductUpdate(
               item,
               "wProduct_name",
               "wProduct_name_Units",
-              "Lapse" // Lapse wProduct_name
+              "Lapse"
             );
           })
         );
       } else {
-        // Lengths are equal
         await Promise.all(
           product_details.map(async (item) => {
-            await processRowProductUpdate(
-              item,
-              "rProduct_name",
-              "rProduct_name_Units",
-              "Lapse" // Lapse rProduct_name
+            const existingItem = Productfind.product_details.find(
+              (prod) => prod.rProduct_name === item.rProduct_name
             );
-            await processRowProductUpdate(
-              item,
-              "fProduct_name",
-              "fProduct_name_Units",
-              "Add" // Add fProduct_name
-            );
-            await processRowProductUpdate(
-              item,
-              "wProduct_name",
-              "wProduct_name_Units",
-              "Add" // Add wProduct_name
-            );
+
+            if (existingItem) {
+              const existingQty = existingItem.rProduct_name_Units.reduce(
+                (total, unit) => total + unit.value,
+                0
+              );
+              const currentQty = item.rProduct_name_Units.reduce(
+                (total, unit) => total + unit.value,
+                0
+              );
+              let qtyDifference = 0;
+
+              if (existingQty > currentQty) {
+                qtyDifference = existingQty - currentQty;
+                await processRowProductUpdate(
+                  item,
+                  "rProduct_name",
+                  "rProduct_name_Units",
+                  "Add",
+                  qtyDifference
+                );
+                await processRowProductUpdate(
+                  item,
+                  "fProduct_name",
+                  "fProduct_name_Units",
+                  "Lapse",
+                  currentQty
+                );
+                await processRowProductUpdate(
+                  item,
+                  "wProduct_name",
+                  "wProduct_name_Units",
+                  "Lapse",
+                  currentQty
+                );
+              } else if (currentQty > existingQty) {
+                qtyDifference = currentQty - existingQty;
+                await processRowProductUpdate(
+                  item,
+                  "rProduct_name",
+                  "rProduct_name_Units",
+                  "Lapse",
+                  qtyDifference
+                );
+                await processRowProductUpdate(
+                  item,
+                  "fProduct_name",
+                  "fProduct_name_Units",
+                  "Add",
+                  currentQty
+                );
+                await processRowProductUpdate(
+                  item,
+                  "wProduct_name",
+                  "wProduct_name_Units",
+                  "Add",
+                  currentQty
+                );
+              }
+            }
           })
         );
       }
@@ -308,6 +352,140 @@ export const updateProduct = async (req, res, next) => {
     res.status(500).json({ message: "Internal Server Error", status: false });
   }
 };
+
+// export const updateProduct = async (req, res, next) => {
+//   try {
+//     const id = req.params.id;
+//     const Productfind = await StartProduction.findById(id);
+//     if (!Productfind) {
+//       return res.status(404).json({ message: "Not Found", status: false });
+//     }
+
+//     const { product_details } = req.body;
+
+//     const processRowProductUpdate = async (
+//       item,
+//       productType,
+//       typeUnits,
+//       Action
+//     ) => {
+//       if (item[productType]) {
+//         const Rowproduct = await RowProduct.findById(item[productType]);
+//         if (Rowproduct) {
+//           await Promise.all(
+//             item[typeUnits].map(async (data) => {
+//               if (data.unit === Rowproduct.stockUnit) {
+//                 let qty;
+//                 if (Action === "Lapse") {
+//                   qty = data.value;
+//                   Rowproduct.qty -= qty;
+//                 } else if (Action === "Add") {
+//                   qty = data.value;
+//                   Rowproduct.qty += qty;
+//                 }
+
+//                 const warehouseFunc =
+//                   (Action === "Add" && productType !== "rProduct_name") ||
+//                   (Action === "Lapse" && productType === "rProduct_name")
+//                     ? productionAddWarehouse
+//                     : productionlapseWarehouse;
+
+//                 await warehouseFunc(
+//                   Math.abs(qty),
+//                   Rowproduct.warehouse,
+//                   item[productType]
+//                 );
+//                 await Rowproduct.save();
+//               }
+//             })
+//           );
+//         }
+//       }
+//     };
+
+//     const updateProductDetails = async () => {
+//       if (product_details.length > Productfind.product_details.length) {
+//         await Promise.all(
+//           product_details.map(async (item) => {
+//             await processRowProductUpdate(
+//               item,
+//               "rProduct_name",
+//               "rProduct_name_Units",
+//               "Lapse"
+//             );
+//             await processRowProductUpdate(
+//               item,
+//               "fProduct_name",
+//               "fProduct_name_Units",
+//               "Add"
+//             );
+//             await processRowProductUpdate(
+//               item,
+//               "wProduct_name",
+//               "wProduct_name_Units",
+//               "Add"
+//             );
+//           })
+//         );
+//       } else if (product_details.length < Productfind.product_details.length) {
+//         await Promise.all(
+//           Productfind.product_details.map(async (item) => {
+//             await processRowProductUpdate(
+//               item,
+//               "rProduct_name",
+//               "rProduct_name_Units",
+//               "Add"
+//             );
+//             await processRowProductUpdate(
+//               item,
+//               "fProduct_name",
+//               "fProduct_name_Units",
+//               "Lapse"
+//             );
+//             await processRowProductUpdate(
+//               item,
+//               "wProduct_name",
+//               "wProduct_name_Units",
+//               "Lapse"
+//             );
+//           })
+//         );
+//       } else {
+//         await Promise.all(
+//           product_details.map(async (item) => {
+//             await processRowProductUpdate(
+//               item,
+//               "rProduct_name",
+//               "rProduct_name_Units",
+//               "Lapse"
+//             );
+//             await processRowProductUpdate(
+//               item,
+//               "fProduct_name",
+//               "fProduct_name_Units",
+//               "Add"
+//             );
+//             await processRowProductUpdate(
+//               item,
+//               "wProduct_name",
+//               "wProduct_name_Units",
+//               "Add"
+//             );
+//           })
+//         );
+//       }
+//     };
+
+//     await updateProductDetails();
+
+//     const updateData = { product_details };
+//     await StartProduction.findByIdAndUpdate(id, updateData, { new: true });
+//     res.status(200).json({ message: "Data Updated", status: true });
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).json({ message: "Internal Server Error", status: false });
+//   }
+// };
 
 // export const updateProduct = async (req, res, next) => {
 //   try {
