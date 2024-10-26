@@ -185,14 +185,6 @@ export const updateProduct = async (req, res, next) => {
     }
 
     const { product_details } = req.body;
-    const productsteps = await StepsModel.findOne({
-      processName: Productfind.processName,
-    });
-    if (!productsteps) {
-      return res
-        .status(404)
-        .json({ message: "Process Not Found", status: false });
-    }
 
     const processRowProductUpdate = async (item, productType, typeUnits) => {
       if (item[productType] !== null) {
