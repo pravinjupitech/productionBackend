@@ -175,30 +175,42 @@ const revertStockUnits = async (units, product, actionType) => {
     console.error("Expected 'units' to be an array, but got:", units);
   }
 };
+
 export const updateProduct = async (req, res, next) => {
   try {
     const id = req.params.id;
-    const productToUpdate = await StartProduction.findById(id);
-    
-    if (!productToUpdate) {
+    const Productfind = await StartProduction.findById(id);
+    if (!Productfind) {
       return res.status(404).json({ message: "Not Found", status: false });
     }
 
     const { product_details } = req.body;
 
-    const processRowProductUpdate = async (item, productType, typeUnits, isAdd) => {
+    const processRowProductUpdate = async (
+      item,
+      productType,
+      typeUnits,
+      isAdd
+    ) => {
       if (item[productType]) {
-        const rowProduct = await RowProduct.findById(item[productType]);
-        if (rowProduct) {
+        const Rowproduct = await RowProduct.findById(item[productType]);
+        if (Rowproduct) {
           await Promise.all(
             item[typeUnits].map(async (data) => {
-              if (data.unit === rowProduct.stockUnit) {
-                const qtyDifference = Math.abs(rowProduct.qty - data.value);
-                const qtyAdjustment = qtyDifference * (isAdd ? 1 : -1);
-                console.log("qtyAdjustment", qtyAdjustment);
-                console.log("Before Adjustment RowProduct qty", rowProduct.qty);
-                rowProduct.qty += productType === "rProduct_name" ? -qtyAdjustment : qtyAdjustment;
-                console.log("After Adjustment RowProduct qty", rowProduct.qty);
+              if (data.unit === Rowproduct.stockUnit) {
+                let fixQty;
+                if (Rowproduct.qty > data.value) {
+                  fixQty = RowProduct.qty - data.value;
+                } else if (Rowproduct.qty < data.value) {
+                  fixQty = data.value - RowProduct.qty;
+                } else {
+                  fixQty = 0;
+                }
+                const qty = fixQty * (isAdd ? 1 : -1);
+                console.log("qty", qty);
+                console.log("Before Add ExitingProduct qty", Rowproduct.qty);
+                Rowproduct.qty += productType === "rProduct_name" ? -qty : qty;
+                console.log("after Add ExitingProduct qty", Rowproduct.qty);
 
                 const warehouseFunc =
                   (isAdd && productType === "rProduct_name") ||
@@ -207,11 +219,11 @@ export const updateProduct = async (req, res, next) => {
                     : productionAddWarehouse;
 
                 await warehouseFunc(
-                  qtyDifference,
-                  rowProduct.warehouse,
+                  Math.abs(qty),
+                  Rowproduct.warehouse,
                   item[productType]
                 );
-                await rowProduct.save();
+                await Rowproduct.save();
               }
             })
           );
@@ -220,53 +232,163 @@ export const updateProduct = async (req, res, next) => {
     };
 
     const updateProductDetails = async () => {
-      const existingProductNames = productToUpdate.product_details.map(
-        (item) => item.rProduct_name
-      );
+      if (product_details.length > Productfind.product_details.length) {
+        // Add new products and lapse existing ones
+        const existingProductNames = Productfind.product_details.map(
+          (item) => item.rProduct_name
+        );
 
-      // Add new products and lapse existing ones
-      const isAddNewProducts = product_details.length > existingProductNames.length;
+        await Promise.all(
+          product_details.map(async (item) => {
+            if (!existingProductNames.includes(item.rProduct_name)) {
+              // If product is new, add it
+              await processRowProductUpdate(
+                item,
+                "rProduct_name",
+                "rProduct_name_Units",
+                false
+              );
+              await processRowProductUpdate(
+                item,
+                "fProduct_name",
+                "fProduct_name_Units",
+                true
+              );
+              await processRowProductUpdate(
+                item,
+                "wProduct_name",
+                "wProduct_name_Units",
+                true
+              );
+            }
+          })
+        );
 
-      await Promise.all(
-        (isAddNewProducts ? product_details : productToUpdate.product_details).map(async (item) => {
-          const isNewProduct = isAddNewProducts && !existingProductNames.includes(item.rProduct_name);
-          const isExistingProduct = !isAddNewProducts && existingProductNames.includes(item.rProduct_name);
+        // Lapse the existing ones
+        await Promise.all(
+          Productfind.product_details.map(async (item) => {
+            if (
+              !product_details.some(
+                (newItem) => newItem.rProduct_name === item.rProduct_name
+              )
+            ) {
+              await processRowProductUpdate(
+                item,
+                "rProduct_name",
+                "rProduct_name_Units",
+                true
+              );
+              await processRowProductUpdate(
+                item,
+                "fProduct_name",
+                "fProduct_name_Units",
+                false
+              );
+              await processRowProductUpdate(
+                item,
+                "wProduct_name",
+                "wProduct_name_Units",
+                false
+              );
+            }
+          })
+        );
+      } else if (product_details.length < Productfind.product_details.length) {
+        // Add new products and lapse existing ones
+        const incomingProductNames = product_details.map(
+          (item) => item.rProduct_name
+        );
 
-          if (isNewProduct) {
-            await processRowProductUpdate(item, "rProduct_name", "rProduct_name_Units", false);
-            await processRowProductUpdate(item, "fProduct_name", "fProduct_name_Units", true);
-            await processRowProductUpdate(item, "wProduct_name", "wProduct_name_Units", true);
-          } else if (isExistingProduct) {
-            await processRowProductUpdate(item, "rProduct_name", "rProduct_name_Units", true);
-            await processRowProductUpdate(item, "fProduct_name", "fProduct_name_Units", false);
-            await processRowProductUpdate(item, "wProduct_name", "wProduct_name_Units", false);
-          }
-        })
-      );
+        await Promise.all(
+          Productfind.product_details.map(async (item) => {
+            if (!incomingProductNames.includes(item.rProduct_name)) {
+              // If product is not in incoming, lapse it
+              await processRowProductUpdate(
+                item,
+                "rProduct_name",
+                "rProduct_name_Units",
+                true
+              );
+              await processRowProductUpdate(
+                item,
+                "fProduct_name",
+                "fProduct_name_Units",
+                false
+              );
+              await processRowProductUpdate(
+                item,
+                "wProduct_name",
+                "wProduct_name_Units",
+                false
+              );
+            }
+          })
+        );
 
-      // Handle lapse for products that are no longer included
-      await Promise.all(
-        productToUpdate.product_details.map(async (item) => {
-          if (!product_details.some(newItem => newItem.rProduct_name === item.rProduct_name)) {
-            await processRowProductUpdate(item, "rProduct_name", "rProduct_name_Units", true);
-            await processRowProductUpdate(item, "fProduct_name", "fProduct_name_Units", false);
-            await processRowProductUpdate(item, "wProduct_name", "wProduct_name_Units", false);
-          }
-        })
-      );
+        // Add the incoming products
+        await Promise.all(
+          product_details.map(async (item) => {
+            if (
+              !Productfind.product_details.some(
+                (existingItem) =>
+                  existingItem.rProduct_name === item.rProduct_name
+              )
+            ) {
+              await processRowProductUpdate(
+                item,
+                "rProduct_name",
+                "rProduct_name_Units",
+                false
+              );
+              await processRowProductUpdate(
+                item,
+                "fProduct_name",
+                "fProduct_name_Units",
+                true
+              );
+              await processRowProductUpdate(
+                item,
+                "wProduct_name",
+                "wProduct_name_Units",
+                true
+              );
+            }
+          })
+        );
+      } else {
+        // If lengths are equal, update the existing products
+        await Promise.all(
+          product_details.map(async (item) => {
+            await processRowProductUpdate(
+              item,
+              "rProduct_name",
+              "rProduct_name_Units"
+            );
+            await processRowProductUpdate(
+              item,
+              "fProduct_name",
+              "fProduct_name_Units"
+            );
+            await processRowProductUpdate(
+              item,
+              "wProduct_name",
+              "wProduct_name_Units"
+            );
+          })
+        );
+      }
     };
 
     await updateProductDetails();
 
-    // Update the main product with existing details
-    await StartProduction.findByIdAndUpdate(id, { product_details: productToUpdate.product_details }, { new: true });
+    const updateData = { product_details: Productfind.product_details }; // Keeping existing product_details
+    await StartProduction.findByIdAndUpdate(id, updateData, { new: true });
     res.status(200).json({ message: "Data Updated", status: true });
   } catch (error) {
-    console.error("Error updating product:", error);
+    console.error(error);
     res.status(500).json({ message: "Internal Server Error", status: false });
   }
 };
-
 
 export const productionlapseWarehouse = async (qty, warehouseId, productId) => {
   try {
