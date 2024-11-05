@@ -1038,12 +1038,12 @@ insertion-> {
 at the begining-o(1)
 at the end- o(n) 
 at the specificPosition - o(n)
-}
+} 
 
 deletion->{
 at the begining - o(1)
 at the end - o(n)
-at the specificPosition - 0(n)
+at the specificPosition - o(n)
 }
 search- o(n),
 travesal - o(n)
