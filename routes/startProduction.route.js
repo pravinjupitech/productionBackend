@@ -9,7 +9,7 @@ import {
 const router = express.Router();
 
 router.post("/start-production", createProduction);
-// router.get("/view-ProductionList/:database", viewProduct);
+router.get("/view-ProductionList/:database", viewProduct);
 // router.get("/view-by-StartProduction/:id", viewByIdProduct);
 // router.put("/update-StartProduction/:id", updateProduct);
 // router.delete("/delete-StartProduction/:id", deleteProduct);
