@@ -160,7 +160,6 @@ export const updateProduct = async (req, res, next) => {
     if (!Productfind) {
       return res.status(404).json({ message: "Not Found", status: false });
     }
-
     const { product_details } = req.body;
     const productsteps = await StepsModel.findOne({
       processName: Productfind.processName,
@@ -1033,11 +1032,11 @@ array is time complexity of o(1),differance between array and list is array is s
 linked list is linear Data structure is consistance of a squevance of elements ,where each element point to next one.forming a chain. 
  linkedlist is three types use first singly linkedlist,doubly linkedlist and circular linkedlist 
  advantange of linkedlist:- dynamic memory allocation , efficient insertion and deletion , can represent complex data structures , can be used to impliment queues and stacks , can be used for memory management and caching , can be used gerbage collections 
-
+ 
 linked list time complexity or singly linked list or ->
-insertion->{
+insertion-> {
 at the begining-o(1)
-at the end- o(n)
+at the end- o(n) 
 at the specificPosition - o(n)
 }
 
@@ -1049,6 +1048,27 @@ at the specificPosition - 0(n)
 search- o(n),
 travesal - o(n)
 
+stack -> stack is linear data Structure thats follows lifo method,commanly use opreation push,pop,peek and this opration time complexity o(1)
+
+Stacks are used in various applications, such as function calls, recursion, expression evaluation, and parsing.
+
+Queue -> A queue is a linear data structure that follows the First-In-First-Out (FIFO) principle, where elements are added at the rear (enqueue) and removed from the front (dequeue).
+
+types of Queues-> 
+1.Simple Queue
+2.Circular Queue
+3.Priority Queue
+4.Double-Ended Queue (Deque) 
+
+Time complexity of Queue-> Enqueue: O(1)
+ Dequeue: O(1) for simple and circular queues, O(n) for priority queues
+
+
+ Heap -> A heap is a complete binary tree that satisfies the heap property: each node’s value is greater than or equal to its children’s values.
+
+ time complexity of inserting and deletion an element into a heap -> O(log n), where n is the number of elements in the heap.
+
+ time complexity of finding the minimum or maximum element in a heap-> O(1), as the root node always contains the minimum or maximum element.
 
 The event loop is a core concept in JavaScript, particularly in how asynchronous operations are handled. JavaScript is single-threaded, meaning it can execute only one task at a time. However, with the event loop, it can manage asynchronous tasks like I/O operations, timers, and callbacks without blocking the main thread. call stack and callback queue.
  
