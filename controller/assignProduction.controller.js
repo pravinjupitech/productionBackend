@@ -26,7 +26,7 @@ export const assignProduct = async (req, res, next) => {
       productsteps.steps[productsteps.steps.length - 1]._id.toString() ===
       currentStep;
     for (const item of product_details) {
-      if (item?.rProduct_name) {
+      if (item?.rProduct_name.length > 0 && item?.rProduct_name) {
         if (isFirstStep) {
           await updateProductQty(
             item?.rProduct_name,
@@ -45,7 +45,7 @@ export const assignProduct = async (req, res, next) => {
           );
         }
       }
-      if (item?.fProduct_name) {
+      if (item?.fProduct_name.length > 0 && item?.fProduct_name) {
         if (isLastStep) {
           await updateProductQty(
             item?.fProduct_name,
@@ -64,7 +64,7 @@ export const assignProduct = async (req, res, next) => {
           );
         }
       }
-      if (item?.wProduct_name) {
+      if (item?.wProduct_name.length > 0 && item.wProduct_name) {
         await updateProductQty(
           item?.wProduct_name,
           item?.wProduct_name_Units,
@@ -703,8 +703,8 @@ export const updateProducted = async (req, res, next) => {
                 Productfind.product_details.map(async (exitingItem) => {
                   exitingItem.wProduct_name_Units.map(async (exitingData) => {
                     if (exitingData.unit == data.unit) {
-                      console.log(exitingData.unit);
-                      console.log(exitingData.value, data.value);
+                      // console.log(exitingData.unit);
+                      // console.log(exitingData.value, data.value);
                       if (data.value > exitingData.value) {
                         let qty = data.value - exitingData.value;
                         Rowproduct.qty += qty;
@@ -879,7 +879,7 @@ export const deleteProducted = async (req, res, next) => {
     }
     if (productsteps.steps[0]._id.toString() === Productfind.currentStep) {
       Productfind.product_details.forEach(async (item) => {
-        if (item.rProduct_name !== null) {
+        if (item.rProduct_name.length > 0 && item.rProduct_name) {
           const Rowproduct = await Product.findById(item.rProduct_name);
           item.rProduct_name_Units.map(async (data) => {
             if (data.unit === Rowproduct.stockUnit) {
@@ -898,7 +898,7 @@ export const deleteProducted = async (req, res, next) => {
             }
           });
         }
-        if (item.fProduct_name !== null) {
+        if (item.fProduct_name.length > 0 && item.fProduct_name) {
           const Rowproduct = await RowProduct.findById(item.fProduct_name);
           item.fProduct_name_Units.map(async (data) => {
             if (data.unit === Rowproduct.stockUnit) {
@@ -917,7 +917,7 @@ export const deleteProducted = async (req, res, next) => {
             }
           });
         }
-        if (item.wProduct_name !== null) {
+        if (item.wProduct_name.length > 0 && item.wProduct_name) {
           const Rowproduct = await RowProduct.findById(item.wProduct_name);
           item.wProduct_name_Units.map(async (data) => {
             if (data.unit === Rowproduct.stockUnit) {
@@ -939,7 +939,7 @@ export const deleteProducted = async (req, res, next) => {
       });
     } else {
       Productfind.product_details.forEach(async (item) => {
-        if (item.rProduct_name !== null) {
+        if (item.rProduct_name.length > 0 && item.rProduct_name) {
           const Rowproduct = await RowProduct.findById(item.rProduct_name);
           item.rProduct_name_Units.map(async (data) => {
             if (data.unit === Rowproduct.stockUnit) {
@@ -958,7 +958,7 @@ export const deleteProducted = async (req, res, next) => {
             }
           });
         }
-        if (item.fProduct_name !== null) {
+        if (item.fProduct_name.length > 0 && item.fProduct_name) {
           const Rowproduct = await RowProduct.findById(item.fProduct_name);
           item.fProduct_name_Units.map(async (data) => {
             if (data.unit === Rowproduct.stockUnit) {
@@ -977,7 +977,7 @@ export const deleteProducted = async (req, res, next) => {
             }
           });
         }
-        if (item.wProduct_name !== null) {
+        if (item.wProduct_name.length > 0 && item.wProduct_name) {
           const Rowproduct = await RowProduct.findById(item.wProduct_name);
           item.wProduct_name_Units.map(async (data) => {
             if (data.unit === Rowproduct.stockUnit) {
@@ -1005,7 +1005,6 @@ export const deleteProducted = async (req, res, next) => {
     res.status(500).json({ error: "Internal Server Error", status: false });
   }
 };
-
 export const demoProduct = async (req, res, next) => {
   try {
     let arr = [1, 2, 3, 3, 4, 5, 5, 5];
@@ -1027,19 +1026,18 @@ export const demoProduct = async (req, res, next) => {
 };
 
 /*
-
 array is time complexity of o(1),differance between array and list is array is static data structure and it is fixed and continueslty while list is dynamic data structure and it is grow and not required continuslty.
 
 linked list is linear Data structure is consistance of a squevance of elements ,where each element point to next one.forming a chain. 
  linkedlist is three types use first singly linkedlist,doubly linkedlist and circular linkedlist 
- advantange of linkedlist:- dynamic memory allocation , efficient insertion and deletion , can represent complex data structures , can be used to impliment queues and stacks , can be used for memory management and caching , can be used gerbage collections 
+ advantange of linkedlist:- dynamic memory allocation , efficient insertion and deletion , can represent complex data structures , can be used to impliment queues and stacks , can be used for memory management and caching , can be used gerbage collections
  
 linked list time complexity or singly linked list or ->
 insertion-> {
 at the begining-o(1)
 at the end- o(n) 
 at the specificPosition - o(n)
-} 
+}
 
 deletion->{
 at the begining - o(1)
