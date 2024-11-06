@@ -1027,6 +1027,7 @@ export const demoProduct = async (req, res, next) => {
 };
 
 /*
+
 array is time complexity of o(1),differance between array and list is array is static data structure and it is fixed and continueslty while list is dynamic data structure and it is grow and not required continuslty.
 
 linked list is linear Data structure is consistance of a squevance of elements ,where each element point to next one.forming a chain. 
