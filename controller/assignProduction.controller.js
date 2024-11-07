@@ -1036,6 +1036,26 @@ It is implemented as the processes mentioned below:
 Data hiding: A language feature to restrict access to members of an object. For example, private and protected members in C++.
 Bundling of data and methods together: Data and methods that operate on that data are bundled together. For example, the data members and member methods that operate on them are wrapped into a single unit known as a class.
 
+2. Abstraction ->Abstraction is similar to data encapsulation and is very important in OOP. It means showing only the necessary information and hiding the other irrelevant information from the user. Abstraction is implemented using classes and interfaces.
+
+3. Polymorphism->The word “Polymorphism” means having many forms. It is the property of some code to behave differently for different contexts. For example, in C++ language, we can define multiple functions having the same name but different working depending on the context.
+
+Polymorphism can be classified into two types based on the time when the call to the object or function is resolved. They are as follows:
+
+Compile Time Polymorphism
+Runtime Polymorphism
+A) Compile-Time Polymorphism
+
+Compile time polymorphism, also known as static polymorphism or early binding is the type of polymorphism where the binding of the call to its code is done at the compile time. Method overloading or operator overloading are examples of compile-time polymorphism.
+
+B) Runtime Polymorphism
+
+Also known as dynamic polymorphism or late binding, runtime polymorphism is the type of polymorphism where the actual implementation of the function is determined during the runtime or execution. Method overriding is an example of this method.
+
+4. Inheritance->The idea of inheritance is simple, a class is derived from another class and uses data and implementation of that other class. The class which is derived is called child or derived or subclass and the class from which the child class is derived is called parent or base or superclass.
+
+The main purpose of Inheritance is to increase code reusability. It is also used to achieve Runtime Polymorphism.
+
 Algorithms-> seqvence of steps to solve given problems
 Data Structured->arrangement of data in main memory for efficient usage 
 //stack me -> function call hot jayega vaise vaise function ko apni memory milti jayegi or execute hone ke bad khali hoti jayegi.
