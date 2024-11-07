@@ -77,7 +77,7 @@ export const viewProduct = async (req, res, next) => {
       database: req.params.database,
     })
       .sort({ sortorder: -1 })
-      .populate({ path: "user_name", model: "user" })
+      .populate({ path: "product_details.user_name", model: "user" })
       .populate({ path: "product_details.fProduct_name", model: "rowProduct" })
       .populate({ path: "product_details.rProduct_name", model: "rowProduct" })
       .populate({ path: "processName", model: "category" });
@@ -93,7 +93,7 @@ export const viewProduct = async (req, res, next) => {
 export const viewByIdProduct = async (req, res, next) => {
   try {
     const product = await StartProduction.findById(req.params.id).populate({
-      path: "user_name",
+      path: "product_details.user_name",
       model: "user",
     });
     return product
