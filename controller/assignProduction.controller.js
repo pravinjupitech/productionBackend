@@ -1005,6 +1005,7 @@ export const deleteProducted = async (req, res, next) => {
     res.status(500).json({ error: "Internal Server Error", status: false });
   }
 };
+
 export const demoProduct = async (req, res, next) => {
   try {
     let arr = [1, 2, 3, 3, 4, 5, 5, 5];
@@ -1026,6 +1027,21 @@ export const demoProduct = async (req, res, next) => {
 };
 
 /*
+class is a blue print and template and object is instance of class .
+main concept of oops are four pillers 1. data abstraction , incapsulation, inheritance , polymorphrism ,
+
+1. incapsulation->Encapsulation is the binding of data and methods that manipulate them into a single unit such that the sensitive data is hidden from the users
+It is implemented as the processes mentioned below:   
+
+Data hiding: A language feature to restrict access to members of an object. For example, private and protected members in C++.
+Bundling of data and methods together: Data and methods that operate on that data are bundled together. For example, the data members and member methods that operate on them are wrapped into a single unit known as a class.
+
+Algorithms-> seqvence of steps to solve given problems
+Data Structured->arrangement of data in main memory for efficient usage 
+//stack me -> function call hot jayega vaise vaise function ko apni memory milti jayegi or execute hone ke bad khali hoti jayegi.
+Pointer is stored of address      
+//dynamic memory request c me malloc and c++ me new operator
+
 array is time complexity of o(1),differance between array and list is array is static data structure and it is fixed and continueslty while list is dynamic data structure and it is grow and not required continuslty.
 
 linked list is linear Data structure is consistance of a squevance of elements ,where each element point to next one.forming a chain. 
@@ -1038,7 +1054,6 @@ at the begining-o(1)
 at the end- o(n) 
 at the specificPosition - o(n)
 }
-
 deletion->{
 at the begining - o(1)
 at the end - o(n)

@@ -5,9 +5,6 @@ const productionSchema = new mongoose.Schema(
     step_name: {
       type: String,
     },
-    user_name: {
-      type: String,
-    },
     processName: {
       type: String,
     },
@@ -16,6 +13,9 @@ const productionSchema = new mongoose.Schema(
     },
     product_details: [
       {
+        user_name: {
+          type: String,
+        },
         rProduct_name: {
           type: String,
         },
