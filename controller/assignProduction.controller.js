@@ -1004,7 +1004,7 @@ export const deleteProducted = async (req, res, next) => {
     console.log(error);
     res.status(500).json({ error: "Internal Server Error", status: false });
   }
-};
+};//there are 5 members in this entire company
 
 export const demoProduct = async (req, res, next) => {
   try {
@@ -1027,11 +1027,24 @@ export const demoProduct = async (req, res, next) => {
 };
 
 /*
+Friend Function ->A friend function is a function that is not a member of a class but has access to its private and protected members. Declaring a function as a friend inside a class allows it to bypass the usual access control restrictions.
+
+Pure virtual Function->A pure virtual function, also known as an abstract function is a member function that doesn’t contain any statements. This function is defined in the derived class if needed.
+
+Virtual Function -> A virtual function is a function that is used to override a method of the parent class in the derived class. It is used to provide abstraction in a class.
+
+In C++, a virtual function is declared using the virtual keyword,
+
+Constructor-> it is initlize of object of class . four types constructor default constructor , parameterized constructor , copy constructor , move constructor
+
+destucuctor->A destructor is a method that is automatically called when the object is made of scope or destroyed.
+In C++, the destructor name is also the same as the class name but with the (~) tilde symbol as the prefix.
+
 class is a blue print and template and object is instance of class .
 main concept of oops are four pillers 1. data abstraction , incapsulation, inheritance , polymorphrism ,
 
-1. incapsulation->Encapsulation is the binding of data and methods that manipulate them into a single unit such that the sensitive data is hidden from the users
-It is implemented as the processes mentioned below:   
+1. incapsulation ->Encapsulation is the binding of data and methods that manipulate them into a single unit such that the sensitive data is hidden from the users
+It is implemented as the processes mentioned below:
 
 Data hiding: A language feature to restrict access to members of an object. For example, private and protected members in C++.
 Bundling of data and methods together: Data and methods that operate on that data are bundled together. For example, the data members and member methods that operate on them are wrapped into a single unit known as a class.
@@ -1044,17 +1057,29 @@ Polymorphism can be classified into two types based on the time when the call to
 
 Compile Time Polymorphism
 Runtime Polymorphism
-A) Compile-Time Polymorphism
+A) Compile-Time Polymorphism     
 
-Compile time polymorphism, also known as static polymorphism or early binding is the type of polymorphism where the binding of the call to its code is done at the compile time. Method overloading or operator overloading are examples of compile-time polymorphism.
+Compile time polymorphism, also known as static polymorphism or early binding is the type of polymorphism where the binding of the call to its code is done at the compile time. Method overloading or operator overloading are examples of compile-time polymorphism. like ->function overloading
 
 B) Runtime Polymorphism
 
-Also known as dynamic polymorphism or late binding, runtime polymorphism is the type of polymorphism where the actual implementation of the function is determined during the runtime or execution. Method overriding is an example of this method.
+Also known as dynamic polymorphism or late binding, runtime polymorphism is the type of polymorphism where the actual implementation of the function is determined during the runtime or execution. Method overriding is an example of this method. like-> function overiding
 
 4. Inheritance->The idea of inheritance is simple, a class is derived from another class and uses data and implementation of that other class. The class which is derived is called child or derived or subclass and the class from which the child class is derived is called parent or base or superclass.
 
-The main purpose of Inheritance is to increase code reusability. It is also used to achieve Runtime Polymorphism.
+The main purpose of Inheritance is to increase code reusability. It is also used to achieve Runtime Polymorphism.  
+
+types of Inheritance ->   Single Inheritance: A derived class inherits from one base class.
+
+Multiple Inheritance: A derived class inherits from more than one base class.
+
+Multilevel Inheritance: A class is derived from another derived class, forming a chain of inheritance.
+
+Hierarchical Inheritance: Multiple derived classes inherit from the same base class.
+
+Hybrid Inheritance: A combination of two or more types of inheritance (e.g., multiple and multilevel).
+
+Virtual Inheritance:A special type used to prevent multiple "copies" of a base class when using multiple inheritance. Often used to resolve the diamond problem in inheritance.
 
 Algorithms-> seqvence of steps to solve given problems
 Data Structured->arrangement of data in main memory for efficient usage 
