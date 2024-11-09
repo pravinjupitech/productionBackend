@@ -125,36 +125,24 @@ export const deleteProduct = async (req, res, next) => {
 };
 
 const handleProductRevert = async (item) => {
-  if (
-    item.rProduct_name &&
-    Array.isArray(item.rProduct_name_Units) &&
-    item.rProduct_name_Units.length > 0
-  ) {
+  if (item.rProduct_name && item.rProduct_name_Units.length > 0) {
     const Rowproduct = await RowProduct.findById(item.rProduct_name);
     await revertStockUnits(item?.rProduct_name_Units, Rowproduct, "add");
   }
 
-  if (
-    item.fProduct_name &&
-    Array.isArray(item.fProduct_name_Units) &&
-    item.fProduct_name_Units.length > 0
-  ) {
+  if (item.fProduct_name && item.fProduct_name_Units.length > 0) {
     const Rowproduct = await RowProduct.findById(item.fProduct_name);
     await revertStockUnits(item?.fProduct_name_sUnits, Rowproduct, "deduct");
   }
 
-  if (
-    item.wProduct_name &&
-    Array.isArray(item.wProduct_name_Units) &&
-    item.wProduct_name_Units.length > 0
-  ) {
+  if (item.wProduct_name && item.wProduct_name_Units.length > 0) {
     const Rowproduct = await RowProduct.findById(item.wProduct_name);
     await revertStockUnits(item?.wProduct_name_Units, Rowproduct, "deduct");
   }
 };
 
 const revertStockUnits = async (units, product, actionType) => {
-  if (Array.isArray(units)) {
+  if (units.length > 0) {
     for (const unit of units) {
       if (unit.unit === product.stockUnit) {
         product.qty =
@@ -186,7 +174,6 @@ export const updateProduct = async (req, res, next) => {
     }
 
     const { product_details } = req.body;
-    console.log("request Body", product_details);
     const processRowProductUpdate = async (
       item,
       productType,
@@ -300,11 +287,7 @@ export const updateProduct = async (req, res, next) => {
       } else {
         await Promise.all(
           product_details.map(async (item) => {
-            if (
-              item.rProduct_name &&
-              Array.isArray(item.rProduct_name_Units) &&
-              item.rProduct_name_Units.length > 0
-            ) {
+            if (item.rProduct_name && item.rProduct_name_Units.length > 0) {
               const existingItem = existingProductDetails.find(
                 (prod) => prod.rProduct_name === item.rProduct_name
               );
@@ -346,11 +329,7 @@ export const updateProduct = async (req, res, next) => {
                 }
               }
             }
-            if (
-              item.fProduct_name &&
-              Array.isArray(item.fProduct_name_Units) &&
-              item.fProduct_name_Units.length > 0
-            ) {
+            if (item.fProduct_name && item.fProduct_name_Units.length > 0) {
               const existingItem = existingProductDetails.find(
                 (prod) => prod.fProduct_name === item.fProduct_name
               );
@@ -394,24 +373,20 @@ export const updateProduct = async (req, res, next) => {
                 const Rowproduct = await RowProduct.findById(
                   item.fProduct_name
                 );
-                item.fProduct_name_Units.map(async (item) => {
-                  if (Rowproduct.stockUnit == item.unit) {
+                item.fProduct_name_Units.map(async (item1) => {
+                  if (Rowproduct.stockUnit == item1.unit) {
                     await processRowProductUpdate(
                       item,
                       "fProduct_name",
                       "fProduct_name_Units",
                       "Add",
-                      item.value
+                      item1.value
                     );
                   }
                 });
               }
             }
-            if (
-              item.wProduct_name &&
-              Array.isArray(item.wProduct_name_Units) &&
-              item.wProduct_name_Units.length > 0
-            ) {
+            if (item.wProduct_name && item.wProduct_name_Units.length > 0) {
               const existingItem = existingProductDetails.find(
                 (prod) => prod.wProduct_name === item.wProduct_name
               );
@@ -455,14 +430,14 @@ export const updateProduct = async (req, res, next) => {
                 const Rowproduct = await RowProduct.findById(
                   item.wProduct_name
                 );
-                item.wProduct_name_Units.map(async (item) => {
-                  if (Rowproduct.stockUnit == item.unit) {
+                item.wProduct_name_Units.map(async (item1) => {
+                  if (Rowproduct.stockUnit == item1.unit) {
                     await processRowProductUpdate(
                       item,
                       "wProduct_name",
                       "wProduct_name_Units",
                       "Add",
-                      item.value
+                      item1.value
                     );
                   }
                 });
