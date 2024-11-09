@@ -1004,7 +1004,7 @@ export const deleteProducted = async (req, res, next) => {
     console.log(error);
     res.status(500).json({ error: "Internal Server Error", status: false });
   }
-};//there are 5 members in this entire company
+};
 
 export const demoProduct = async (req, res, next) => {
   try {
@@ -1019,7 +1019,7 @@ export const demoProduct = async (req, res, next) => {
         repeatedNumbers.push(Number(num));
       }
     }
-    console.log("Repeated numbers:", repeatedNumbers);
+    console.log("Repeated numbers: char is ", repeatedNumbers);
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: "Internal Server Error", status: false });
@@ -1027,6 +1027,52 @@ export const demoProduct = async (req, res, next) => {
 };
 
 /*
+
+The following query will be used to get top 10 rows.
+
+SELECT * FROM table_name LIMIT 0,10;
+
+There are three types of relationships used in MySQL.
+
+One-to-one: Elements with a one to one relationship can be included as columns in the table.
+
+One-to-many: One to many or many to one relationships both are same. It will occur when one row in a table is related to multiple rows in different table.
+
+Many-to-many: Many rows in a table are related to many rows in different table is called many to many relationship.
+
+Joins are used to connect two or more tables. It returns only same values in all tables.
+
+There are four different ways to join MySQL tables.
+
+Inner Join
+left Join
+Right Join
+Full Join     join in 4 types inner right left full join two or more table connected 
+
+There are 16 indexed columns can be created in a table.
+
+‘_’ corresponds to only one character but ‘%’ corresponds to zero or more characters in the LIKE statement.
+
+LENGTH is byte count whereas CHAR_LENGTH is character count. The numbers are the same for Latin characters but different for Unicode and other encodings.
+
+SELECT CHAR_LENGTH(column_name) FROM table_name;
+SELECT LENGTH(column_name) FROM table_name;
+
+Storage and retrieval have been different for CHAR and VARCHAR.   
+Column length is fixed in CHAR but VARCHAR length is variable.
+CHAR is faster than VARCHAR.
+CHAR datatype can hold a maximum of 255 characters while VARCHAR can store up to 4000 characters.
+
+There are 5 types of tables present in MySQL.
+
+Heap table
+merge table
+MyISAM table
+INNO DB table
+ISAM table
+
+3306 is MySQL server‘s default port.
+
 Friend Function ->A friend function is a function that is not a member of a class but has access to its private and protected members. Declaring a function as a friend inside a class allows it to bypass the usual access control restrictions.
 
 Pure virtual Function->A pure virtual function, also known as an abstract function is a member function that doesn’t contain any statements. This function is defined in the derived class if needed.

@@ -8,6 +8,10 @@ const productionSchema = new mongoose.Schema(
     processName: {
       type: String,
     },
+    date: {
+      type: Date,
+      default: Date.now,
+    },
     database: {
       type: String,
     },
