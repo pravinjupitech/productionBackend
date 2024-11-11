@@ -172,7 +172,6 @@ export const updateProduct = async (req, res, next) => {
     if (!Productfind) {
       return res.status(404).json({ message: "Not Found", status: false });
     }
-
     const { product_details } = req.body;
     const processRowProductUpdate = async (
       item,
@@ -204,7 +203,6 @@ export const updateProduct = async (req, res, next) => {
         }
       }
     };
-
     const updateProductDetails = async () => {
       const existingProductDetails = Productfind.product_details;
       if (product_details.length > existingProductDetails.length) {
@@ -353,6 +351,7 @@ export const updateProduct = async (req, res, next) => {
               const currentQtyTotal = item[unitType]
                 ? item[unitType].reduce((total, unit) => total + unit.value, 0)
                 : 0;
+              console.log("currentQty", currentQtyTotal);
               await processRowProductUpdate(
                 item,
                 productType,
@@ -383,7 +382,6 @@ export const updateProduct = async (req, res, next) => {
         for (let i = 0; i < existingProductDetails.length; i++) {
           const item = existingProductDetails[i];
           const currentItem = product_details[i];
-
           if (!currentItem) {
             if (item.rProduct_name) {
               const RowRProduct = await RowProduct.findById(item.rProduct_name);
@@ -526,6 +524,7 @@ export const updateProduct = async (req, res, next) => {
               const currentQtyTotal = item[unitType]
                 ? item[unitType].reduce((total, unit) => total + unit.value, 0)
                 : 0;
+              console.log("currentQtyTotal", currentQtyTotal);
               await processRowProductUpdate(
                 item,
                 productType,
