@@ -3,7 +3,6 @@ import { StartProduction } from "../model/startProduction.model.js";
 import { Warehouse } from "../model/warehouse.model.js";
 
 export const createProduction = async (req, res, next) => {
-  console.log(req.body);
   try {
     const { product_details } = req.body;
     for (const item of product_details) {
