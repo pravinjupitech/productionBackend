@@ -1,6 +1,7 @@
 import { AssignProduction } from "../model/assignProduction.model.js";
 import { Product } from "../model/product.model.js";
 import { RowProduct } from "../model/rowProduct.model.js";
+import { StartProduction } from "../model/startProduction.model.js";
 import { StepsModel } from "../model/steps.model.js";
 import { Warehouse } from "../model/warehouse.model.js";
 
@@ -1027,6 +1028,16 @@ export const demoProduct = async (req, res, next) => {
 };
 
 /*
+let str="i want to best coder in this time";
+let modifiedstr="";
+for(let i=0;i<str.length;i++){
+  if(str[i].toLowerCase()==='a'){
+  modifiedstr+='p';
+  }else{
+  modifiedstr+=str[i]
+  }
+}
+console.log("modified string",modifiedstr)
 
 The following query will be used to get top 10 rows.
 
