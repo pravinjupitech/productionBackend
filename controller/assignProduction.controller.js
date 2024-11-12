@@ -1025,15 +1025,14 @@ export const demoProduct = async (req, res, next) => {
     console.log(error);
     res.status(500).json({ error: "Internal Server Error", status: false });
   }
-};
-
-/*
+}; //but today situation is mpsi exam has not come yet
+/* 
 
 function replaced(str1,currentChar){
   return str1.replace(new RegExp(currentChar,'g'),'');
 }
 let str="i want to best coder in this time";
-console.log("Remove Character",replaced(str,'i'))    str.replace(new RegExp(currentChar,'g'),'')
+console.log("Remove Character",replaced(str,'i'))    
 
 The following query will be used to get top 10 rows.
 
