@@ -1028,16 +1028,12 @@ export const demoProduct = async (req, res, next) => {
 };
 
 /*
-let str="i want to best coder in this time";
-let modifiedstr="";
-for(let i=0;i<str.length;i++){
-  if(str[i].toLowerCase()==='a'){
-  modifiedstr+='p';
-  }else{
-  modifiedstr+=str[i]
-  }
+
+function replaced(str1,currentChar){
+  return str1.replace(new RegExp(currentChar,'g'),'');
 }
-console.log("modified string",modifiedstr)
+let str="i want to best coder in this time";
+console.log("Remove Character",replaced(str,'i'))    str.replace(new RegExp(currentChar,'g'),'')
 
 The following query will be used to get top 10 rows.
 
