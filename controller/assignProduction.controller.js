@@ -1025,12 +1025,12 @@ export const demoProduct = async (req, res, next) => {
     console.log(error);
     res.status(500).json({ error: "Internal Server Error", status: false });
   }
-}; //but today situation is mpsi exam has not come yet
+}; //but today situation is mpsi exam has not come yet .
 /* 
+let arr=[2,4,5,3,6,8];
 
-function replaced(str1,currentChar){
-  return str1.replace(new RegExp(currentChar,'g'),'');
-}
+
+
 let str="i want to best coder in this time";
 console.log("Remove Character",replaced(str,'i'))    
 
