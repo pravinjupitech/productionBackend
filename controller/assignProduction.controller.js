@@ -1026,7 +1026,8 @@ export const demoProduct = async (req, res, next) => {
     res.status(500).json({ error: "Internal Server Error", status: false });
   }
 }; //but today situation is mpsi exam has not come yet .
-/* 
+/*  
+
  function longestfix(arr){
  if(arr.length===0)return "";
  arr.sort();
