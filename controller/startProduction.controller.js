@@ -6,11 +6,6 @@ export const createProduction = async (req, res, next) => {
   try {
     const { product_details } = req.body;
     for (const item of product_details) {
-      if (!item?.rProduct_name) {
-        res
-          .status(404)
-          .json({ message: "At least On Product Is Mendotory", status: false });
-      }
       if (item?.rProduct_name) {
         await updateProductQty(
           item?.rProduct_name,
@@ -560,6 +555,12 @@ export const updateProduct = async (req, res, next) => {
         console.log("Equal Both are");
         await Promise.all(
           product_details.map(async (item) => {
+            if (!item?.rProduct_name) {
+              res.status(404).json({
+                message: "At least Row Product Is Mendotory",
+                status: false,
+              });
+            }
             if (item.rProduct_name && item.rProduct_name_Units.length > 0) {
               const existingItem = existingProductDetails.find(
                 (prod) => prod.rProduct_name === item.rProduct_name
