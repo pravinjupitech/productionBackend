@@ -558,7 +558,7 @@ export const updateProduct = async (req, res, next) => {
               const existingItem = existingProductDetails.find(
                 (prod) => prod.rProduct_name === item.rProduct_name
               );
-              console.log("RProductExitingItem", existingItem);
+              // console.log("RProductExitingItem", existingItem);
               if (existingItem) {
                 const Rowproduct = await RowProduct.findById(
                   item.rProduct_name
@@ -570,7 +570,7 @@ export const updateProduct = async (req, res, next) => {
                       : total,
                   0
                 );
-                console.log("RowExitQty", existingQty);
+                // console.log("RowExitQty", existingQty);
                 const currentQty = item.rProduct_name_Units.reduce(
                   (total, unit) =>
                     unit.unit === Rowproduct.stockUnit
@@ -578,7 +578,7 @@ export const updateProduct = async (req, res, next) => {
                       : total,
                   0
                 );
-                console.log("RowCurrentQty", currentQty);
+                // console.log("RowCurrentQty", currentQty);
                 let qtyDifference = Math.abs(existingQty - currentQty);
                 if (existingQty > currentQty) {
                   await processRowProductUpdate(
@@ -597,6 +597,22 @@ export const updateProduct = async (req, res, next) => {
                     qtyDifference
                   );
                 }
+              } else {
+                const Rowproduct = await RowProduct.findById(
+                  item.rProduct_name
+                );
+                // console.log("not  RawProduct exiting");
+                item.fProduct_name_Units.map(async (item1) => {
+                  if (Rowproduct.stockUnit == item1.unit) {
+                    await processRowProductUpdate(
+                      item,
+                      "rProduct_name",
+                      "rProduct_name_Units",
+                      "Lapse",
+                      item1.value
+                    );
+                  }
+                });
               }
             }
             if (item.fProduct_name && item.fProduct_name_Units.length > 0) {
@@ -607,7 +623,7 @@ export const updateProduct = async (req, res, next) => {
                 const Rowproduct = await RowProduct.findById(
                   item.fProduct_name
                 );
-                console.log("Final Exiting", existingItem);
+                // console.log("Final Exiting", existingItem);
                 const existingQty = existingItem.fProduct_name_Units.reduce(
                   (total, unit) =>
                     unit.unit === Rowproduct.stockUnit
@@ -615,7 +631,7 @@ export const updateProduct = async (req, res, next) => {
                       : total,
                   0
                 );
-                console.log("final product Exitingqty", existingQty);
+                // console.log("final product Exitingqty", existingQty);
                 const currentQty = item.fProduct_name_Units.reduce(
                   (total, unit) =>
                     unit.unit === Rowproduct.stockUnit
@@ -646,7 +662,7 @@ export const updateProduct = async (req, res, next) => {
                 const Rowproduct = await RowProduct.findById(
                   item.fProduct_name
                 );
-                console.log("not  f Product exiting");
+                // console.log("not  f Product exiting");
                 item.fProduct_name_Units.map(async (item1) => {
                   if (Rowproduct.stockUnit == item1.unit) {
                     await processRowProductUpdate(
@@ -668,7 +684,7 @@ export const updateProduct = async (req, res, next) => {
                 const Rowproduct = await RowProduct.findById(
                   item.wProduct_name
                 );
-                console.log("w PRoduct exiting", existingItem);
+                // console.log("w PRoduct exiting", existingItem);
                 const existingQty = existingItem.wProduct_name_Units.reduce(
                   (total, unit) =>
                     unit.unit === Rowproduct.stockUnit
@@ -676,7 +692,7 @@ export const updateProduct = async (req, res, next) => {
                       : total,
                   0
                 );
-                console.log("existingQty", existingQty);
+                // console.log("existingQty", existingQty);
                 const currentQty = item.wProduct_name_Units.reduce(
                   (total, unit) =>
                     unit.unit === Rowproduct.stockUnit
@@ -684,7 +700,7 @@ export const updateProduct = async (req, res, next) => {
                       : total,
                   0
                 );
-                console.log("currentQty", currentQty);
+                // console.log("currentQty", currentQty);
                 let qtyDifference = Math.abs(existingQty - currentQty);
                 if (existingQty > currentQty) {
                   await processRowProductUpdate(
@@ -704,7 +720,7 @@ export const updateProduct = async (req, res, next) => {
                   );
                 }
               } else {
-                console.log("not  w Product exiting");
+                // console.log("not  w Product exiting");
                 const Rowproduct = await RowProduct.findById(
                   item.wProduct_name
                 );
