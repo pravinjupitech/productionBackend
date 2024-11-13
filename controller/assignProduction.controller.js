@@ -1027,12 +1027,33 @@ export const demoProduct = async (req, res, next) => {
   }
 }; //but today situation is mpsi exam has not come yet .
 /* 
-let arr=[2,4,5,3,6,8];
+ function longestfix(arr){
+ if(arr.length===0)return "";
+ arr.sort();
+ let first=arr[0];
+ let last=arr[arr.length-1]
+ let i=0;
+ while(i<first.length&&first[i]===last[i]){
+ i++;
+ }
+ return first.substring(0,i)
+ }
+
+ let arr=["flower","flow","flight"]
+ console.log(longestfix(arr))
+
+ arr=["dog","recer","car"];
+  console.log(longestfix(arr))
 
 
 
-let str="i want to best coder in this time";
-console.log("Remove Character",replaced(str,'i'))    
+
+
+
+
+
+
+
 
 The following query will be used to get top 10 rows.
 
