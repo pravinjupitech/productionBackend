@@ -555,7 +555,7 @@ export const updateProduct = async (req, res, next) => {
         console.log("Equal Both are");
         await Promise.all(
           product_details.map(async (item) => {
-            if (!item?.rProduct_name) {
+            if (!item?.rProduct_name && item.rProduct_name_Units.length > 0) {
               res.status(404).json({
                 message: "At least Row Product Is Mendotory",
                 status: false,
