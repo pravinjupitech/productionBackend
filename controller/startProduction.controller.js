@@ -554,12 +554,6 @@ export const updateProduct = async (req, res, next) => {
       } else {
         await Promise.all(
           product_details.map(async (item) => {
-            if (!item?.rProduct_name && item.rProduct_name_Units.length > 0) {
-              return res.status(404).json({
-                message: "At least Row Product Is Mendotory",
-                status: false,
-              });
-            }
             if (item.rProduct_name && item.rProduct_name_Units.length > 0) {
               const existingItem = existingProductDetails.find(
                 (prod) => prod.rProduct_name === item.rProduct_name
