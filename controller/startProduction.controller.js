@@ -557,7 +557,7 @@ export const updateProduct = async (req, res, next) => {
           product_details.map(async (item) => {
             if (!item?.rProduct_name) {
               res.status(404).json({
-                message: "At least On Product Is Mendotory",
+                message: "At least Row Product Is Mendotory",
                 status: false,
               });
             }
