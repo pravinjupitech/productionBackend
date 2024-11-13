@@ -204,7 +204,7 @@ export const updateProduct = async (req, res, next) => {
       }
     };
     const updateProductDetails = async () => {
-      // const existingProductDetails = Productfind.product_details;
+      const existingProductDetails = Productfind.product_details;
       // if (product_details.length > existingProductDetails.length) {
       //   console.log("Current product list is greater than existing products.");
       //   for (let i = 0; i < product_details.length; i++) {
