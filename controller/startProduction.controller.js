@@ -118,7 +118,7 @@ export const deleteProduct = async (req, res, next) => {
       await handleProductRevert(item);
     }
     await StartProduction.findByIdAndDelete(id);
-    res.status(200).json({ message: "Data Deleted", status: false });
+    res.status(200).json({ message: "Data Deleted", status: true });
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: "Internal Server Error", status: false });
@@ -756,7 +756,7 @@ export const updateProduct = async (req, res, next) => {
     res.status(500).json({ message: "Internal Server Error", status: false });
   }
 };
-
+//jata kuch socha nahi keh diya to keh diya
 export const productionlapseWarehouse = async (qty, warehouseId, productId) => {
   try {
     const warehouse = await Warehouse.findById(warehouseId);
