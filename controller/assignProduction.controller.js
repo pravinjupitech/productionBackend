@@ -1033,7 +1033,7 @@ export const demoProduct2 = async (req, res, next) => {
       [1, 2],
       [3, 4],
       [5, 6],
-      [1, [2, 3]],
+      [1,],
     ];
     const nested = arr.flatMap((item) => item.map((item1) => item1 * 10));
     console.log(nested);
