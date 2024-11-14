@@ -1006,7 +1006,7 @@ export const deleteProducted = async (req, res, next) => {
     res.status(500).json({ error: "Internal Server Error", status: false });
   }
 };
-
+// window.history.back()
 export const demoProduct = async (req, res, next) => {
   try {
     let arr = [1, 2, 3, 3, 4, 5, 5, 5];
@@ -1025,8 +1025,32 @@ export const demoProduct = async (req, res, next) => {
     console.log(error);
     res.status(500).json({ error: "Internal Server Error", status: false });
   }
-}; //but today situation is mpsi exam has not come yet .
-/*  
+};
+
+export const demoProduct2 = async (req, res, next) => {
+  try {
+function checkComman(arr){
+  if(arr.length===0)return "";
+  arr.sort();
+  let first=arr[0];
+  let last=arr[arr.length-1];
+  
+}
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Internal Server Error", status: false });
+  }
+};
+
+//but today situation is mpsi exam has not come yet .
+/*
+
+
+
+
+
+
+
 
  function longestfix(arr){
  if(arr.length===0)return "";
