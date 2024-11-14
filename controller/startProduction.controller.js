@@ -133,10 +133,10 @@ const handleProductRevert = async (item) => {
 
   if (item.fProduct_name && item.fProduct_name_Units.length > 0) {
     const Rowproduct = await RowProduct.findById(item.fProduct_name);
-    await revertStockUnits(item?.fProduct_name_sUnits, Rowproduct, "deduct");
+    await revertStockUnits(item?.fProduct_name_Units, Rowproduct, "deduct");
   }
 
-  if (item.wProduct_name && item.wProduct_name_Units.length > 0) {
+  if (item?.wProduct_name && item?.wProduct_name_Units.length > 0) {
     const Rowproduct = await RowProduct.findById(item.wProduct_name);
     await revertStockUnits(item?.wProduct_name_Units, Rowproduct, "deduct");
   }
