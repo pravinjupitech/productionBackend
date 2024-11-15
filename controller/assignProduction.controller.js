@@ -1006,7 +1006,7 @@ export const deleteProducted = async (req, res, next) => {
     res.status(500).json({ error: "Internal Server Error", status: false });
   }
 };
-// window.history.back()
+// window.history.back()  history.goBack()
 export const demoProduct = async (req, res, next) => {
   try {
     let arr = [1, 2, 3, 3, 4, 5, 5, 5];
@@ -1029,16 +1029,29 @@ export const demoProduct = async (req, res, next) => {
 
 export const demoProduct2 = async (req, res, next) => {
   try {
-    let arr = [1, 2, 3, 4, 5, 6];
-    const findArr = arr.find((item) => item > 4);
-    console.log("findArr", findArr);
-    const filterArr = arr.filter((item) => item > 4);
-    console.log("filterArr", filterArr);
+    function fact(n) {
+      4;
+      if (n == 1 || n == 0) {
+        return 1;
+      }
+      return n * fact(n - 1);
+    }
+    console.log(fact(5));
+
+    function fib(n) {
+      if (n <= 1) {
+        return n;
+      }
+      return fib(n - 1) + fib(n - 2);
+    }
+    for (let i = 0; i < 10; i++) {
+      console.log(fib(i));
+    } //shallow copy new object and referances copy and copy={A:2,B:{c:1}}
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: "Internal Server Error", status: false });
   }
-};//but today situation is mpsi exam has not come yet.
+};
 
 //but today situation is mpsi exam has not come yet .
 /* 
