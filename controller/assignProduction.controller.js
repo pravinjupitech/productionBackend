@@ -1029,23 +1029,19 @@ export const demoProduct = async (req, res, next) => {
 
 export const demoProduct2 = async (req, res, next) => {
   try {
-    let arr = [
-      [1, 2],
-      [3, 4],
-      [5, 6],
-      [1,],
-    ];
-    const nested = arr.flatMap((item) => item.map((item1) => item1 * 10));
-    console.log(nested);
+    let arr = [1, 2, 3, 4, 5, 6];
+    const findArr = arr.find((item) => item > 4);
+    console.log("findArr", findArr);
+    const filterArr = arr.filter((item) => item > 4);
+    console.log("filterArr", filterArr);
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: "Internal Server Error", status: false });
   }
-};
+};//but today situation is mpsi exam has not come yet.
 
 //but today situation is mpsi exam has not come yet .
-/*
-
+/* 
 
 
 
@@ -1059,7 +1055,7 @@ export const demoProduct2 = async (req, res, next) => {
  let first=arr[0];
  let last=arr[arr.length-1]
  let i=0;
- while(i<first.length&&first[i]===last[i]){
+ while(i<first.length&&first[i]===last[i]){  
  i++;
  }
  return first.substring(0,i)
