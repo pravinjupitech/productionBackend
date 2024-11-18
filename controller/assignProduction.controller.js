@@ -986,7 +986,7 @@ export const deleteProducted = async (req, res, next) => {
                 item1.wProduct_name_Units.map(async (data1) => {
                   let qty = data1.value;
                   Rowproduct.qty -= qty;
-                  await Rowproduct.save(); //data save in Raw Product
+                  await Rowproduct.save();
                   await productionlapseWarehouse(
                     qty,
                     Rowproduct.warehouse,
@@ -1006,7 +1006,7 @@ export const deleteProducted = async (req, res, next) => {
     res.status(500).json({ error: "Internal Server Error", status: false });
   }
 };
-// window.history.back()  history.goBack()
+// window.history.back()  history.goBack() 
 export const demoProduct = async (req, res, next) => {
   try {
     let arr = [1, 2, 3, 3, 4, 5, 5, 5];
