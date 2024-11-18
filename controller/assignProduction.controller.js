@@ -1029,24 +1029,10 @@ export const demoProduct = async (req, res, next) => {
 
 export const demoProduct2 = async (req, res, next) => {
   try {
-    function fact(n) {
-      if (n == 1 || n == 0) {
-        return 1;
-      }
-      return n * fact(n - 1);
+    if (req.body.processName) {
+      message: "worker threads, cluster module ,external module ka use karke bana sakte hai worker threads ko computationally heavy tasks while cluster module use when than server scable on multiple cores.";
     }
-    console.log(fact(5));
 
-    function fib(n) {
-      if (n <= 1) {
-        return n;
-      }
-      return fib(n - 1) + fib(n - 2);
-    }
-    for (let i = 0; i < 10; i++) {
-      console.log(fib(i));
-    }
-message:""
     const { id } = req.params;
     const exitingData = await StartProduction.findById(id);
     if (!exitingData) {
@@ -1066,8 +1052,23 @@ message:""
 Authentication is user identity verify on system and authorization is user and system allowed to do.
 
 
+    function fact(n) {
+      if (n == 1 || n == 0) {
+        return 1;
+      }
+      return n * fact(n - 1);
+    }
+    console.log(fact(5));
 
-
+    function fib(n) {
+      if (n <= 1) {
+        return n;
+      }
+      return fib(n - 1) + fib(n - 2);
+    }
+    for (let i = 0; i < 10; i++) {
+      console.log(fib(i));
+    }
 
  function longestfix(arr){
  if(arr.length===0)return "";

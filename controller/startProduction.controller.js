@@ -570,7 +570,7 @@ export const updateProduct = async (req, res, next) => {
                       : total,
                   0
                 );
-                console.log("RowExitQty", existingQty);
+                // console.log("RowExitQty", existingQty);
                 const currentQty = item.rProduct_name_Units.reduce(
                   (total, unit) =>
                     unit.unit === Rowproduct.stockUnit
@@ -578,10 +578,10 @@ export const updateProduct = async (req, res, next) => {
                       : total,
                   0
                 );
-                console.log("RowCurrentQty", currentQty);
+                // console.log("RowCurrentQty", currentQty);
                 let qtyDifference = Math.abs(existingQty - currentQty);
                 if (existingQty > currentQty) {
-                  console.log("Add Row qty", qtyDifference);
+                  // console.log("Add Row qty", qtyDifference);
                   await processRowProductUpdate(
                     item,
                     "rProduct_name",
@@ -590,7 +590,7 @@ export const updateProduct = async (req, res, next) => {
                     qtyDifference
                   );
                 } else if (currentQty > existingQty) {
-                  console.log("lapse Row qty", qtyDifference);
+                  // console.log("lapse Row qty", qtyDifference);
                   await processRowProductUpdate(
                     item,
                     "rProduct_name",
@@ -603,7 +603,7 @@ export const updateProduct = async (req, res, next) => {
                 const Rowproduct = await RowProduct.findById(
                   item.rProduct_name
                 );
-                console.log("not  RawProduct exiting");
+                // console.log("not  RawProduct exiting");
                 item.fProduct_name_Units.map(async (item1) => {
                   if (Rowproduct.stockUnit == item1.unit) {
                     await processRowProductUpdate(
@@ -633,7 +633,7 @@ export const updateProduct = async (req, res, next) => {
                       : total,
                   0
                 );
-                console.log("final product Exitingqty", existingQty);
+                // console.log("final product Exitingqty", existingQty);
                 const currentQty = item.fProduct_name_Units.reduce(
                   (total, unit) =>
                     unit.unit === Rowproduct.stockUnit
@@ -641,10 +641,10 @@ export const updateProduct = async (req, res, next) => {
                       : total,
                   0
                 );
-                console.log("current final ", currentQty);
+                // console.log("current final ", currentQty);
                 let qtyDifference = Math.abs(existingQty - currentQty);
                 if (existingQty > currentQty) {
-                  console.log("lapse final qty", qtyDifference);
+                  // console.log("lapse final qty", qtyDifference);
                   await processRowProductUpdate(
                     item,
                     "fProduct_name",
@@ -653,7 +653,7 @@ export const updateProduct = async (req, res, next) => {
                     qtyDifference
                   );
                 } else if (currentQty > existingQty) {
-                  console.log("add final qty", qtyDifference);
+                  // console.log("add final qty", qtyDifference);
                   await processRowProductUpdate(
                     item,
                     "fProduct_name",
@@ -666,7 +666,7 @@ export const updateProduct = async (req, res, next) => {
                 const Rowproduct = await RowProduct.findById(
                   item.fProduct_name
                 );
-                console.log("not  f Product exiting");
+                // console.log("not  f Product exiting");
                 item.fProduct_name_Units.map(async (item1) => {
                   if (Rowproduct.stockUnit == item1.unit) {
                     await processRowProductUpdate(
@@ -696,7 +696,7 @@ export const updateProduct = async (req, res, next) => {
                       : total,
                   0
                 );
-                console.log("existingQty", existingQty);
+                // console.log("existingQty", existingQty);
                 const currentQty = item.wProduct_name_Units.reduce(
                   (total, unit) =>
                     unit.unit === Rowproduct.stockUnit
@@ -704,10 +704,10 @@ export const updateProduct = async (req, res, next) => {
                       : total,
                   0
                 );
-                console.log("currentQty", currentQty);
+                // console.log("currentQty", currentQty);
                 let qtyDifference = Math.abs(existingQty - currentQty);
                 if (existingQty > currentQty) {
-                  console.log("lapse was qty", qtyDifference);
+                  // console.log("lapse was qty", qtyDifference);
                   await processRowProductUpdate(
                     item,
                     "wProduct_name",
@@ -716,7 +716,7 @@ export const updateProduct = async (req, res, next) => {
                     qtyDifference
                   );
                 } else if (currentQty > existingQty) {
-                  console.log("Add was qty", qtyDifference);
+                  // console.log("Add was qty", qtyDifference);
                   await processRowProductUpdate(
                     item,
                     "wProduct_name",
@@ -726,7 +726,7 @@ export const updateProduct = async (req, res, next) => {
                   );
                 }
               } else {
-                console.log("not  w Product exiting");
+                // console.log("not  w Product exiting");
                 const Rowproduct = await RowProduct.findById(
                   item.wProduct_name
                 );
@@ -1006,6 +1006,5 @@ export const productionAddWarehouse = async (qty, warehouseId, productId) => {
 //     res.status(500).json({ message: "Internal Server Error", status: false });
 //   }
 // };
-
 
 */
