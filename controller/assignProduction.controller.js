@@ -986,7 +986,7 @@ export const deleteProducted = async (req, res, next) => {
                 item1.wProduct_name_Units.map(async (data1) => {
                   let qty = data1.value;
                   Rowproduct.qty -= qty;
-                  await Rowproduct.save();
+                  await Rowproduct.save(); //data save in Raw Product
                   await productionlapseWarehouse(
                     qty,
                     Rowproduct.warehouse,
@@ -1037,6 +1037,10 @@ export const demoProduct2 = async (req, res, next) => {
     const exitingData = await StartProduction.findById(id);
     if (!exitingData) {
       return res.status(404).json({ message: "Data Not Found", status: false });
+    }
+    const { product_details } = req.body;
+    for (let item of product_details) {
+      return res.json({ message: "Internal Server Error", status: false });
     }
     const updatedData = req.body;
     await StartProduction.findByIdAndUpdate(id, updatedData, { new: true });
