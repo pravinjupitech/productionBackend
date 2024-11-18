@@ -986,7 +986,7 @@ export const deleteProducted = async (req, res, next) => {
                 item1.wProduct_name_Units.map(async (data1) => {
                   let qty = data1.value;
                   Rowproduct.qty -= qty;
-                  await Rowproduct.save(); //data save in Raw Product
+                  await Rowproduct.save();
                   await productionlapseWarehouse(
                     qty,
                     Rowproduct.warehouse,
