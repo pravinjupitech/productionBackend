@@ -1030,7 +1030,6 @@ export const demoProduct = async (req, res, next) => {
 export const demoProduct2 = async (req, res, next) => {
   try {
     function fact(n) {
-      4;
       if (n == 1 || n == 0) {
         return 1;
       }
@@ -1046,7 +1045,16 @@ export const demoProduct2 = async (req, res, next) => {
     }
     for (let i = 0; i < 10; i++) {
       console.log(fib(i));
-    } //shallow copy new object and referances copy and copy={A:2,B:{c:1}}
+    }
+message:""
+    const { id } = req.params;
+    const exitingData = await StartProduction.findById(id);
+    if (!exitingData) {
+      return res.status(404).json({ message: "Data Not Found", status: false });
+    }
+    const updatedData = req.body;
+    await StartProduction.findByIdAndUpdate(id, updatedData, { new: true });
+    return res.status(200).json({ message: "Data Updated ", status: true });
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: "Internal Server Error", status: false });
@@ -1055,8 +1063,7 @@ export const demoProduct2 = async (req, res, next) => {
 
 //but today situation is mpsi exam has not come yet .
 /* 
-
-
+Authentication is user identity verify on system and authorization is user and system allowed to do.
 
 
 
