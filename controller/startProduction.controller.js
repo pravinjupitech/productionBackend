@@ -688,7 +688,7 @@ export const updateProduct = async (req, res, next) => {
                 const Rowproduct = await RowProduct.findById(
                   item.wProduct_name
                 );
-                // console.log("wastage Product exiting", existingItem);
+                console.log("wastage Product exiting", existingItem);
                 const existingQty = existingItem.wProduct_name_Units.reduce(
                   (total, unit) =>
                     unit.unit === Rowproduct.stockUnit
@@ -696,7 +696,7 @@ export const updateProduct = async (req, res, next) => {
                       : total,
                   0
                 );
-                // console.log("wastage existingQty", existingQty);
+                console.log("wastage existingQty", existingQty);
                 const currentQty = item.wProduct_name_Units.reduce(
                   (total, unit) =>
                     unit.unit === Rowproduct.stockUnit
@@ -704,10 +704,10 @@ export const updateProduct = async (req, res, next) => {
                       : total,
                   0
                 );
-                // console.log("currentQty", currentQty);
+                console.log("currentQty", currentQty);
                 let qtyDifference = Math.abs(existingQty - currentQty);
                 if (existingQty > currentQty) {
-                  // console.log("lapse wastage qty", qtyDifference);
+                  console.log("lapse wastage qty", qtyDifference);
                   await processRowProductUpdate(
                     item,
                     "wProduct_name",
@@ -716,7 +716,7 @@ export const updateProduct = async (req, res, next) => {
                     qtyDifference
                   );
                 } else if (currentQty > existingQty) {
-                  // console.log("Add wastage qty", qtyDifference);
+                  console.log("Add wastage qty", qtyDifference);
                   await processRowProductUpdate(
                     item,
                     "wProduct_name",
@@ -726,7 +726,7 @@ export const updateProduct = async (req, res, next) => {
                   );
                 }
               } else {
-                // console.log("not  wastage Product exiting");
+                console.log("not  wastage Product exiting");
                 const Rowproduct = await RowProduct.findById(
                   item.wProduct_name
                 );
