@@ -57,9 +57,11 @@ export const addProduct = async (req, res) => {
     const product = await RowProduct.create(req.body);
     await addProductInWarehouse1(req.body, product.warehouse, product);
     return product
-      ? res
-          .status(200)
-          .json({ message: "product save successfully", status: true })
+      ? res.status(200).json({
+          message: "product save successfully",
+          _id: product._id,
+          status: true,
+        })
       : res
           .status(400)
           .json({ message: "something went wrong", status: false });
