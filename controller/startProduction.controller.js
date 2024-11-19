@@ -730,8 +730,16 @@ export const updateProduct = async (req, res, next) => {
                 const Rowproduct = await RowProduct.findById(
                   item.wProduct_name
                 );
+                console.log("not wastage", Rowproduct);
+
                 item.wProduct_name_Units.map(async (item1) => {
                   if (Rowproduct.stockUnit == item1.unit) {
+                    console.log(
+                      "Wastaage",
+                      Rowproduct.stockUnit,
+                      item1.unit,
+                      item1.value
+                    );
                     await processRowProductUpdate(
                       item,
                       "wProduct_name",
