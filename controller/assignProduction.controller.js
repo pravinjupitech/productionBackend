@@ -1006,7 +1006,7 @@ export const deleteProducted = async (req, res, next) => {
     res.status(500).json({ error: "Internal Server Error", status: false });
   }
 };
-// window.history.back()  history.goBack()
+// window.history.back()
 export const demoProduct = async (req, res, next) => {
   try {
     let arr = [1, 2, 3, 3, 4, 5, 5, 5];
@@ -1032,7 +1032,7 @@ export const demoProduct2 = async (req, res, next) => {
     if (req.body.processName) {
       message: "worker threads, cluster module ,external module ka use karke bana sakte hai worker threads ko computationally heavy tasks while cluster module use when than server scable on multiple cores.";
     }
-
+    console.log("request body to", req.body);
     const { id } = req.params;
     const exitingData = await StartProduction.findById(id);
     if (!exitingData) {
@@ -1040,6 +1040,7 @@ export const demoProduct2 = async (req, res, next) => {
     }
     const { product_details } = req.body;
     for (let item of product_details) {
+      console.log(item.rProduct_name);
       return res.json({ message: "Internal Server Error", status: false });
     }
     const updatedData = req.body;
