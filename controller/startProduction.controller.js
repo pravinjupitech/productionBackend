@@ -726,11 +726,11 @@ export const updateProduct = async (req, res, next) => {
                   );
                 }
               } else {
-                console.log("not  wastage Product exiting");
+                // console.log("not  wastage Product exiting");
                 const Rowproduct = await RowProduct.findById(
                   item.wProduct_name
                 );
-                console.log("not wastage", Rowproduct);
+                // console.log("not wastage", Rowproduct);
 
                 item.wProduct_name_Units.map(async (item1) => {
                   if (Rowproduct.stockUnit == item1.unit) {
