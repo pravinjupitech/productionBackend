@@ -12,6 +12,7 @@ const rowProductSchema = new mongoose.Schema(
     },
     qty: {
       type: Number,
+      default: 0,
     },
     warehouse: {
       type: String,
