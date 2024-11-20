@@ -500,9 +500,9 @@ export const assignProducted = async (req, res, next) => {
         .json({ message: "Proccess Not Found", status: "false" });
     }
     if (productsteps.steps[0]._id.toString() === currentStep) {
-      if (item.rProduct_name !== null) {
+      if (item.rProduct_name) {
         product_details.forEach(async (item) => {
-          if (item.rProduct_name) {
+          if (item?.rProduct_name) {
             const Rowproduct = await Product.findById(item.rProduct_name);
             item.rProduct_name_Units.map(async (data) => {
               if (data.unit === Rowproduct.stockUnit) {
@@ -518,7 +518,7 @@ export const assignProducted = async (req, res, next) => {
           }
         });
       }
-      if (item.fProduct_name !== null) {
+      if (item?.fProduct_name) {
         const Rowproduct = await RowProduct.findById(item.fProduct_name);
         item.fProduct_name_Units.map(async (data) => {
           if (data.unit === Rowproduct.stockUnit) {
@@ -532,7 +532,7 @@ export const assignProducted = async (req, res, next) => {
           }
         });
       }
-      if (item.wProduct_name !== null) {
+      if (item?.wProduct_name) {
         const Rowproduct = await RowProduct.findById(item.wProduct_name);
         item.wProduct_name_Units.map(async (data) => {
           if (data.unit === Rowproduct.stockUnit) {
@@ -548,7 +548,7 @@ export const assignProducted = async (req, res, next) => {
       }
     } else {
       product_details.forEach(async (item) => {
-        if (item.rProduct_name !== null) {
+        if (item?.rProduct_name) {
           const Rowproduct = await RowProduct.findById(item.rProduct_name);
           item.rProduct_name_Units.map(async (data) => {
             if (data.unit === Rowproduct.stockUnit) {
@@ -562,7 +562,7 @@ export const assignProducted = async (req, res, next) => {
             }
           });
         }
-        if (item.fProduct_name !== null) {
+        if (item?.fProduct_name) {
           const Rowproduct = await RowProduct.findById(item.fProduct_name);
           item.fProduct_name_Units.map(async (data) => {
             if (data.unit === Rowproduct.stockUnit) {
@@ -576,7 +576,7 @@ export const assignProducted = async (req, res, next) => {
             }
           });
         }
-        if (item.wProduct_name !== null) {
+        if (item?.wProduct_name) {
           const Rowproduct = await RowProduct.findById(item.wProduct_name);
           item.wProduct_name_Units.map(async (data) => {
             if (data.unit === Rowproduct.stockUnit) {
