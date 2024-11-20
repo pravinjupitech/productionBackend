@@ -1032,7 +1032,8 @@ export const demoProduct2 = async (req, res, next) => {
     if (req.body.processName) {
       message: "worker threads, cluster module ,external module ka use karke bana sakte hai worker threads ko computationally heavy tasks while cluster module use when than server scable on multiple cores.";
     }
-    console.log("request body to", req.body);
+
+    console.log("", req.body);
     const { id } = req.params;
     const exitingData = await StartProduction.findById(id);
     if (!exitingData) {
@@ -1210,7 +1211,7 @@ Pointer is stored of address
 
 array is time complexity of o(1),differance between array and list is array is static data structure and it is fixed and continueslty while list is dynamic data structure and it is grow and not required continuslty.
 
-linked list is linear Data structure is consistance of a squevance of elements ,where each element point to next one.forming a chain. 
+linked list is linear Data structure is consistance of a squevance of elements ,where each element point to next one.forming a chain.
  linkedlist is three types use first singly linkedlist,doubly linkedlist and circular linkedlist 
  advantange of linkedlist:- dynamic memory allocation , efficient insertion and deletion , can represent complex data structures , can be used to impliment queues and stacks , can be used for memory management and caching , can be used gerbage collections
  
