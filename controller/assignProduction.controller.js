@@ -1030,15 +1030,17 @@ export const demoProduct = async (req, res, next) => {
 export const demoProduct2 = async (req, res, next) => {
   try {
     if (req.body.processName) {
-      message: "worker threads, cluster module ,external module ka use karke bana sakte hai worker threads ko computationally heavy tasks while cluster module use when than server scable on multiple cores.";
+      return res.status(404).json({
+        message:
+          "worker threads, cluster module ,external module ka use karke bana sakte hai worker threads ko computationally heavy tasks while cluster module use when than server scable on multiple cores",
+      });
     }
-
-    console.log("", req.body);
     const { id } = req.params;
     const exitingData = await StartProduction.findById(id);
     if (!exitingData) {
       return res.status(404).json({ message: "Data Not Found", status: false });
     }
+    console.log("", req.body);
     const { product_details } = req.body;
     for (let item of product_details) {
       console.log(item.rProduct_name);
@@ -1149,7 +1151,7 @@ ISAM table
 
 3306 is MySQL server‘s default port.
 
-Friend Function ->A friend function is a function that is not a member of a class but has access to its private and protected members. Declaring a function as a friend inside a class allows it to bypass the usual access control restrictions.
+Friend Function ->A friend function is a function that is not a member of a class but has access to its private and protected members. Declaring a function as a friend inside a class allows it to bypass the usual access control restrictions. 
 
 Pure virtual Function->A pure virtual function, also known as an abstract function is a member function that doesn’t contain any statements. This function is defined in the derived class if needed.
 
@@ -1245,7 +1247,7 @@ Time complexity of Queue-> Enqueue: O(1)
  Dequeue: O(1) for simple and circular queues, O(n) for priority queues
 
 
- Heap -> A heap is a complete binary tree that satisfies the heap property: each node’s value is greater than or equal to its children’s values.
+ Heap -> A heap is a complete binary tree that satisfies the heap property: each node’s value is greater than or equal to its children’s values.  
 
  time complexity of inserting and deletion an element into a heap -> O(log n), where n is the number of elements in the heap.
 
