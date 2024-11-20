@@ -1241,7 +1241,7 @@ types of Queues->
 3.Priority Queue
 4.Double-Ended Queue (Deque) 
 
-Time complexity of Queue-> Enqueue: O(1)
+Time complexity of Queue-> Enqueue: O(1)           
  Dequeue: O(1) for simple and circular queues, O(n) for priority queues
 
 
