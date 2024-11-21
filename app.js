@@ -90,6 +90,7 @@ const publicPath = path.join(
   path.dirname(fileURLToPath(import.meta.url)),
   "public"
 );
+
 const publicPath1 = path.join(
   path.dirname(fileURLToPath(import.meta.url)),
   "controller"

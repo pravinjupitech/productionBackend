@@ -1,3 +1,4 @@
+import multer, { diskStorage } from "multer";
 import { AssignProduction } from "../model/assignProduction.model.js";
 import { Product } from "../model/product.model.js";
 import { RowProduct } from "../model/rowProduct.model.js";
@@ -862,7 +863,6 @@ export const updateProducted = async (req, res, next) => {
     res.status(500).json({ message: "Internal Server Error", status: false });
   }
 };
-
 export const deleteProducted = async (req, res, next) => {
   try {
     let id = req.params.id;
@@ -1058,7 +1058,6 @@ export const demoProduct2 = async (req, res, next) => {
 //but today situation is mpsi exam has not come yet .
 /* 
 Authentication is user identity verify on system and authorization is user and system allowed to do.
-
 
     function fact(n) {
       if (n == 1 || n == 0) {
