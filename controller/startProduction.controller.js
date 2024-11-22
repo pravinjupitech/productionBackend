@@ -128,6 +128,7 @@ const handleProductRevert = async (item) => {
   if (item.rProduct_name && item.rProduct_name_Units.length > 0) {
     const Rowproduct = await RowProduct.findById(item.rProduct_name);
     await revertStockUnits(item?.rProduct_name_Units, Rowproduct, "add");
+    console.log(revertStockUnits||0)
   }
 
   if (item.fProduct_name && item.fProduct_name_Units.length > 0) {
