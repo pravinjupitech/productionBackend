@@ -1035,6 +1035,7 @@ export const demoProduct2 = async (req, res, next) => {
           "worker threads, cluster module ,external module ka use karke bana sakte hai worker threads ko computationally heavy tasks while cluster module use when than server scable on multiple cores",
       });
     }
+
     const { id } = req.params;
     const exitingData = await StartProduction.findById(id);
     if (!exitingData) {
@@ -1055,8 +1056,19 @@ export const demoProduct2 = async (req, res, next) => {
   }
 };
 
-//but today situation is mpsi exam has not come yet .
+//but today situation is mpsi exam has not come yet
 /* 
+
+
+
+
+
+
+
+
+
+
+
 Authentication is user identity verify on system and authorization is user and system allowed to do.
 
     function fact(n) {
