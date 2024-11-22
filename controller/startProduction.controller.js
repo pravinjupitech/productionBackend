@@ -33,7 +33,6 @@ export const createProduction = async (req, res, next) => {
         );
       }
     }
-
     const product = await StartProduction.create(req.body);
     return product
       ? res.status(200).json({ message: "Data Added", status: true })
