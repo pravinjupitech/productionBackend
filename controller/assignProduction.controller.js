@@ -1035,12 +1035,13 @@ export const demoProduct2 = async (req, res, next) => {
           "worker threads, cluster module ,external module ka use karke bana sakte hai worker threads ko computationally heavy tasks while cluster module use when than server scable on multiple cores",
       });
     }
-
     const { id } = req.params;
     const exitingData = await StartProduction.findById(id);
     if (!exitingData) {
       return res.status(404).json({ message: "Data Not Found", status: false });
     }
+    console.log(exitingData);
+    res.status(404).json({ message: "" });
     console.log("", req.body);
     const { product_details } = req.body;
     for (let item of product_details) {
