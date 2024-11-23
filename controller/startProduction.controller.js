@@ -15,7 +15,7 @@ export const createProduction = async (req, res, next) => {
         );
       }
 
-      if (item?.finalProductDetails.length > 0) {
+      if (item?.finalProductDetails) {
         for (let item1 of item?.finalProductDetails) {
           await updateProductQty(
             item1?.fProduct_name,
