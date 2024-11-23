@@ -15,13 +15,15 @@ export const createProduction = async (req, res, next) => {
         );
       }
 
-      if (item?.fProduct_name) {
-        await updateProductQty(
-          item?.fProduct_name,
-          item?.fProduct_name_Units,
-          "add",
-          res
-        );
+      if (item?.finalProductDetails.length > 0) {
+        for (let item1 of item?.finalProductDetails) {
+          await updateProductQty(
+            item1?.fProduct_name,
+            item1?.fProduct_name_Units,
+            "add",
+            res
+          );
+        }
       }
 
       if (item?.wProduct_name) {
@@ -78,7 +80,10 @@ export const viewProduct = async (req, res, next) => {
     })
       .sort({ sortorder: -1 })
       .populate({ path: "product_details.user_name", model: "user" })
-      .populate({ path: "product_details.fProduct_name", model: "rowProduct" })
+      .populate({
+        path: "product_details.finalProductDetails.fProduct_name",
+        model: "rowProduct",
+      })
       .populate({ path: "product_details.rProduct_name", model: "rowProduct" })
       .populate({ path: "product_details.wProduct_name", model: "rowProduct" })
       .populate({ path: "processName", model: "category" });
@@ -128,7 +133,7 @@ const handleProductRevert = async (item) => {
   if (item.rProduct_name && item.rProduct_name_Units.length > 0) {
     const Rowproduct = await RowProduct.findById(item.rProduct_name);
     await revertStockUnits(item?.rProduct_name_Units, Rowproduct, "add");
-    console.log(revertStockUnits||0)
+    console.log(revertStockUnits || 0);
   }
 
   if (item.fProduct_name && item.fProduct_name_Units.length > 0) {
