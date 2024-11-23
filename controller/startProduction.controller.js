@@ -135,10 +135,17 @@ const handleProductRevert = async (item) => {
     await revertStockUnits(item?.rProduct_name_Units, Rowproduct, "add");
     console.log(revertStockUnits || 0);
   }
-
-  if (item.fProduct_name && item.fProduct_name_Units.length > 0) {
-    const Rowproduct = await RowProduct.findById(item.fProduct_name);
-    await revertStockUnits(item?.fProduct_name_Units, Rowproduct, "deduct");
+  if (item?.finalProductDetails && item?.finalProductDetails?.length > 0) {
+    for (let item1 of item?.finalProductDetails) {
+      if (item1?.fProduct_name && item1?.fProduct_name_Units?.length > 0) {
+        const Rowproduct = await RowProduct.findById(item1?.fProduct_name);
+        await revertStockUnits(
+          item1?.fProduct_name_Units,
+          Rowproduct,
+          "deduct"
+        );
+      }
+    }
   }
 
   if (item?.wProduct_name && item?.wProduct_name_Units.length > 0) {
