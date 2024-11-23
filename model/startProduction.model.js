@@ -24,10 +24,14 @@ const productionSchema = new mongoose.Schema(
           type: String,
         },
         rProduct_name_Units: [],
-        fProduct_name: {
-          type: String,
-        },
-        fProduct_name_Units: [],
+        finalProductDetails: [
+          {
+            fProduct_name: {
+              type: String,
+            },
+            fProduct_name_Units: [],
+          },
+        ],
         wProduct_name: {
           type: String,
         },
