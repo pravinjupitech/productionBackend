@@ -32,10 +32,14 @@ const productionSchema = new mongoose.Schema(
             fProduct_name_Units: [],
           },
         ],
-        wProduct_name: {
-          type: String,
-        },
-        wProduct_name_Units: [],
+        wastageProductDetails: [
+          {
+            wProduct_name: {
+              type: String,
+            },
+            wProduct_name_Units: [],
+          },
+        ],
       },
     ],
     totalStep: {
