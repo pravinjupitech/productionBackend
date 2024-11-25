@@ -142,7 +142,7 @@ const handleProductRevert = async (item) => {
     await revertStockUnits(item?.rProduct_name_Units, Rowproduct, "add");
     console.log(revertStockUnits || 0);
   }
-  if (item?.finalProductDetails && item?.finalProductDetails?.length > 0) {
+  if (item?.finalProductDetails && item?.finalProductDetails.length > 0) {
     for (let item1 of item?.finalProductDetails) {
       if (item1?.fProduct_name && item1?.fProduct_name_Units?.length > 0) {
         const Rowproduct = await RowProduct.findById(item1?.fProduct_name);
@@ -154,9 +154,17 @@ const handleProductRevert = async (item) => {
       }
     }
   }
-  if (item?.wProduct_name && item?.wProduct_name_Units.length > 0) {
-    const Rowproduct = await RowProduct.findById(item.wProduct_name);
-    await revertStockUnits(item?.wProduct_name_Units, Rowproduct, "deduct");
+  if (item?.wastageProductDetails && item?.wastageProductDetails.length > 0) {
+    for (let item1 of item?.wastageProductDetails) {
+      if (item1?.wProduct_name && item1?.wProduct_name_Units.length > 0) {
+        const Rowproduct = await RowProduct.findById(item1.wProduct_name);
+        await revertStockUnits(
+          item1?.wProduct_name_Units,
+          Rowproduct,
+          "deduct"
+        );
+      }
+    }
   }
 };
 
@@ -707,75 +715,84 @@ export const updateProduct = async (req, res, next) => {
                   }
                 }
             }
-
-            if (item.wProduct_name && item.wProduct_name_Units.length > 0) {
-              const existingItem = existingProductDetails.find(
-                (prod) => prod.wProduct_name === item.wProduct_name
-              );
-              if (existingItem) {
-                const Rowproduct = await RowProduct.findById(
-                  item.wProduct_name
-                );
-                // console.log("wastage Product exiting", existingItem);
-                const existingQty = existingItem.wProduct_name_Units.reduce(
-                  (total, unit) =>
-                    unit.unit === Rowproduct.stockUnit
-                      ? total + unit.value
-                      : total,
-                  0
-                );
-                // console.log("wastage existingQty", existingQty);
-                const currentQty = item.wProduct_name_Units.reduce(
-                  (total, unit) =>
-                    unit.unit === Rowproduct.stockUnit
-                      ? total + unit.value
-                      : total,
-                  0
-                );
-                // console.log("currentQty", currentQty);
-                let qtyDifference = Math.abs(existingQty - currentQty);
-                if (existingQty > currentQty) {
-                  // console.log("lapse wastage qty", qtyDifference);
-                  await processRowProductUpdate(
-                    item,
-                    "wProduct_name",
-                    "wProduct_name_Units",
-                    "Lapse",
-                    qtyDifference
+            if (
+              item?.wastageProductDetails &&
+              item?.wastageProductDetails.length > 0
+            ) {
+              for (let product of wastageProductDetails) {
+                if (
+                  product.wProduct_name &&
+                  product.wProduct_name_Units.length > 0
+                ) {
+                  const existingItem = existingProductDetails.find(
+                    (prod) => prod.wProduct_name === product.wProduct_name
                   );
-                } else if (currentQty > existingQty) {
-                  // console.log("Add wastage qty", qtyDifference);
-                  await processRowProductUpdate(
-                    item,
-                    "wProduct_name",
-                    "wProduct_name_Units",
-                    "Add",
-                    qtyDifference
-                  );
-                }
-              } else {
-                // console.log("not  wastage Product exiting");
-                const Rowproduct = await RowProduct.findById(
-                  item.wProduct_name
-                );
-                // console.log("not wastage", Rowproduct);
-                item.wProduct_name_Units.map(async (item1) => {
-                  if (Rowproduct.stockUnit == item1.unit) {
-                    console.log(
-                      "Wastaage",
-                      Rowproduct.stockUnit,
-                      item1.unit,
-                      item1.value
+                  if (existingItem) {
+                    const Rowproduct = await RowProduct.findById(
+                      product.wProduct_name
                     );
-                    await processRowProductUpdate(
-                      item,
-                      "wProduct_name",
-                      "wProduct_name_Units",
-                      "Add",
-                      item1.value
+                    // console.log("wastage Product exiting", existingItem);
+                    const existingQty = existingItem.wProduct_name_Units.reduce(
+                      (total, unit) =>
+                        unit.unit === Rowproduct.stockUnit
+                          ? total + unit.value
+                          : total,
+                      0
                     );
+                    // console.log("wastage existingQty", existingQty);
+                    const currentQty = product.wProduct_name_Units.reduce(
+                      (total, unit) =>
+                        unit.unit === Rowproduct.stockUnit
+                          ? total + unit.value
+                          : total,
+                      0
+                    );
+                    // console.log("currentQty", currentQty);
+                    let qtyDifference = Math.abs(existingQty - currentQty);
+                    if (existingQty > currentQty) {
+                      // console.log("lapse wastage qty", qtyDifference);
+                      await processRowProductUpdate(
+                        product,
+                        "wProduct_name",
+                        "wProduct_name_Units",
+                        "Lapse",
+                        qtyDifference
+                      );
+                    } else if (currentQty > existingQty) {
+                      // console.log("Add wastage qty", qtyDifference);
+                      await processRowProductUpdate(
+                        product,
+                        "wProduct_name",
+                        "wProduct_name_Units",
+                        "Add",
+                        qtyDifference
+                      );
+                    }
+                  } else {
+                    // console.log("not  wastage Product exiting");
+                    const Rowproduct = await RowProduct.findById(
+                      product.wProduct_name
+                    );
+                    // console.log("not wastage", Rowproduct);
+                    product.wProduct_name_Units.map(async (item1) => {
+                      if (Rowproduct.stockUnit == item1.unit) {
+                        console.log(
+                          "Wastaage",
+                          Rowproduct.stockUnit,
+                          item1.unit,
+                          item1.value
+                        );
+                        await processRowProductUpdate(
+                          product,
+                          "wProduct_name",
+                          "wProduct_name_Units",
+                          "Add",
+                          item1.value
+                        );
+                      }
+                    });
                   }
-                });
+                }
               }
             }
           })
