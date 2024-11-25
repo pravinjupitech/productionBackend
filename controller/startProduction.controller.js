@@ -58,7 +58,6 @@ const updateProductQty = async (productId, productUnits, actionType, res) => {
       .status(404)
       .json({ message: "Product not found", status: false });
   }
-
   for (const unit of productUnits) {
     if (unit.unit === product.stockUnit) {
       if (actionType === "deduct") {
