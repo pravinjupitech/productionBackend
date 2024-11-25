@@ -90,7 +90,10 @@ export const viewProduct = async (req, res, next) => {
         model: "rowProduct",
       })
       .populate({ path: "product_details.rProduct_name", model: "rowProduct" })
-      .populate({ path: "product_details.wProduct_name", model: "rowProduct" })
+      .populate({
+        path: "product_details.wastageProductDetails.wProduct_name",
+        model: "rowProduct",
+      })
       .populate({ path: "processName", model: "category" });
     return product.length > 0
       ? res.status(200).json({ message: "Data Found", product, status: true })
