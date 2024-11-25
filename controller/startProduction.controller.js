@@ -628,69 +628,79 @@ export const updateProduct = async (req, res, next) => {
                 });
               }
             }
-            if (item.fProduct_name && item.fProduct_name_Units.length > 0) {
-              const existingItem = existingProductDetails.find(
-                (prod) => prod.fProduct_name === item.fProduct_name
-              );
-              if (existingItem) {
-                const Rowproduct = await RowProduct.findById(
-                  item.fProduct_name
-                );
-                // console.log("Final Exiting", existingItem);
-                const existingQty = existingItem.fProduct_name_Units.reduce(
-                  (total, unit) =>
-                    unit.unit === Rowproduct.stockUnit
-                      ? total + unit.value
-                      : total,
-                  0
-                );
-                // console.log("final product Exitingqty", existingQty);
-                const currentQty = item.fProduct_name_Units.reduce(
-                  (total, unit) =>
-                    unit.unit === Rowproduct.stockUnit
-                      ? total + unit.value
-                      : total,
-                  0
-                );
-                // console.log("current final ", currentQty);
-                let qtyDifference = Math.abs(existingQty - currentQty);
-                if (existingQty > currentQty) {
-                  // console.log("lapse final qty", qtyDifference);
-                  await processRowProductUpdate(
-                    item,
-                    "fProduct_name",
-                    "fProduct_name_Units",
-                    "Lapse",
-                    qtyDifference
+            if (
+              item.finalProductDetails &&
+              item?.finalProductDetails.length > 0
+            ) {
+              for (let product of item.finalProductDetails)
+                if (
+                  product.fProduct_name &&
+                  product.fProduct_name_Units.length > 0
+                ) {
+                  const existingItem = existingProductDetails.find(
+                    (prod) => prod.fProduct_name === product.fProduct_name
                   );
-                } else if (currentQty > existingQty) {
-                  // console.log("add final qty", qtyDifference);
-                  await processRowProductUpdate(
-                    item,
-                    "fProduct_name",
-                    "fProduct_name_Units",
-                    "Add",
-                    qtyDifference
-                  );
-                }
-              } else {
-                const Rowproduct = await RowProduct.findById(
-                  item.fProduct_name
-                );
-                // console.log("not  final Product exiting");
-                item.fProduct_name_Units.map(async (item1) => {
-                  if (Rowproduct.stockUnit == item1.unit) {
-                    await processRowProductUpdate(
-                      item,
-                      "fProduct_name",
-                      "fProduct_name_Units",
-                      "Add",
-                      item1.value
+                  if (existingItem) {
+                    const Rowproduct = await RowProduct.findById(
+                      product.fProduct_name
                     );
+                    // console.log("Final Exiting", existingItem);
+                    const existingQty = existingItem.fProduct_name_Units.reduce(
+                      (total, unit) =>
+                        unit.unit === Rowproduct.stockUnit
+                          ? total + unit.value
+                          : total,
+                      0
+                    );
+                    // console.log("final product Exitingqty", existingQty);
+                    const currentQty = product.fProduct_name_Units.reduce(
+                      (total, unit) =>
+                        unit.unit === Rowproduct.stockUnit
+                          ? total + unit.value
+                          : total,
+                      0
+                    );
+                    // console.log("current final ", currentQty);
+                    let qtyDifference = Math.abs(existingQty - currentQty);
+                    if (existingQty > currentQty) {
+                      // console.log("lapse final qty", qtyDifference);
+                      await processRowProductUpdate(
+                        product,
+                        "fProduct_name",
+                        "fProduct_name_Units",
+                        "Lapse",
+                        qtyDifference
+                      );
+                    } else if (currentQty > existingQty) {
+                      // console.log("add final qty", qtyDifference);
+                      await processRowProductUpdate(
+                        product,
+                        "fProduct_name",
+                        "fProduct_name_Units",
+                        "Add",
+                        qtyDifference
+                      );
+                    }
+                  } else {
+                    const Rowproduct = await RowProduct.findById(
+                      product.fProduct_name
+                    );
+                    // console.log("not  final Product exiting");
+                    product.fProduct_name_Units.map(async (item1) => {
+                      if (Rowproduct.stockUnit == item1.unit) {
+                        await processRowProductUpdate(
+                          product,
+                          "fProduct_name",
+                          "fProduct_name_Units",
+                          "Add",
+                          item1.value
+                        );
+                      }
+                    });
                   }
-                });
-              }
+                }
             }
+
             if (item.wProduct_name && item.wProduct_name_Units.length > 0) {
               const existingItem = existingProductDetails.find(
                 (prod) => prod.wProduct_name === item.wProduct_name
