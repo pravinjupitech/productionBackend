@@ -15,7 +15,7 @@ export const createProduction = async (req, res, next) => {
         );
       }
 
-      if (item?.finalProductDetails) {
+      if (item?.finalProductDetails && item?.finalProductDetails > 0) {
         for (let item1 of item?.finalProductDetails) {
           await updateProductQty(
             item1?.fProduct_name,
@@ -26,13 +26,18 @@ export const createProduction = async (req, res, next) => {
         }
       }
 
-      if (item?.wProduct_name) {
-        await updateProductQty(
-          item?.wProduct_name,
-          item?.wProduct_name_Units,
-          "add",
-          res
-        );
+      if (
+        item?.wastageProductDetails &&
+        item?.wastageProductDetails.length > 0
+      ) {
+        for (let item1 of item?.wastageProductDetails) {
+          await updateProductQty(
+            item1?.wProduct_name,
+            item1?.wProduct_name_Units,
+            "add",
+            res
+          );
+        }
       }
     }
     const product = await StartProduction.create(req.body);
