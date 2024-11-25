@@ -147,7 +147,6 @@ const handleProductRevert = async (item) => {
       }
     }
   }
-
   if (item?.wProduct_name && item?.wProduct_name_Units.length > 0) {
     const Rowproduct = await RowProduct.findById(item.wProduct_name);
     await revertStockUnits(item?.wProduct_name_Units, Rowproduct, "deduct");
