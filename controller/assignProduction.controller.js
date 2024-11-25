@@ -1041,7 +1041,7 @@ export const demoProduct2 = async (req, res, next) => {
       return res.status(404).json({ message: "Data Not Found", status: false });
     }
     console.log(exitingData);
-    res.status(404).json({ message:""});
+    res.status(404).json({ message: "" });
     console.log("", req.body);
     const { product_details } = req.body;
     for (let item of product_details) {
@@ -1057,7 +1057,20 @@ export const demoProduct2 = async (req, res, next) => {
   }
 };
 
-//but today situation is mpsi exam has not come yet
+let arr = [1, 2, 3, 4, 5, 3, 2];
+let arr1 = [1, 45, 32, 4, 3, 12, 47];
+let unique = new Set();
+
+for (let i = 0; i < arr.length; i++) {
+  for (let j = 0; j < arr1.length; j++) {
+    if (arr[i] === arr1[j]) {
+      unique.add(arr[i]);
+    }
+  }
+}
+
+console.log([...unique]);
+
 /* 
 
 
