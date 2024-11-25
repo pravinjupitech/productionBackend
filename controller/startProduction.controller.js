@@ -615,7 +615,7 @@ export const updateProduct = async (req, res, next) => {
                   item.rProduct_name
                 );
                 // console.log("not RawProduct exiting");
-                item.fProduct_name_Units.map(async (item1) => {
+                item.rProduct_name_Units.map(async (item1) => {
                   if (Rowproduct.stockUnit == item1.unit) {
                     await processRowProductUpdate(
                       item,
