@@ -852,8 +852,6 @@ export const productionAddWarehouse = async (qty, warehouseId, productId) => {
   }
 };
 
-
-
 /* 
 // export const updateProduct = async (req, res, next) => {
 //   try {
