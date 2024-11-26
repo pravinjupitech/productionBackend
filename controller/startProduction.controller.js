@@ -1,7 +1,6 @@
 import { RowProduct } from "../model/rowProduct.model.js";
 import { StartProduction } from "../model/startProduction.model.js";
 import { Warehouse } from "../model/warehouse.model.js";
-
 export const createProduction = async (req, res, next) => {
   try {
     const { product_details } = req.body;
@@ -852,6 +851,8 @@ export const productionAddWarehouse = async (qty, warehouseId, productId) => {
     console.log(error);
   }
 };
+
+
 
 /* 
 // export const updateProduct = async (req, res, next) => {
