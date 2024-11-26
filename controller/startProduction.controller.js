@@ -134,9 +134,8 @@ export const deleteProduct = async (req, res, next) => {
     res.status(500).json({ error: "Internal Server Error", status: false });
   }
 };
-
 const handleProductRevert = async (item) => {
-  if (item.rProduct_name && item.rProduct_name_Units.length > 0) {
+  if (item?.rProduct_name && item?.rProduct_name_Units.length > 0) {
     const Rowproduct = await RowProduct.findById(item.rProduct_name);
     await revertStockUnits(item?.rProduct_name_Units, Rowproduct, "add");
     console.log(revertStockUnits || 0);
@@ -651,9 +650,10 @@ export const updateProduct = async (req, res, next) => {
                   product.fProduct_name &&
                   product.fProduct_name_Units.length > 0
                 ) {
-                  const existingItem = existingProductDetails.find(
-                    (prod) => prod.fProduct_name === product.fProduct_name
-                  );
+                  const existingItem =
+                    existingProductDetails.finalProductDetails.find(
+                      (prod) => prod.fProduct_name === product.fProduct_name
+                    );
                   if (existingItem) {
                     const Rowproduct = await RowProduct.findById(
                       product.fProduct_name
@@ -718,14 +718,15 @@ export const updateProduct = async (req, res, next) => {
               item?.wastageProductDetails &&
               item?.wastageProductDetails.length > 0
             ) {
-              for (let product of wastageProductDetails) {
+              for (let product of item?.wastageProductDetails) {
                 if (
                   product.wProduct_name &&
                   product.wProduct_name_Units.length > 0
                 ) {
-                  const existingItem = existingProductDetails.find(
-                    (prod) => prod.wProduct_name === product.wProduct_name
-                  );
+                  const existingItem =
+                    existingProductDetails?.wastageProductDetails.find(
+                      (prod) => prod.wProduct_name === product.wProduct_name
+                    );
                   if (existingItem) {
                     const Rowproduct = await RowProduct.findById(
                       product.wProduct_name
