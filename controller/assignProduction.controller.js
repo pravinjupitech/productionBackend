@@ -1057,20 +1057,6 @@ export const demoProduct2 = async (req, res, next) => {
   }
 };
 
-let arr = [1, 2, 3, 4, 5, 3, 2];
-let arr1 = [1, 45, 32, 4, 3, 12, 47];
-let unique = new Set();
-
-for (let i = 0; i < arr.length; i++) {
-  for (let j = 0; j < arr1.length; j++) {
-    if (arr[i] === arr1[j]) {
-      unique.add(arr[i]);
-    }
-  }
-}
-
-console.log([...unique]);
-
 /* 
 
 
@@ -1084,6 +1070,20 @@ console.log([...unique]);
 
 
 Authentication is user identity verify on system and authorization is user and system allowed to do.
+
+let arr = [1, 2, 3, 4, 5, 3, 2];
+let arr1 = [1, 45, 32, 4, 3, 12, 47];
+let unique = new Set();
+
+for (let i = 0; i < arr.length; i++) {
+  for (let j = 0; j < arr1.length; j++) {
+    if (arr[i] === arr1[j]) {
+      unique.add(arr[i]);
+    }
+  }
+}
+
+console.log([...unique]);
 
     function fact(n) {
       if (n == 1 || n == 0) {
