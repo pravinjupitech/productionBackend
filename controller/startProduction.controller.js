@@ -855,6 +855,29 @@ export const productionAddWarehouse = async (qty, warehouseId, productId) => {
 
 /* in mongo db aggregate framework used to complex data processing and analysis opration on collection
 
+
+  let error = {};
+  if (!data.patientName) {
+    error.patientName = "Patient Name is Required";
+  }
+  if (!data.phoneNumder || !/^\d{10}$/.test(data.phoneNumder)) {
+    error.phoneNumder = "Enter valid (10 number)";
+  }
+  if (!data.address) {
+    error.address = "Address Is Required";
+  }
+  if (!data.email || !data.email.includes("@gmail.com")) {
+    error.email = "valid Email";
+  }
+  if (Object.keys(error).length > 0) {
+    setErrors(error);
+    return;
+  }
+
+
+
+
+
 // export const updateProduct = async (req, res, next) => {
 //   try {
 //     const id = req.params.id;
