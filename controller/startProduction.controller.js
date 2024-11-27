@@ -853,7 +853,8 @@ export const productionAddWarehouse = async (qty, warehouseId, productId) => {
   }
 };
 
-/*
+/* in mongo db aggregate framework used to complex data processing and analysis opration on collection
+
 // export const updateProduct = async (req, res, next) => {
 //   try {
 //     const id = req.params.id;
