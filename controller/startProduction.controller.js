@@ -134,6 +134,7 @@ export const deleteProduct = async (req, res, next) => {
     res.status(500).json({ error: "Internal Server Error", status: false });
   }
 };
+
 const handleProductRevert = async (item) => {
   if (item?.rProduct_name && item?.rProduct_name_Units.length > 0) {
     const Rowproduct = await RowProduct.findById(item.rProduct_name);
