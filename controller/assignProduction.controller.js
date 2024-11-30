@@ -817,13 +817,13 @@ export const updateProducted = async (req, res, next) => {
             }
           });
         }
-        if (item.wProduct_name !== null) {
+        if (item?.wProduct_name) {
           const Rowproduct = await RowProduct.findById(item.wProduct_name);
           item.wProduct_name_Units.map((data) => {
             if (data.unit === Rowproduct.stockUnit) {
               if (data.unit === Rowproduct.stockUnit) {
-                Productfind.product_details.map(async (exitingItem) => {
-                  exitingItem.wProduct_name_Units.map(async (exitingData) => {
+                Productfind?.product_details.map(async (exitingItem) => {
+                  exitingItem?.wProduct_name_Units.map(async (exitingData) => {
                     if (exitingData.unit == data.unit) {
                       if (data.value > exitingData.value) {
                         let qty = data.value - exitingData.value;
@@ -863,6 +863,7 @@ export const updateProducted = async (req, res, next) => {
     res.status(500).json({ message: "Internal Server Error", status: false });
   }
 };
+
 export const deleteProducted = async (req, res, next) => {
   try {
     let id = req.params.id;
@@ -1006,7 +1007,7 @@ export const deleteProducted = async (req, res, next) => {
     res.status(500).json({ error: "Internal Server Error", status: false });
   }
 };
-// window.history.back()  i wa
+// window.history.back()
 export const demoProduct = async (req, res, next) => {
   try {
     let arr = [1, 2, 3, 3, 4, 5, 5, 5];
@@ -1057,9 +1058,7 @@ export const demoProduct2 = async (req, res, next) => {
   }
 };
 
-/* 
-
-
+/*
 
 
 
