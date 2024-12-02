@@ -492,7 +492,7 @@ export const updateProduct = async (req, res, next) => {
               if (existingQty > currentQty) {
                 if (productType === "rProduct_name") {
                   console.log(
-                    `Existing ${productType} quantity is greater; Adding difference:`,
+                    "Existing quantity is greater; Adding difference:",
                     qtyDifference
                   );
                   await processRowProductUpdate(
@@ -504,7 +504,7 @@ export const updateProduct = async (req, res, next) => {
                   );
                 } else {
                   console.log(
-                    `Existing ${productType} quantity is greater; Lapse difference:`,
+                    "Existing quantity is greater; Lapse difference:",
                     qtyDifference
                   );
                   await processRowProductUpdate(
@@ -518,7 +518,7 @@ export const updateProduct = async (req, res, next) => {
               } else {
                 if (productType === "rProduct_name") {
                   console.log(
-                    `Current ${productType} quantity is greater or equal; Lapsing difference:`,
+                    "Current quantity is greater or equal; Lapsing difference:",
                     qtyDifference
                   );
                   await processRowProductUpdate(
@@ -530,7 +530,7 @@ export const updateProduct = async (req, res, next) => {
                   );
                 } else {
                   console.log(
-                    `Current ${productType} quantity is greater or equal; Adding difference:`,
+                    "Current quantity is greater or equal; Adding difference",
                     qtyDifference
                   );
                   await processRowProductUpdate(
@@ -544,7 +544,7 @@ export const updateProduct = async (req, res, next) => {
               }
             } else {
               console.log(
-                `Product ${productType} does not match. Lapsing current quantity:`,
+                "Product does not match. Lapsing current quantity:",
                 item[unitType]
               );
               const currentQtyTotal = item[unitType]
