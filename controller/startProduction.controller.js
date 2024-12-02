@@ -630,8 +630,8 @@ export const updateProduct = async (req, res, next) => {
                 const Rowproduct = await RowProduct.findById(
                   item.rProduct_name
                 );
-                console.log("not RawProduct exiting");
-                console.log(RowProduct);
+                // console.log("not RawProduct exiting");
+                // console.log(Rowproduct);
                 item.rProduct_name_Units.map(async (item1) => {
                   if (Rowproduct.stockUnit == item1.unit) {
                     await processRowProductUpdate(
@@ -710,8 +710,8 @@ export const updateProduct = async (req, res, next) => {
                       const Rowproduct = await RowProduct.findById(
                         product.fProduct_name
                       );
-                      console.log("not  final Product exiting");
-                      console.log("final ", RowProduct);
+                      // console.log("not  final Product exiting");
+                      // console.log("final ", Rowproduct);
                       product.fProduct_name_Units.map(async (item1) => {
                         if (Rowproduct.stockUnit == item1.unit) {
                           await processRowProductUpdate(
@@ -791,8 +791,8 @@ export const updateProduct = async (req, res, next) => {
                       const Rowproduct = await RowProduct.findById(
                         product.wProduct_name
                       );
-                      console.log("not wastage", Rowproduct);
-                      console.log("wastage", RowProduct);
+                      // console.log("not wastage", Rowproduct);
+                      // console.log("wastage", Rowproduct);
                       product.wProduct_name_Units.map(async (item1) => {
                         if (Rowproduct.stockUnit == item1.unit) {
                           // console.log(
@@ -801,7 +801,6 @@ export const updateProduct = async (req, res, next) => {
                           //   item1.unit,
                           //   item1.value
                           // );
-
                           await processRowProductUpdate(
                             product,
                             "wProduct_name",
