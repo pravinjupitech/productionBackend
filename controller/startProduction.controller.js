@@ -630,7 +630,8 @@ export const updateProduct = async (req, res, next) => {
                 const Rowproduct = await RowProduct.findById(
                   item.rProduct_name
                 );
-                // console.log("not RawProduct exiting");
+                console.log("not RawProduct exiting");
+                console.log(RowProduct);
                 item.rProduct_name_Units.map(async (item1) => {
                   if (Rowproduct.stockUnit == item1.unit) {
                     await processRowProductUpdate(
@@ -668,6 +669,7 @@ export const updateProduct = async (req, res, next) => {
                         product.fProduct_name
                       );
                       console.log("Final Exiting", existingItem);
+                      console.log("Final ", RowProduct);
                       const existingQty =
                         existingItem.fProduct_name_Units.reduce(
                           (total, unit) =>
@@ -709,6 +711,7 @@ export const updateProduct = async (req, res, next) => {
                         product.fProduct_name
                       );
                       console.log("not  final Product exiting");
+                      console.log("final ", RowProduct);
                       product.fProduct_name_Units.map(async (item1) => {
                         if (Rowproduct.stockUnit == item1.unit) {
                           await processRowProductUpdate(
@@ -774,7 +777,7 @@ export const updateProduct = async (req, res, next) => {
                           qtyDifference
                         );
                       } else if (currentQty > existingQty) {
-                        // console.log("Add wastage qty", qtyDifference);
+                        // console.log("Add wastage qty  ", qtyDifference);
                         await processRowProductUpdate(
                           product,
                           "wProduct_name",
@@ -784,19 +787,21 @@ export const updateProduct = async (req, res, next) => {
                         );
                       }
                     } else {
-                      // console.log("not  wastage Product exiting");
+                      // console.log("not  wastage Product exiting ");
                       const Rowproduct = await RowProduct.findById(
                         product.wProduct_name
                       );
-                      // console.log("not wastage", Rowproduct);
+                      console.log("not wastage", Rowproduct);
+                      console.log("wastage", RowProduct);
                       product.wProduct_name_Units.map(async (item1) => {
                         if (Rowproduct.stockUnit == item1.unit) {
-                          console.log(
-                            "Wastaage",
-                            Rowproduct.stockUnit,
-                            item1.unit,
-                            item1.value
-                          );
+                          // console.log(
+                          //   "Wastaage",
+                          //   Rowproduct.stockUnit,
+                          //   item1.unit,
+                          //   item1.value
+                          // );
+
                           await processRowProductUpdate(
                             product,
                             "wProduct_name",
