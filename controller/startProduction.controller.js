@@ -675,6 +675,7 @@ export const updateProduct = async (req, res, next) => {
                       0
                     );
                     // console.log("current final ", currentQty);
+
                     let qtyDifference = Math.abs(existingQty - currentQty);
                     if (existingQty > currentQty) {
                       // console.log("lapse final qty", qtyDifference);
@@ -700,6 +701,7 @@ export const updateProduct = async (req, res, next) => {
                       product.fProduct_name
                     );
                     // console.log("not  final Product exiting");
+
                     product.fProduct_name_Units.map(async (item1) => {
                       if (Rowproduct.stockUnit == item1.unit) {
                         await processRowProductUpdate(
