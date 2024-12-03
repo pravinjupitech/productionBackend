@@ -135,6 +135,49 @@ export const deleteProduct = async (req, res, next) => {
   }
 };
 
+export const deleteNestedProduct = async (req, res, next) => {
+  try {
+    const { id, innerId } = req.params;
+    const parentProduct = await StartProduction.findById(id);
+
+    if (!parentProduct) {
+      return res
+        .status(404)
+        .json({ message: "Parent data not found", status: false });
+    }
+
+    const findIndex = parentProduct.product_details.findIndex(
+      (item) => item._id.toString() === innerId
+    );
+
+    if (findIndex !== -1) {
+      await handleProductRevert(parentProduct.product_details[findIndex]);
+      parentProduct.product_details.splice(findIndex, 1);
+      await parentProduct.save();
+      if (parentProduct.product_details.length === 0) {
+        await StartProduction.findByIdAndDelete(id);
+        return res.status(200).json({
+          message: "Parent data deleted because no products remain",
+          status: true,
+        });
+      }
+
+      return res.status(200).json({
+        message: "Nested product deleted successfully",
+        status: true,
+      });
+    } else {
+      return res.status(404).json({
+        error: "Nested product not found",
+        status: false,
+      });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal Server Error", status: false });
+  }
+};
+
 const handleProductRevert = async (item) => {
   if (item?.rProduct_name && item?.rProduct_name_Units.length > 0) {
     const Rowproduct = await RowProduct.findById(item.rProduct_name);
