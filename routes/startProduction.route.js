@@ -1,5 +1,6 @@
 import express from "express";
 import {
+  NestedUpdateProduct,
   createProduction,
   deleteNestedProduct,
   deleteProduct,
@@ -15,4 +16,5 @@ router.get("/view-by-StartProduction/:id", viewByIdProduct);
 router.put("/update-StartProduction/:id", updateProduct);
 router.delete("/delete-StartProduction/:id", deleteProduct);
 router.delete("/delete-nested-data/:id/:innerId", deleteNestedProduct);
+router.put("/nested-update-production/:id/:innerId", NestedUpdateProduct);
 export default router;
