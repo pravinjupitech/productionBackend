@@ -157,18 +157,17 @@ export const deleteNestedProduct = async (req, res, next) => {
       if (parentProduct.product_details.length === 0) {
         await StartProduction.findByIdAndDelete(id);
         return res.status(200).json({
-          message: "Parent data deleted because no products remain",
+          message: "Production Step With Parent ",
           status: true,
         });
       }
-
       return res.status(200).json({
-        message: "Nested product deleted successfully",
+        message: "Production Step deleted successfully",
         status: true,
       });
     } else {
       return res.status(404).json({
-        error: "Nested product not found",
+        error: "Nested productionStep not found",
         status: false,
       });
     }

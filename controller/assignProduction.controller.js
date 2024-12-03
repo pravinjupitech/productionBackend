@@ -1066,8 +1066,9 @@ export const demoProduct2 = async (req, res, next) => {
 
 
 
-
-
+I can come for the interview
+but there is no problem .you teach me.
+I will think about it and tell you
 Authentication is user identity verify on system and authorization is user and system allowed to do.
 
 let arr = [1, 2, 3, 4, 5, 3, 2];
