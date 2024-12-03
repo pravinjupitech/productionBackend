@@ -40,6 +40,10 @@ const productionSchema = new mongoose.Schema(
             wProduct_name_Units: [],
           },
         ],
+        status: {
+          default: "Pending",
+          type: String,
+        },
       },
     ],
     totalStep: {
