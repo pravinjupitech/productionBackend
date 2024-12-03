@@ -882,7 +882,7 @@ export const NestedUpdateProduct = async (req, res, next) => {
         .status(404)
         .json({ message: "Product not found", status: false });
     }
-
+    console.log("product deta", Productfind);
     const findIndex = Productfind.product_details.findIndex(
       (item) => item._id.toString() === innerId
     );
@@ -894,6 +894,7 @@ export const NestedUpdateProduct = async (req, res, next) => {
     }
 
     const existingItem = Productfind.product_details[findIndex];
+    console.log("existingItem", existingItem);
     const calculateQtyDifference = (existingUnits, currentUnits, stockUnit) => {
       const existingQty = existingUnits.reduce(
         (total, unit) => (unit.unit === stockUnit ? total + unit.value : total),
@@ -909,7 +910,9 @@ export const NestedUpdateProduct = async (req, res, next) => {
         qtyDifference: currentQty - existingQty,
       };
     };
-
+    console.log("existingQty", existingQty);
+    console.log("currentQty", currentQty);
+    console.log("qtyDifference", qtyDifference);
     const updateStock = async (
       item,
       productType,
