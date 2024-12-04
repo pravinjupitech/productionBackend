@@ -875,6 +875,7 @@ export const NestedUpdateProduct = async (req, res, next) => {
   try {
     const { id, innerId } = req.params;
     const { product_details } = req.body;
+    console.log("product_details", product_details?.rProduct_name);
 
     const Productfind = await StartProduction.findById(id);
     if (!Productfind) {
@@ -910,9 +911,6 @@ export const NestedUpdateProduct = async (req, res, next) => {
         qtyDifference: currentQty - existingQty,
       };
     };
-    console.log("existingQty", existingQty);
-    console.log("currentQty", currentQty);
-    console.log("qtyDifference", qtyDifference);
     const updateStock = async (
       item,
       productType,
@@ -945,7 +943,12 @@ export const NestedUpdateProduct = async (req, res, next) => {
         })
       );
     };
-
+    console.log("product_details.rProduct_name", product_details.rProduct_name);
+    console.log("existingItem.rProduct_name", existingItem.rProduct_name);
+    console.log(
+      "product_details.rProduct_name_Units",
+      product_details.rProduct_name_Units
+    );
     const processUpdates = async () => {
       if (
         product_details.rProduct_name &&
@@ -955,6 +958,7 @@ export const NestedUpdateProduct = async (req, res, next) => {
         const Rowproduct = await RowProduct.findById(
           product_details.rProduct_name
         );
+        console.log("Raw product", Rowproduct);
         if (Rowproduct) {
           const { existingQty, currentQty, qtyDifference } =
             calculateQtyDifference(
@@ -962,6 +966,9 @@ export const NestedUpdateProduct = async (req, res, next) => {
               product_details.rProduct_name_Units,
               Rowproduct.stockUnit
             );
+          console.log("existingQty", existingQty);
+          console.log("currentQty", currentQty);
+          console.log("qtyDifference", qtyDifference);
 
           if (qtyDifference > 0) {
             await updateStock(
@@ -994,6 +1001,7 @@ export const NestedUpdateProduct = async (req, res, next) => {
               const Rowproduct = await RowProduct.findById(
                 product.fProduct_name
               );
+
               if (Rowproduct) {
                 const { existingQty, currentQty, qtyDifference } =
                   calculateQtyDifference(
@@ -1001,6 +1009,9 @@ export const NestedUpdateProduct = async (req, res, next) => {
                     product.fProduct_name_Units,
                     Rowproduct.stockUnit
                   );
+                console.log("existingQty", existingQty);
+                console.log("currentQty", currentQty);
+                console.log("qtyDifference", qtyDifference);
 
                 if (qtyDifference > 0) {
                   await updateStock(
