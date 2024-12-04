@@ -1120,7 +1120,7 @@ export const NestedUpdateProduct = async (req, res, next) => {
   try {
     const { id, innerId } = req.params;
     const { product_details } = req.body;
-
+    console.log("product_details", product_details);
     const Productfind = await StartProduction.findById(id);
     if (!Productfind) {
       return res
@@ -1298,7 +1298,7 @@ export const NestedUpdateProduct = async (req, res, next) => {
                 "wProduct_name",
                 "wProduct_name_Units",
                 "Add",
-                totalQty
+                parseInt(totalQty)
               );
             }
           }
