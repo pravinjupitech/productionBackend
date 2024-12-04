@@ -158,7 +158,7 @@ export const deleteNestedProduct = async (req, res, next) => {
       if (parentProduct.product_details.length === 0) {
         await StartProduction.findByIdAndDelete(id);
         return res.status(200).json({
-          message: "Production Step With Parent ",
+          message: "Production Step With Parent Data Deleted",
           status: true,
         });
       }
