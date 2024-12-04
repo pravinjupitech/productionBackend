@@ -108,6 +108,7 @@ export const viewByIdProduct = async (req, res, next) => {
       path: "product_details.user_name",
       model: "user",
     });
+
     return product
       ? res.status(200).json({ message: "Data Found", product, status: true })
       : res.status(404).json({ message: "Not Found", status: false });
