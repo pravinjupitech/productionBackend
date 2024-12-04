@@ -1284,7 +1284,6 @@ export const NestedUpdateProduct = async (req, res, next) => {
             }
           } else {
             const Rowproduct = await RowProduct.findById(product.wProduct_name);
-            console.log(product.wProduct_name_Units);
             if (Rowproduct) {
               const totalQty = product.wProduct_name_Units
                 .reduce(
