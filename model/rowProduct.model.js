@@ -17,6 +17,9 @@ const rowProductSchema = new mongoose.Schema(
     warehouse: {
       type: String,
     },
+    SubStep: {
+      type: String,
+    },
     stockUnit: {
       type: String,
     },
