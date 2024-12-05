@@ -20,6 +20,7 @@ import { LoginVerificationMail } from "../service/sendmail.js";
 dotenv.config();
 
 export const SaveUser = async (req, res, next) => {
+  console.log(req.body);
   try {
     if (req.body.id) {
       const existing = await User.findOne({
