@@ -40,6 +40,7 @@ export const SaveUser = async (req, res, next) => {
     if (req.file) {
       req.body.profileImage = req.file.filename;
     }
+
     if (req.body.setRule) {
       req.body.setRule = await JSON.parse(req.body.setRule);
     }
@@ -59,6 +60,9 @@ export const SaveUser = async (req, res, next) => {
     if (req.body.warehouse) {
       req.body.warehouse = await JSON.parse(req.body.warehouse);
       await assingWarehouse(req.body.warehouse, user._id);
+    }
+    if (req.body.role.length > 0) {
+      req.body.role = JSON.parse(req.body.role);
     }
     const user = await User.create(req.body);
     if (req.body.warehouse) {
