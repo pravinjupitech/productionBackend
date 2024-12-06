@@ -1064,9 +1064,6 @@ export const demoProduct2 = async (req, res, next) => {
 
 
 
-
-
-
 I can come for the interview
 but there is no problem .you teach me.
 I will think about it and tell you
