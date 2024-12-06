@@ -31,12 +31,16 @@ const UserSchema = new mongoose.Schema(
     },
     role: [
       {
-        roleName: { type: String },
-        productAndPrice: [
+        process: { type: String },
+        processDetail: [
           {
-            productName: { type: String },
-            price: { type: Number },
-            stockUnit: { type: String },
+            roleName: { type: String },
+            productAndPrice: [
+              {
+                productName: { type: String },
+                price: { type: Number },
+              },
+            ],
           },
         ],
       },
