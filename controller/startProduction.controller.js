@@ -1116,7 +1116,7 @@ export const updateProduct = async (req, res, next) => {
 //     res.status(500).json({ message: "Internal Server Error", status: false });
 //   }
 // };
-
+//
 export const NestedUpdateProduct = async (req, res, next) => {
   try {
     const { id, innerId } = req.params;
