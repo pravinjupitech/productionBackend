@@ -1043,7 +1043,7 @@ export const demoProduct2 = async (req, res, next) => {
     }
     console.log(exitingData);
     res.status(404).json({ message: "Data Not Found", status: false });
-    console.log("existing Data form request body", req.body);
+    console.log("commad line interface", req.body);
     const { product_details } = req.body;
     for (let item of product_details) {
       console.log(item.rProduct_name);
@@ -1058,7 +1058,7 @@ export const demoProduct2 = async (req, res, next) => {
   }
 };
 
-/*
+/* 
 
 
 
