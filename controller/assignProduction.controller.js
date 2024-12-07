@@ -5,6 +5,7 @@ import { RowProduct } from "../model/rowProduct.model.js";
 import { StartProduction } from "../model/startProduction.model.js";
 import { StepsModel } from "../model/steps.model.js";
 import { Warehouse } from "../model/warehouse.model.js";
+import { set } from "mongoose";
 
 export const assignProduct = async (req, res, next) => {
   try {
@@ -1028,6 +1029,23 @@ export const demoProduct = async (req, res, next) => {
   }
 };
 
+function longestfix(arr) {
+  if (arr.length > 0) return "";
+  arr.sort();
+  let first = arr[0];
+  let last = arr[arr.length - 1];
+  let i;
+  while (i < first.length && first[i] === last[i]) {
+    i++;
+  }
+  return first.substring(0, i);
+}
+let arr = ["flower", "flow", "flight"];
+console.log(longestfix(arr));
+
+arr = ["dog", "recer", "car"];
+console.log(longestfix(arr));
+
 export const demoProduct2 = async (req, res, next) => {
   try {
     if (req.body.processName) {
@@ -1065,9 +1083,6 @@ export const demoProduct2 = async (req, res, next) => {
 
 
 
-I can come for the interview
-but there is no problem .you teach me.
-I will think about it and tell you
 Authentication is user identity verify on system and authorization is user and system allowed to do.
 
 let arr = [1, 2, 3, 4, 5, 3, 2];
@@ -1082,7 +1097,7 @@ for (let i = 0; i < arr.length; i++) {
   }
 }
 
-console.log([...unique]);
+console.log([...unique]);  
 
     function fact(n) {
       if (n == 1 || n == 0) {
@@ -1107,7 +1122,7 @@ console.log([...unique]);
  arr.sort();
  let first=arr[0];
  let last=arr[arr.length-1]
- let i=0;
+ let i=0; 
  while(i<first.length&&first[i]===last[i]){  
  i++;
  }
