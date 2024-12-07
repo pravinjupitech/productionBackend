@@ -1117,6 +1117,7 @@ export const updateProduct = async (req, res, next) => {
 //   }
 // };
 //
+
 export const NestedUpdateProduct = async (req, res, next) => {
   try {
     const { id, innerId } = req.params;
@@ -1362,7 +1363,6 @@ export const productionAddWarehouse = async (qty, warehouseId, productId) => {
     console.log(error);
   }
 };
-
 
 /* in mongo db aggregate framework used to complex data processing and analysis opration on collection
   let error = {};
