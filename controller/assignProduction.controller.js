@@ -1060,7 +1060,8 @@ export const demoProduct2 = async (req, res, next) => {
   }
 };
 
-/* 
+/*
+
 
 
 
@@ -1173,7 +1174,7 @@ ISAM table
 
 3306 is MySQL server‘s default port.
 
-Friend Function ->A friend function is a function that is not a member of a class but has access to its private and protected members. Declaring a function as a friend inside a class allows it to bypass the usual access control restrictions. 
+Friend Function ->A friend function is a function that is not a member of a class but has access to its private and protected members. Declaring a function as a friend inside a class allows it to bypass the usual access control restrictions.
 
 Pure virtual Function->A pure virtual function, also known as an abstract function is a member function that doesn’t contain any statements. This function is defined in the derived class if needed.
 
