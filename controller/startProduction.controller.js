@@ -1118,8 +1118,6 @@ export const updateProduct = async (req, res, next) => {
 // };
 //
 
-
-
 export const NestedUpdateProduct = async (req, res, next) => {
   try {
     const { id, innerId } = req.params;
