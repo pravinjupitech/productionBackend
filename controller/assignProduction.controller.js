@@ -1008,6 +1008,7 @@ export const deleteProducted = async (req, res, next) => {
     res.status(500).json({ error: "Internal Server Error", status: false });
   }
 };
+
 // window.history.back()
 export const demoProduct = async (req, res, next) => {
   try {
@@ -1029,23 +1030,6 @@ export const demoProduct = async (req, res, next) => {
   }
 };
 
-function longestfix(arr) {
-  if (arr.length > 0) return "";
-  arr.sort();
-  let first = arr[0];
-  let last = arr[arr.length - 1];
-  let i;
-  while (i < first.length && first[i] === last[i]) {
-    i++;
-  }
-  return first.substring(0, i);
-}
-let arr = ["flower", "flow", "flight"];
-console.log(longestfix(arr));
-
-arr = ["dog", "recer", "car"];
-console.log(longestfix(arr));
-
 export const demoProduct2 = async (req, res, next) => {
   try {
     if (req.body.processName) {
@@ -1061,7 +1045,7 @@ export const demoProduct2 = async (req, res, next) => {
     }
     console.log(exitingData);
     res.status(404).json({ message: "Data Not Found", status: false });
-    console.log("commad line interface", req.body);
+    console.log("i am believing", req.body);
     const { product_details } = req.body;
     for (let item of product_details) {
       console.log(item.rProduct_name);
@@ -1077,7 +1061,6 @@ export const demoProduct2 = async (req, res, next) => {
 };
 
 /* 
-
 
 
 
