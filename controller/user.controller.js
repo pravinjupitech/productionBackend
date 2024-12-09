@@ -212,7 +212,6 @@ export const UpdateUser = async (req, res, next) => {
       if (req.body.warehouse?.length > 0) {
         req.body.warehouse = JSON.parse(req.body.warehouse);
       }
-      console.log(req.body);
       const updatedUser = req.body;
       const user = await User.findByIdAndUpdate(userId, updatedUser, {
         new: true,
