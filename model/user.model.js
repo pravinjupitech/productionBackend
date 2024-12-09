@@ -32,15 +32,11 @@ const UserSchema = new mongoose.Schema(
     role: [
       {
         process: { type: String },
-        processDetail: [
+        roleName: { type: String },
+        productAndPrice: [
           {
-            roleName: { type: String },
-            productAndPrice: [
-              {
-                productName: { type: String },
-                price: { type: Number },
-              },
-            ],
+            productName: { type: String },
+            price: { type: Number },
           },
         ],
       },
