@@ -39,6 +39,8 @@ const UserSchema = new mongoose.Schema(
             price: { type: Number },
           },
         ],
+        processSteps: [],
+        roleProducts: [],
       },
     ],
     rolename: {
