@@ -192,7 +192,7 @@ export const UpdateUser = async (req, res, next) => {
       if (req.body.setRule) {
         req.body.setRule = JSON.parse(req.body.setRule);
       }
-      if (req.body.role) {
+      if (req.body.role.length > 0) {
         req.body.role = JSON.parse(req.body.role);
       }
       if (req.body.subscriptionPlan) {
