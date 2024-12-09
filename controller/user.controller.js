@@ -195,6 +195,9 @@ export const UpdateUser = async (req, res, next) => {
       if (req.body.role.length > 0) {
         req.body.role = JSON.parse(req.body.role);
       }
+      if (req.body.created_by) {
+        req.body.created_by = JSON.parse(req.body.created_by);
+      }
       if (req.body.subscriptionPlan) {
         const sub = await Subscription.findById({
           _id: req.body.subscriptionPlan,
