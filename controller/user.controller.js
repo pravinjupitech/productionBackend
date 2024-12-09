@@ -85,6 +85,7 @@ export const SaveUser = async (req, res, next) => {
       .json({ error: "Internal Server Error", status: false });
   }
 };
+
 export const ViewRegisterUser = async (req, res, next) => {
   try {
     let user = await User.find({
@@ -189,6 +190,9 @@ export const UpdateUser = async (req, res, next) => {
     } else {
       if (req.body.setRule) {
         req.body.setRule = JSON.parse(req.body.setRule);
+      }
+      if (req.body.role) {
+        req.body.role = JSON.parse(req.body.role);
       }
       if (req.body.subscriptionPlan) {
         const sub = await Subscription.findById({
