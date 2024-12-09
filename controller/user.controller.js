@@ -179,6 +179,7 @@ export const DeleteUser = async (req, res, next) => {
   }
 };
 export const UpdateUser = async (req, res, next) => {
+  console.log(req.body);
   try {
     if (req.file) {
       req.body.profileImage = req.file.filename;
