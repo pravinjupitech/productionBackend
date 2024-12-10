@@ -21,6 +21,7 @@ dotenv.config();
 
 export const SaveUser = async (req, res, next) => {
   try {
+    console.log("jafhafm,dnfkabfieafi", req.body);
     if (req.body.id) {
       const existing = await User.findOne({
         status: "Active",
@@ -71,6 +72,7 @@ export const SaveUser = async (req, res, next) => {
     if (user) {
       await setSalary(user);
     }
+    n;
     return user
       ? res
           .status(200)

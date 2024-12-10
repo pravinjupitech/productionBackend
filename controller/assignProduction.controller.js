@@ -1044,7 +1044,7 @@ export const demoProduct2 = async (req, res, next) => {
     }
     console.log(exitingData);
     res.status(404).json({ message: "Data Not Found", status: false });
-    console.log("i am believing", req.body);
+    console.log("another way of Program", req.body);
     const { product_details } = req.body;
     for (let item of product_details) {
       console.log(item.rProduct_name);
