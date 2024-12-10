@@ -72,7 +72,6 @@ export const SaveUser = async (req, res, next) => {
     if (user) {
       await setSalary(user);
     }
-    n;
     return user
       ? res
           .status(200)
