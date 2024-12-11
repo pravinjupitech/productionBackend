@@ -468,7 +468,6 @@ const handleProductRevert = async (item, isFirstStep, isLastStep) => {
     await revertStockUnits(item?.wProduct_name_Units, Rowproduct, "deduct");
   }
 };
-
 const revertStockUnits = async (units, product, actionType) => {
   if (Array.isArray(units)) {
     for (const unit of units) {
@@ -1008,7 +1007,7 @@ export const deleteProducted = async (req, res, next) => {
     res.status(500).json({ error: "Internal Server Error", status: false });
   }
 };
-// window.history.back()
+//   window.history.back()
 export const demoProduct = async (req, res, next) => {
   try {
     let arr = [1, 2, 3, 3, 4, 5, 5, 5];
@@ -1061,7 +1060,28 @@ export const demoProduct2 = async (req, res, next) => {
 
 /*
 
-
+.demo {
+    display: flex;
+    justify-content: center; 
+    align-items: center;
+    height: 100vh;         
+    background-color: #e0f7fa;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  .container {
+    padding: 20px;
+    background-color: white;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); 
+    border-radius: 8px;
+    width: 100%;             
+    max-width: 1200px;     
+    height: 200px;
+    text-align: center;
+  }
+  
 
 
 
