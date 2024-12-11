@@ -1122,6 +1122,7 @@ export const updateProduct = async (req, res, next) => {
 
 export const NestedUpdateProduct = async (req, res, next) => {
   try {
+    console.log("req body", req.body);
     const { id, innerId } = req.params;
     const { product_details } = req.body;
     const Productfind = await StartProduction.findById(id);
