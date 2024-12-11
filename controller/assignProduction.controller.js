@@ -772,7 +772,7 @@ export const updateProducted = async (req, res, next) => {
                         item.rProduct_name
                       );
                       await Rowproduct.save();
-                    } 
+                    }
                   }
                 });
               });
@@ -1060,6 +1060,9 @@ export const demoProduct2 = async (req, res, next) => {
 };
 
 /*
+
+
+
 
 
 

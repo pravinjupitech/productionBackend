@@ -18,7 +18,7 @@ export const viewInWardStockToWarehouse = async (req, res, next) => {
         }
         return res.status(200).json({ Warehouse: stock, status: true })
     } catch (err) {
-        console.log(err);
+        console.log(err); 
         return res.status(500).json({ error: err, status: false });
     }
 };

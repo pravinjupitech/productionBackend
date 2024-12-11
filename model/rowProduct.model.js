@@ -20,6 +20,9 @@ const rowProductSchema = new mongoose.Schema(
     SubStep: {
       type: String,
     },
+    NextSubStep: {
+      type: String,
+    },
     stockUnit: {
       type: String,
     },
