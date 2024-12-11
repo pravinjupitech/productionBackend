@@ -1124,7 +1124,7 @@ export const NestedUpdateProduct = async (req, res, next) => {
   try {
     console.log("req body", req.body);
     const { id, innerId } = req.params;
-    const { product_details } = req.body;
+    const { product_details, processName, step_name } = req.body;
     const Productfind = await StartProduction.findById(id);
     if (!Productfind) {
       return res
@@ -1312,6 +1312,8 @@ export const NestedUpdateProduct = async (req, res, next) => {
 
     await processUpdates();
     Productfind.product_details[findIndex] = product_details;
+    Productfind.processName = processName;
+    Productfind.step_name = step_name;
     await Productfind.save();
 
     res
