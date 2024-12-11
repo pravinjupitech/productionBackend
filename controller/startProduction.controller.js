@@ -1122,7 +1122,6 @@ export const updateProduct = async (req, res, next) => {
 
 export const NestedUpdateProduct = async (req, res, next) => {
   try {
-    console.log("req body", req.body);
     const { id, innerId } = req.params;
     const { product_details, processName, step_name } = req.body;
     const Productfind = await StartProduction.findById(id);
@@ -1315,7 +1314,6 @@ export const NestedUpdateProduct = async (req, res, next) => {
     Productfind.processName = processName;
     Productfind.step_name = step_name;
     await Productfind.save();
-
     res
       .status(200)
       .json({ message: "Data Updated Successfully", status: true });
