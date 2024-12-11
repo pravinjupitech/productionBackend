@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose, { Mongoose } from "mongoose";
 const rowProductSchema = new mongoose.Schema(
   {
     id: {
@@ -15,7 +15,8 @@ const rowProductSchema = new mongoose.Schema(
       default: 0,
     },
     warehouse: {
-      type: String,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "warehouse",
     },
     SubStep: {
       type: String,
