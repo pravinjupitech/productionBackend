@@ -1,6 +1,7 @@
 import { RowProduct } from "../model/rowProduct.model.js";
 import { StartProduction } from "../model/startProduction.model.js";
 import { Warehouse } from "../model/warehouse.model.js";
+
 export const createProduction = async (req, res, next) => {
   try {
     const { product_details } = req.body;
@@ -50,6 +51,7 @@ export const createProduction = async (req, res, next) => {
     res.status(500).json({ error: "Internal Server Error", status: false });
   }
 };
+
 const updateProductQty = async (productId, productUnits, actionType, res) => {
   const product = await RowProduct.findById(productId);
   if (!product) {
