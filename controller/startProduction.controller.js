@@ -14,9 +14,11 @@ export const createProduction = async (req, res, next) => {
           res
         );
       }
+      // console.log("item.finalProductDetails", item?.finalProductDetails);
 
-      if (item?.finalProductDetails && item?.finalProductDetails > 0) {
+      if (item?.finalProductDetails) {
         for (let item1 of item?.finalProductDetails) {
+          // console.log(" final item1", item1);
           await updateProductQty(
             item1?.fProduct_name,
             item1?.fProduct_name_Units,
@@ -25,12 +27,10 @@ export const createProduction = async (req, res, next) => {
           );
         }
       }
-
-      if (
-        item?.wastageProductDetails &&
-        item?.wastageProductDetails.length > 0
-      ) {
+      // console.log("item.wastageProductDetails", item?.wastageProductDetails);
+      if (item?.wastageProductDetails) {
         for (let item1 of item?.wastageProductDetails) {
+          // console.log("wastage item1", item1);
           await updateProductQty(
             item1?.wProduct_name,
             item1?.wProduct_name_Units,
@@ -64,12 +64,14 @@ const updateProductQty = async (productId, productUnits, actionType, res) => {
       if (actionType === "deduct") {
         product.qty -= unit.value;
         await product.save();
+        console.log("deduct qty", unit.value);
         await productionlapseWarehouse(
           unit.value,
           product.warehouse,
           productId
         );
       } else if (actionType === "add") {
+        console.log("add qty", unit.value);
         product.qty += unit.value;
         await product.save();
         await productionAddWarehouse(unit.value, product.warehouse, productId);
