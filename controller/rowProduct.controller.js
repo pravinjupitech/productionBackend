@@ -329,3 +329,22 @@ export const viewCurrentStock = async (req, res, next) => {
       .json({ error: "Internal Server Error", status: false });
   }
 };
+
+export const updateProductStep = async (req, res, next) => {
+  try {
+    const { products } = req.body;
+    if (products.length > 0) {
+      for (let item of products) {
+        const product = await RowProduct.findById(item.id);
+        product.NextSubStep = item.NextSubStep;
+        product.save();
+      }
+      res.status(200).json({ message: "Next Step updated", status: true });
+    } else {
+      return res.status(404).json({ message: "Invalid Data", status: false });
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Internal Server Error", status: false });
+  }
+};

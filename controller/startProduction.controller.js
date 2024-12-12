@@ -1367,7 +1367,9 @@ export const productionAddWarehouse = async (qty, warehouseId, productId) => {
   }
 };
 
-/* in mongo db aggregate framework used to complex data processing and analysis opration on collection
+/* 
+
+in mongo db aggregate framework used to complex data processing and analysis opration on collection
   let error = {};
   if (!data.patientName) {
     error.patientName = "Patient Name is Required";
