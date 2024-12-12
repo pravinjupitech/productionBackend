@@ -255,7 +255,6 @@ export const updateProduct = async (req, res, next) => {
                 const existingUnit = existingProduct[typeUnits].find(
                   (exitingData) => exitingData.unit === data.unit
                 );
-
                 if (existingUnit) {
                   let qty;
                   if (data.value > existingUnit.value) {

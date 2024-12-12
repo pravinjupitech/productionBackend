@@ -18,7 +18,6 @@ export const createProduction = async (req, res, next) => {
 
       if (item?.finalProductDetails) {
         for (let item1 of item?.finalProductDetails) {
-          // console.log(" final item1", item1);
           await updateProductQty(
             item1?.fProduct_name,
             item1?.fProduct_name_Units,
@@ -30,7 +29,6 @@ export const createProduction = async (req, res, next) => {
       // console.log("item.wastageProductDetails", item?.wastageProductDetails);
       if (item?.wastageProductDetails) {
         for (let item1 of item?.wastageProductDetails) {
-          // console.log("wastage item1", item1);
           await updateProductQty(
             item1?.wProduct_name,
             item1?.wProduct_name_Units,
