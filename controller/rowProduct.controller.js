@@ -339,7 +339,7 @@ export const updateProductStep = async (req, res, next) => {
         product.NextSubStep = item.NextSubStep;
         product.save();
       }
-      res.status(200).json({ message: "Next Step updated", status: true });
+      res.status(200).json({ message: "Steps updated", status: true });
     } else {
       return res.status(404).json({ message: "Invalid Data", status: false });
     }
