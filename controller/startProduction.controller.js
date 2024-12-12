@@ -62,14 +62,12 @@ const updateProductQty = async (productId, productUnits, actionType, res) => {
       if (actionType === "deduct") {
         product.qty -= unit.value;
         await product.save();
-        console.log("deduct qty", unit.value);
         await productionlapseWarehouse(
           unit.value,
           product.warehouse,
           productId
         );
       } else if (actionType === "add") {
-        console.log("add qty", unit.value);
         product.qty += unit.value;
         await product.save();
         await productionAddWarehouse(unit.value, product.warehouse, productId);
