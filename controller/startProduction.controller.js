@@ -14,7 +14,6 @@ export const createProduction = async (req, res, next) => {
           res
         );
       }
-      // console.log("item.finalProductDetails", item?.finalProductDetails);
 
       if (item?.finalProductDetails) {
         for (let item1 of item?.finalProductDetails) {
@@ -26,7 +25,7 @@ export const createProduction = async (req, res, next) => {
           );
         }
       }
-      // console.log("item.wastageProductDetails", item?.wastageProductDetails);
+
       if (item?.wastageProductDetails) {
         for (let item1 of item?.wastageProductDetails) {
           await updateProductQty(
@@ -38,6 +37,7 @@ export const createProduction = async (req, res, next) => {
         }
       }
     }
+
     const product = await StartProduction.create(req.body);
     return product
       ? res.status(200).json({ message: "Data Added", status: true })
@@ -108,7 +108,28 @@ export const viewByIdProduct = async (req, res, next) => {
       path: "product_details.user_name",
       model: "user",
     });
-
+    // console.log(
+    //   "productionStepData",
+    //   product.product_details.flatMap((item) =>
+    //     item.finalProductDetails.flatMap((item1) =>
+    //       item1.fProduct_name_Units.flatMap((item2) => item2.type)
+    //     )
+    //   )
+    // );
+    // const arr = [
+    //   [1, 2],
+    //   [
+    //     [3, 4, 5],
+    //     [6, 7, 8, 9],
+    //   ],
+    //   [
+    //     [10, 11, 12, 13],
+    //     [14, 15, 16, 17],
+    //   ],
+    // ];
+    // const flArr = arr.flatMap((item) => item.flatMap((item1) => item1));
+    // console.log("updateArray", flArr);
+    // console.log("existing array", arr);
     return product
       ? res.status(200).json({ message: "Data Found", product, status: true })
       : res.status(404).json({ message: "Not Found", status: false });
