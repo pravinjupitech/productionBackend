@@ -1057,30 +1057,15 @@ export const demoProduct2 = async (req, res, next) => {
   }
 };
 
-/*
+/* 
 
-.demo {
-    display: flex;
-    justify-content: center; 
-    align-items: center;
-    height: 100vh;         
-    background-color: #e0f7fa;
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-  }
-  
-  .container {
-    padding: 20px;
-    background-color: white;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); 
-    border-radius: 8px;
-    width: 100%;             
-    max-width: 1200px;     
-    height: 200px;
-    text-align: center;
-  }
-  
+
+
+Promise.all -> all promise to resolve than return resolve other than reject
+Promise.any -> if anyone promise is resolve then return resolve other than reject
+Promise.rece->this type uses first promise to checked resolve or reject than throw first return Promise are recject or resolve
+Promise.allSettled->Waits for all promises and returns the response, whether resolved or rejected.
+
 
 
 
