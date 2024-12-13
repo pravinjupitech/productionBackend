@@ -1155,6 +1155,7 @@ export const NestedUpdateProduct = async (req, res, next) => {
         qtyDifference: currentQty - existingQty,
       };
     };
+
     const updateStock = async (
       item,
       productType,
