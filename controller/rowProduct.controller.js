@@ -202,11 +202,11 @@ export const UpdateProduct = async (req, res, next) => {
       if (existingProduct.Opening_Stock !== parseInt(req.body.Opening_Stock)) {
         req.body.qty = req.body.Opening_Stock;
         console.log("req.body", req.body);
-        console.log("req.body.warehouse", req.body.warehouse);
+        console.log("req.body.warehouse", req.body.warehouse._id);
         console.log("existingproduct", existingProduct);
         await addProductInWarehouse(
           req.body,
-          existingProduct.warehouse,
+          req.body.warehouse,
           existingProduct
         );
       }
@@ -284,7 +284,7 @@ export const addProductInWarehouse = async (
   productId
 ) => {
   try {
-    const user = await Warehouse.findById({ _id: warehouseId });
+    const user = await Warehouse.findById({ _id: warehouseId._id });
     if (!user) {
       return console.log("warehouse not found");
     }
