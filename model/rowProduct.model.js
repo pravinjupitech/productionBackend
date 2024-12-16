@@ -43,6 +43,14 @@ const rowProductSchema = new mongoose.Schema(
       type: Number,
     },
     Units: [],
+    rawValues: [
+      {
+        rawMaterial: { type: String },
+        unit: { type: String },
+        qty: { type: Number },
+        rate: { type: Number },
+      },
+    ],
     status: {
       type: String,
       default: "Active",
