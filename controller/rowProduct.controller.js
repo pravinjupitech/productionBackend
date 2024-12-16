@@ -190,10 +190,18 @@ export const UpdateProduct = async (req, res, next) => {
       //       (1 + parseInt(req.body.GSTRate) / 100) *
       //       (1 + groupDiscount / 100);
       //   }
+      // if (existingProduct.Opening_Stock !== parseInt(req.body.Opening_Stock)) {
+      //   const qty = req.body.Opening_Stock - existingProduct.Opening_Stock;
+      //   req.body.qty = existingProduct.qty + qty;
+      //   await addProductInWarehouse(
+      //     req.body,
+      //     req.body.warehouse,
+      //     existingProduct
+      //   );
+      // }
       if (existingProduct.Opening_Stock !== parseInt(req.body.Opening_Stock)) {
-        const qty = req.body.Opening_Stock - existingProduct.Opening_Stock;
-        req.body.qty = existingProduct.qty + qty;
-        await addProductInWarehouse(
+        req.body.qty = req.body.Opening_Stock;
+        await addProductInWarehouse1(
           req.body,
           req.body.warehouse,
           existingProduct
