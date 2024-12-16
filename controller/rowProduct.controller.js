@@ -306,6 +306,7 @@ export const addProductInWarehouse = async (
       //   sourceProductItem.oTaxRate = parseInt(warehouse.GSTRate);
       //   sourceProductItem.oTotal =
       //     parseInt(warehouse.Opening_Stock) * parseInt(warehouse.Purchase_Rate);
+      //
       user.markModified("productItems");
       await user.save();
     }
