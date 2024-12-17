@@ -24,6 +24,7 @@ export const addProduct = async (req, res) => {
         .status(400)
         .json({ message: "product id required", status: false });
     }
+
     // const group = await CustomerGroup.find({
     //   database: req.body.database,
     //   status: "Active",
