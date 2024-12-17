@@ -30,7 +30,6 @@ export const addProduct = async (req, res) => {
     //   status: "Active",
     // });
 
-    
     // if (group.length > 0) {
     //   const maxDiscount = group.reduce((max, group) => {
     //     return group.discount > max.discount ? group : max;
