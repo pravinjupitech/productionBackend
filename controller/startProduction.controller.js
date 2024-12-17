@@ -117,7 +117,7 @@ export const viewByIdProduct = async (req, res, next) => {
       )
     );
     const arr = [
-      [1, 2], 
+      [1, 2],
       [
         [3, 4, 5],
         [6, 7, 8, 9],
