@@ -70,6 +70,7 @@ export const SaveProduct = async (req, res) => {
       .json({ error: "Internal Server Error", status: false });
   }
 };
+
 export const ViewProduct = async (req, res, next) => {
   try {
     const userId = req.params.id;
