@@ -1042,7 +1042,10 @@ export const demoProduct2 = async (req, res, next) => {
     }
     console.log(exitingData);
     res.status(404).json({ message: "Data Not Found", status: false });
-    console.log("another way of Program", req.body);
+    console.log(
+      "enviroment var is key value pair used by operatins systems and applications to store configuation settings that affect the behevior of processes or programe.these varriable part of the system enviroment and can hold data like file paths,systems preferences or sensitive information such as api keys and passwords ",
+      req.body
+    );
     const { product_details } = req.body;
     for (let item of product_details) {
       console.log(item.rProduct_name);
@@ -1057,7 +1060,12 @@ export const demoProduct2 = async (req, res, next) => {
   }
 };
 
-/* 
+/*
+
+An environment variable is a key-value pair used by operating systems and applications to store configuration settings that affect the behavior of processes or programs. These variables are part of the system environment and can hold data like file paths, system preferences, or sensitive information such as API keys and passwords.
+
+Environment variables are commonly used to avoid hardcoding configurations, making applications more portable, secure, and easier to manage across different environments like development, testing, and production.
+
 
 
 
@@ -1065,9 +1073,6 @@ Promise.all -> all promise to resolve than return resolve other than reject
 Promise.any -> if anyone promise is resolve then return resolve other than reject
 Promise.rece->this type uses first promise to checked resolve or reject than throw first return Promise are recject or resolve
 Promise.allSettled->Waits for all promises and returns the response, whether resolved or rejected.
-
-
-
 
 
 
