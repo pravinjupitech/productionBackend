@@ -1035,15 +1035,17 @@ export const demoProduct2 = async (req, res, next) => {
           "worker threads, cluster module ,external module ka use karke bana sakte hai worker threads ko computationally heavy tasks while cluster module use when than server scable on multiple cores",
       });
     }
+
     const { id } = req.params;
     const exitingData = await StartProduction.findById(id);
     if (!exitingData) {
       return res.status(404).json({ message: "Data Not Found", status: false });
     }
+
     console.log(exitingData);
     res.status(404).json({ message: "Data Not Found", status: false });
     console.log(
-      "enviroment var is key value pair used by operatins systems and applications to store configuation settings that affect the behevior of processes or program.these varriable part of the system enviroment and can hold data like file paths,systems preferences or sensitive information such as api keys and passwords ",
+      "enviroment var is key value pair used by operatins systems and applications to store configuation settings that affect the behevior of processes or program.these varriable part of the system enviroment and can hold data like file paths,systems preferences or sensitive information such as api keys and passwords",
       req.body
     );
     const { product_details } = req.body;
