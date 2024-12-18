@@ -320,14 +320,12 @@ export const updateProduct = async (req, res, next) => {
         })
       );
     };
-
     const isFirstStep =
       productsteps.steps[0]._id.toString() === Productfind.currentStep;
     const isLastStep =
       productsteps.steps[productsteps.steps.length - 1]._id.toString() ===
       Productfind.currentStep;
     await updateProductDetails(isFirstStep, isLastStep);
-
     const updateData = req.body;
     await AssignProduction.findByIdAndUpdate(id, updateData, { new: true });
     res.status(200).json({ message: "Data Updated", status: true });
@@ -1035,19 +1033,13 @@ export const demoProduct2 = async (req, res, next) => {
           "worker threads, cluster module ,external module ka use karke bana sakte hai worker threads ko computationally heavy tasks while cluster module use when than server scable on multiple cores",
       });
     }
-
     const { id } = req.params;
     const exitingData = await StartProduction.findById(id);
     if (!exitingData) {
       return res.status(404).json({ message: "Data Not Found", status: false });
     }
-
     console.log(exitingData);
     res.status(404).json({ message: "Data Not Found", status: false });
-    console.log(
-      "enviroment var is key value pair used by operatins systems and applications to store configuation settings that affect the behevior of processes or program.these varriable part of the system enviroment and can hold data like file paths,systems preferences or sensitive information such as api keys and passwords",
-      req.body
-    );
     const { product_details } = req.body;
     for (let item of product_details) {
       console.log(item.rProduct_name);
@@ -1063,6 +1055,14 @@ export const demoProduct2 = async (req, res, next) => {
 };
 
 /*
+
+
+
+
+
+
+
+
 
 An environment variable is a key-value pair used by operating systems and applications to store configuration settings that affect the behavior of processes or programs. These variables are part of the system environment and can hold data like file paths, system preferences, or sensitive information such as API keys and passwords.
 
