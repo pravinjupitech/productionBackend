@@ -25,6 +25,7 @@ export const addProduct = async (req, res) => {
         .json({ message: "product id required", status: false });
     }
 
+    
     // const group = await CustomerGroup.find({
     //   database: req.body.database,
     //   status: "Active",
@@ -53,6 +54,7 @@ export const addProduct = async (req, res) => {
     //   // const latest = (req.body.SalesRate + (req.body.SalesRate * req.body.GSTRate / 100))
     //   // req.body.Product_MRP = latest + (latest * (groupDiscount) / 100);
     // }
+
 
     if (req.body.Opening_Stock) {
       req.body.qty = req.body.Opening_Stock;
