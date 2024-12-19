@@ -4,8 +4,7 @@ import { Product } from "../model/product.model.js";
 import { RowProduct } from "../model/rowProduct.model.js";
 import { StartProduction } from "../model/startProduction.model.js";
 import { StepsModel } from "../model/steps.model.js";
-import { Warehouse } from "../model/warehouse.model.js";
-import { set } from "mongoose";
+import { Warehouse } from "../model/warehouse.model.js"
 
 export const assignProduct = async (req, res, next) => {
   try {
