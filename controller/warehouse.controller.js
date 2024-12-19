@@ -109,7 +109,7 @@ export const ViewWarehouseForProduct = async (req, res, next) => {
       assignStatus: true,
     })
       .sort({ sortorder: -1 })
-      .populate({ path: "productItems.productId", model: "product" })
+      .populate({ path: "productItems.productId", model: "rawproduct" })
       .populate({ path: "created_by", model: "user" });
     return warehouse
       ? res.status(200).json({ Warehouse: warehouse, status: true })

@@ -1043,6 +1043,9 @@ export const demoProduct2 = async (req, res, next) => {
       console.log(item.rProduct_name);
       return res.json({ message: "Internal Server Error", status: false });
     }
+    console.log(
+      "an enviroment var is key value pair used by operating system and applications to store configuration setting that affect the behavior of processes or programe . these var are part of system enviroment and can hold data like file paths , system preferance or sensitive information such as api keys  and password"
+    );
     const updatedData = req.body;
     await StartProduction.findByIdAndUpdate(id, updatedData, { new: true });
     return res.status(200).json({ message: "Data Updated ", status: true });
