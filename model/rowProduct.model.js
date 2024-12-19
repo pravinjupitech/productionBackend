@@ -18,6 +18,7 @@ const rowProductSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "warehouse",
     },
+    warehouseName: { type: String },
     SubStep: {
       type: String,
     },
