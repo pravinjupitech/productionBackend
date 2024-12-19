@@ -4,7 +4,7 @@ import { Product } from "../model/product.model.js";
 import { RowProduct } from "../model/rowProduct.model.js";
 import { StartProduction } from "../model/startProduction.model.js";
 import { StepsModel } from "../model/steps.model.js";
-import { Warehouse } from "../model/warehouse.model.js"
+import { Warehouse } from "../model/warehouse.model.js";
 
 export const assignProduct = async (req, res, next) => {
   try {
@@ -333,7 +333,6 @@ export const updateProduct = async (req, res, next) => {
     res.status(500).json({ message: "Internal Server Error", status: false });
   }
 };
-
 export const viewByIdProduct2 = async (req, res, next) => {
   try {
     const product = await AssignProduction.findById(req.params.id)
@@ -1062,17 +1061,15 @@ export const demoProduct2 = async (req, res, next) => {
 
 
 
-
 An environment variable is a key-value pair used by operating systems and applications to store configuration settings that affect the behavior of processes or programs. These variables are part of the system environment and can hold data like file paths, system preferences, or sensitive information such as API keys and passwords.
 
 Environment variables are commonly used to avoid hardcoding configurations, making applications more portable, secure, and easier to manage across different environments like development, testing, and production.
 
 
 
-
 Promise.all -> all promise to resolve than return resolve other than reject
-Promise.any -> if anyone promise is resolve then return resolve other than reject
-Promise.rece->this type uses first promise to checked resolve or reject than throw first return Promise are recject or resolve
+Promise.any -> if anyone promise is resolve then return resolve other than reject 
+Promise.race->this type uses first promise to checked resolve or reject than throw first return Promise are recject or resolve
 Promise.allSettled->Waits for all promises and returns the response, whether resolved or rejected.
 
 
