@@ -49,8 +49,14 @@ const rowProductSchema = new mongoose.Schema(
         unit: { type: String },
         qty: { type: Number },
         rate: { type: Number },
+        Price: { type: Number },
       },
     ],
+    grossTotal: {
+      type: Number,
+    },
+    expensePercentage: { type: Number },
+    netAmount: { type: Number },
     status: {
       type: String,
       default: "Active",
