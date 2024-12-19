@@ -82,9 +82,8 @@ export const ViewProduct = async (req, res, next) => {
     const product = await RowProduct.find({
       database: database,
       status: "Active",
-    })
-      .sort({ sortorder: -1 })
-      .populate({ path: "warehouse", model: "warehouse" });
+    }).sort({ sortorder: -1 });
+    // .populate({ path: "warehouse", model: "warehouse" });
     return res.status(200).json({ Product: product, status: true });
   } catch (err) {
     console.log(err);
