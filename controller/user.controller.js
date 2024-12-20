@@ -21,7 +21,6 @@ dotenv.config();
 
 export const SaveUser = async (req, res, next) => {
   try {
-    console.log("jafhafm,dnfkabfieafi", req.body);
     if (req.body.id) {
       const existing = await User.findOne({
         status: "Active",
@@ -60,7 +59,7 @@ export const SaveUser = async (req, res, next) => {
     }
     if (req.body.warehouse) {
       req.body.warehouse = await JSON.parse(req.body.warehouse);
-      await assingWarehouse(req.body.warehouse, user._id);
+      // await assingWarehouse(req.body.warehouse, user._id);
     }
     if (req.body.role.length > 0) {
       req.body.role = JSON.parse(req.body.role);
