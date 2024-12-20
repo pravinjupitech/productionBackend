@@ -101,6 +101,7 @@ export const ViewWarehouse = async (req, res, next) => {
       .json({ error: "Internal Server Error", status: false });
   }
 };
+
 export const ViewWarehouseForProduct = async (req, res, next) => {
   try {
     let warehouse = await Warehouse.find({
