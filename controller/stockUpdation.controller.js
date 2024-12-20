@@ -75,11 +75,13 @@ export const stockTransferToWarehouse = async (req, res) => {
       InwardStatus,
       OutwardStatus,
     } = req.body;
+    console.log("reqbody", req.body);
     for (const item of productItems) {
       const sourceProduct = await Warehouse.findOne({
         _id: warehouseFromId,
         "productItems.productId": item.productId,
       });
+      console.log("sourceProduct", sourceProduct);
       if (sourceProduct) {
         const sourceProductItem = sourceProduct.productItems.find(
           (pItem) => pItem.productId.toString() === item.productId.toString()
@@ -88,7 +90,7 @@ export const stockTransferToWarehouse = async (req, res) => {
           // sourceProductItem.price = item.price;
           sourceProductItem.currentStock -= item.transferQty;
           sourceProductItem.pendingStock += item.transferQty;
-          sourceProductItem.totalPrice -= item.totalPrice || 0;
+          // sourceProductItem.totalPrice -= item.totalPrice || 0;
           sourceProduct.markModified("productItems");
           await sourceProduct.save();
           // const destinationProduct = await Warehouse.findOne({
