@@ -75,13 +75,11 @@ export const stockTransferToWarehouse = async (req, res) => {
       InwardStatus,
       OutwardStatus,
     } = req.body;
-    console.log("reqbody", req.body);
     for (const item of productItems) {
       const sourceProduct = await Warehouse.findOne({
         _id: warehouseFromId,
         "productItems.productId": item.productId,
       });
-      console.log("sourceProduct", sourceProduct);
       if (sourceProduct) {
         const sourceProductItem = sourceProduct.productItems.find(
           (pItem) => pItem.productId.toString() === item.productId.toString()
@@ -90,7 +88,7 @@ export const stockTransferToWarehouse = async (req, res) => {
           // sourceProductItem.price = item.price;
           sourceProductItem.currentStock -= item.transferQty;
           sourceProductItem.pendingStock += item.transferQty;
-          // sourceProductItem.totalPrice -= item.totalPrice || 0;
+          // sourceProductItem.totalPrice -= item.totalPrice;      //comment data for rawProduct
           sourceProduct.markModified("productItems");
           await sourceProduct.save();
           // const destinationProduct = await Warehouse.findOne({
@@ -146,7 +144,7 @@ export const viewWarehouseStock = async (req, res) => {
     const database = req.params.database;
     const warehouse = await StockUpdation.find({ database: database })
       .sort({ sortorder: -1 })
-      .populate({ path: "productItems.productId", model: "product" })
+      .populate({ path: "productItems.productId", model: "rowProduct" }) //change for rawProduct
       .populate({ path: "warehouseToId", model: "warehouse" })
       .populate({ path: "warehouseFromId", model: "warehouse" });
     if (warehouse.length > 0) {
