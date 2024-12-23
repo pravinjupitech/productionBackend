@@ -1036,11 +1036,6 @@ export const demoProduct2 = async (req, res, next) => {
     if (!exitingData) {
       return res.status(404).json({ message: "Data Not Found", status: false });
     }
-    console.log(
-      "I hope this email finds you well. I am writing to formally inform you that I will not be able to come to the office today as I need to visit my college for documentation purposes.kindly request your approval for the leave.",
-      exitingData
-    );
-
     res.status(404).json({ message: "Data Not Found", status: false });
     const { product_details } = req.body;
     for (let item of product_details) {
