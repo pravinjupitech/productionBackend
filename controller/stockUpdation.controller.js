@@ -180,7 +180,7 @@ export const updateWarehousetoWarehouse = async (req, res, next) => {
         );
         if (sourceProductItem) {
           // sourceProductItem.price = item.price;
-          // sourceProductItem.currentStock -= (item.transferQty);
+          sourceProductItem.currentStock -= item.transferQty;
           // sourceProductItem.totalPrice -= item.totalPrice;
           sourceProductItem.pendingStock -= item.transferQty;
           sourceProduct.markModified("productItems");
