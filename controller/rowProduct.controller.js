@@ -284,7 +284,7 @@ export const addProductInWarehouse = async (
   productId
 ) => {
   try {
-    const user = await Warehouse.findById({ _id: warehouseId._id });
+    const user = await Warehouse.findById({ _id: warehouseId });
     if (!user) {
       return console.log("warehouse not found");
     }
@@ -293,11 +293,11 @@ export const addProductInWarehouse = async (
     );
     if (sourceProductItem) {
       //   sourceProductItem.gstPercentage = parseInt(warehouse.GSTRate);
-      sourceProductItem.currentStock = parseInt(warehouse.qty);
+      sourceProductItem.currentStock = parseInt(warehouse.Opening_Stock);
       //   sourceProductItem.price = parseInt(warehouse.Purchase_Rate);
       //   sourceProductItem.totalPrice =
       //     parseInt(warehouse.qty) * parseInt(warehouse.Purchase_Rate);
-      sourceProductItem.transferQty = parseInt(warehouse.qty);
+      sourceProductItem.transferQty = parseInt(warehouse.Opening_Stock);
       sourceProductItem.oQty = parseInt(warehouse.Opening_Stock);
       //   sourceProductItem.oRate = parseInt(warehouse.Purchase_Rate);
       //   sourceProductItem.oBAmount =
