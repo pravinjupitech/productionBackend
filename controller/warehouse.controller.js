@@ -818,21 +818,3 @@ const ClosingStock = async (productItems) => {
     console.error("Error in ClosingStock function:", err);
   }
 };
-
-export const productCurrentStock = async (req, res, next) => {
-  try {
-    const { warehouseId, productId } = req.params;
-    const warehouse = await Warehouse.findOne({
-      _id: warehouseId,
-      status: "Active",
-    });
-    const ProductItems = warehouse.productItems.find(
-      (item) => item.productId === productId
-    );
-    const currentStock = ProductItems.currentStock;
-    res.json({ currentStock });
-  } catch (error) {
-    console.log(error);
-    res.status(500).json({ error: "Internal Server Error", status: false });
-  }
-};
