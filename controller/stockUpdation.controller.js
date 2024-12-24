@@ -85,10 +85,10 @@ export const stockTransferToWarehouse = async (req, res) => {
           (pItem) => pItem.productId.toString() === item.productId.toString()
         );
         if (sourceProductItem) {
-          // sourceProductItem.price = item.price;
+          sourceProductItem.price = item.price;
           sourceProductItem.currentStock -= item.transferQty;
           sourceProductItem.pendingStock += item.transferQty;
-          // sourceProductItem.totalPrice -= item.totalPrice;      //comment data for rawProduct
+          sourceProductItem.totalPrice -= item.totalPrice; //comment data for rawProduct
           sourceProduct.markModified("productItems");
           await sourceProduct.save();
           // const destinationProduct = await Warehouse.findOne({
