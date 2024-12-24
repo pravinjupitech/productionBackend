@@ -54,6 +54,9 @@ export const SaveProduct = async (req, res) => {
     if (req.body.Opening_Stock) {
       req.body.qty = req.body.Opening_Stock;
     }
+    if (req.body.Units) {
+      req.body.Units = JSON.parse(req.body.Units);
+    }
     const product = await Product.create(req.body);
     await addProductInWarehouse1(req.body, product.warehouse, product);
     return product
