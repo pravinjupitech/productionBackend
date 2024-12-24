@@ -85,16 +85,18 @@ export const stockTransferToWarehouse = async (req, res) => {
         const sourceProductItem = sourceProduct.productItems.find(
           (pItem) => pItem.productId.toString() === item.productId.toString()
         );
+
         if (sourceProductItem) {
           const product = await RowProduct.findOne({ _id: item.productId });
           product.qty -= item.transferQty;
+          await product.save();
           sourceProductItem.price = item.price;
           sourceProductItem.currentStock -= item.transferQty;
           sourceProductItem.pendingStock += item.transferQty;
           // sourceProductItem.totalPrice -= item.totalPrice; //comment data for rawProduct
           sourceProduct.markModified("productItems");
           await sourceProduct.save();
-          await product.save();
+
           // const destinationProduct = await Warehouse.findOne({
           //     _id: warehouseToId,
           //     'productItems.productId': item.productId,
