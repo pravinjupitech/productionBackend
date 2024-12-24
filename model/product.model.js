@@ -113,6 +113,7 @@ const ProductSchema = new mongoose.Schema(
     ProfitPercentage: {
       type: Number,
     },
+    Units: [],
   },
   { timestamps: true }
 );
