@@ -830,7 +830,7 @@ export const productCurrentStock = async (req, res, next) => {
       (item) => item.productId === productId
     );
     const currentStock = ProductItems.currentStock;
-    res.json({ currentStock, status: true });
+    res.json({ currentStock });
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: "Internal Server Error", status: false });
