@@ -112,7 +112,7 @@ export const viewByIdProduct = async (req, res, next) => {
       "productionStepData",
       product.product_details.flatMap((item) =>
         item.finalProductDetails.flatMap((item1) =>
-          item1.fProduct_name_Units.flatMap((item2) => item2.value)
+          item1.fProduct_name_Units.flatMap((item2) => item2.unit)
         )
       )
     );
