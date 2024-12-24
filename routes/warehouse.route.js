@@ -15,7 +15,6 @@ import {
   WarehouseDifferenceReport,
   WarehouseReport,
   getWarehouseData,
-  productCurrentStock,
   savedd,
 } from "../controller/warehouse.controller.js";
 
