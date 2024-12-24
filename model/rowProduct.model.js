@@ -28,6 +28,9 @@ const rowProductSchema = new mongoose.Schema(
     stockUnit: {
       type: String,
     },
+    secondaryUnit: {
+      type: String,
+    },
     category: {
       type: String,
     },

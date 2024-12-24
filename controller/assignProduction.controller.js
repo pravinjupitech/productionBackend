@@ -444,7 +444,6 @@ const handleProductRevert = async (item, isFirstStep, isLastStep) => {
     const Rowproduct = await modelType.findById(item.rProduct_name);
     await revertStockUnits(item?.rProduct_name_Units, Rowproduct, "add");
   }
-
   if (
     item.fProduct_name &&
     Array.isArray(item.fProduct_name_Units) &&
@@ -1002,7 +1001,7 @@ export const deleteProducted = async (req, res, next) => {
     res.status(500).json({ error: "Internal Server Error", status: false });
   }
 };
-//   window.history.back()
+//window.history.back()
 export const demoProduct = async (req, res, next) => {
   try {
     let arr = [1, 2, 3, 3, 4, 5, 5, 5];

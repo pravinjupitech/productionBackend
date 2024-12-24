@@ -174,6 +174,7 @@ export const ViewWarehouseByIdRowProduct = async (req, res, next) => {
       .json({ error: "Internal Server Error", status: false });
   }
 };
+
 export const DeleteWarehouse = async (req, res, next) => {
   try {
     const warehouse = await Warehouse.findById({ _id: req.params.id });
