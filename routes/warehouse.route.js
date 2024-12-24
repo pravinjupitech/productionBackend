@@ -43,5 +43,4 @@ router.post("/hsn-stock-summary/:database", HSNStockSummary);
 
 router.get("/stock-calculate/:database", StockCalculate);
 router.get("/saved/:database", savedd);
-router.get("/product-stock/:warehouseId/:productId", productCurrentStock);
 export default router;
