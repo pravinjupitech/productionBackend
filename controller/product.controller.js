@@ -204,6 +204,9 @@ export const UpdateProduct = async (req, res, next) => {
           existingProduct
         );
       }
+      if (req.body.Units) {
+        req.body.Units = JSON.parse(req.body.Units);
+      }
       const updatedProduct = req.body;
       const product = await Product.findByIdAndUpdate(
         productId,
