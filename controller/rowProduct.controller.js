@@ -319,20 +319,21 @@ export const addProductInWarehouse = async (
 
 export const viewCurrentStock = async (req, res, next) => {
   try {
-    const warehouse = await Warehouse.findById(req.params.id);
+    const { id, productId } = req.params;
+    const warehouse = await Warehouse.findById(id);
     if (!warehouse) {
       return res
         .status(404)
         .json({ message: "warehouse not found", status: false });
     }
     const productItem = warehouse.productItems.find(
-      (item) => item.productId === req.params.productId
+      (item) => item.productId === productId
     );
     if (!productItem) {
       return res
         .status(404)
         .json({ message: "Product not found in the warehouse", status: false });
-    } 
+    }
     return res.status(200).json({ currentStock: productItem, status: true });
   } catch (err) {
     console.log(err);
