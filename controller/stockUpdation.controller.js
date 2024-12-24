@@ -193,7 +193,7 @@ export const updateWarehousetoWarehouse = async (req, res, next) => {
           await sourceProduct.save();
           const destinationProduct = await Warehouse.findOne({
             _id: existingFactory.warehouseToId,
-            "productItems.productId": item.productId,
+            "productItems.productId": item.destinationProductId,
           });
           if (destinationProduct) {
             const destinationProductItem = destinationProduct.productItems.find(
