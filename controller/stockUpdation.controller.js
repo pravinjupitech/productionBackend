@@ -196,6 +196,10 @@ export const updateWarehousetoWarehouse = async (req, res, next) => {
             "productItems.productId": item.destinationProductId,
           });
           if (destinationProduct) {
+            console.log(
+              "calling destinationProduct to meet",
+              destinationProduct
+            );
             const destinationProductItem = destinationProduct.productItems.find(
               (pItem) =>
                 pItem.productId.toString() === item.productId.toString()
