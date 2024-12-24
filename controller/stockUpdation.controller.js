@@ -9,6 +9,7 @@ import { Customer } from "../model/customer.model.js";
 import { ClosingStock } from "../model/closingStock.model.js";
 import { warehouseNo } from "../service/invoice.js";
 import { PurchaseOrder } from "../model/purchaseOrder.model.js";
+import { RowProduct } from "../model/rowProduct.model.js";
 
 export const viewInWardStockToWarehouse = async (req, res, next) => {
   try {
@@ -85,12 +86,15 @@ export const stockTransferToWarehouse = async (req, res) => {
           (pItem) => pItem.productId.toString() === item.productId.toString()
         );
         if (sourceProductItem) {
+          const product = await RowProduct.findOne({ _id: item.productId });
+          product.qty -= item.transferQty;
           sourceProductItem.price = item.price;
           sourceProductItem.currentStock -= item.transferQty;
           sourceProductItem.pendingStock += item.transferQty;
           // sourceProductItem.totalPrice -= item.totalPrice; //comment data for rawProduct
           sourceProduct.markModified("productItems");
           await sourceProduct.save();
+          await product.save();
           // const destinationProduct = await Warehouse.findOne({
           //     _id: warehouseToId,
           //     'productItems.productId': item.productId,

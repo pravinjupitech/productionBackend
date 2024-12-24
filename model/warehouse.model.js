@@ -34,6 +34,9 @@ const WarehouseSchema = new mongoose.Schema(
         productId: {
           type: String,
         },
+        rawProductId: {
+          type: String,
+        },
         unitType: {
           type: String,
         },
