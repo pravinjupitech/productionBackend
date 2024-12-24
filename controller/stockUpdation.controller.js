@@ -84,6 +84,7 @@ export const stockTransferToWarehouse = async (req, res) => {
         const sourceProductItem = sourceProduct.productItems.find(
           (pItem) => pItem.productId.toString() === item.productId.toString()
         );
+        console.log("req.body", req.body);
         if (sourceProductItem) {
           sourceProductItem.price = item.price;
           sourceProductItem.currentStock -= item.transferQty;
