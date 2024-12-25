@@ -235,7 +235,7 @@ export const addProductInWarehouse1 = async (warehouse, warehouseId, id) => {
       return console.log("warehouse not found");
     }
     const sourceProductItem = user.productItems.find(
-      (pItem) => pItem.productId === id.productId
+      (pItem) => pItem.rawProductId === id.rawProductId
     );
     if (sourceProductItem) {
       // sourceProductItem.Size += warehouse.Size;
@@ -247,7 +247,7 @@ export const addProductInWarehouse1 = async (warehouse, warehouseId, id) => {
       await user.save();
     } else {
       let ware = {
-        productId: id._id.toString(),
+        rawProductId: id._id.toString(),
         // Size: warehouse.Size,
         // unitType: warehouse.unitType,
         primaryUnit: warehouse.primaryUnit,
@@ -289,7 +289,7 @@ export const addProductInWarehouse = async (
       return console.log("warehouse not found");
     }
     const sourceProductItem = user.productItems.find(
-      (pItem) => pItem.productId.toString() === productId._id.toString()
+      (pItem) => pItem.rawProductId.toString() === rawProductId._id.toString()
     );
     if (sourceProductItem) {
       //   sourceProductItem.gstPercentage = parseInt(warehouse.GSTRate);
@@ -327,7 +327,7 @@ export const viewCurrentStock = async (req, res, next) => {
         .json({ message: "warehouse not found", status: false });
     }
     const productItem = warehouse.productItems.find(
-      (item) => item.productId === productId
+      (item) => item.rawProductId === productId
     );
     if (!productItem) {
       return res
