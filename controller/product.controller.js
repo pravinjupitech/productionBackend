@@ -604,10 +604,10 @@ export const addProductInWarehouse1 = async (warehouse, warehouseId, id) => {
     }
     console.log("warehouse", warehouse);
     console.log("warehouseId", warehouseId);
-    console.log("ID", id.productId);
+    console.log("ID", id._id);
 
     const sourceProductItem = user.productItems.find(
-      (pItem) => pItem.productId === id.productId
+      (pItem) => pItem.productId === id._id
     );
     console.log("sourceProductItem", sourceProductItem);
     if (sourceProductItem) {
