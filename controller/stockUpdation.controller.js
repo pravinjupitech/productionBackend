@@ -79,11 +79,11 @@ export const stockTransferToWarehouse = async (req, res) => {
     for (const item of productItems) {
       const sourceProduct = await Warehouse.findOne({
         _id: warehouseFromId,
-        "productItems.productId": item.productId,
+        "productItems.rawProductId": item.productId,
       });
       if (sourceProduct) {
         const sourceProductItem = sourceProduct.productItems.find(
-          (pItem) => pItem.productId.toString() === item.productId.toString()
+          (pItem) => pItem.rawProductId.toString() === item.productId.toString()
         );
 
         if (sourceProductItem) {
@@ -145,6 +145,7 @@ export const stockTransferToWarehouse = async (req, res) => {
     res.status(500).json({ error: "Internal Server Error", status: false });
   }
 };
+
 export const viewWarehouseStock = async (req, res) => {
   try {
     const database = req.params.database;
@@ -175,15 +176,18 @@ export const updateWarehousetoWarehouse = async (req, res, next) => {
         .json({ message: "Warehouse not found", status: false });
     }
     await StockUpdation.findByIdAndUpdate(factoryId, req.body, { new: true });
+    // console.log("existingFactory", existingFactory);
     for (const item of existingFactory.productItems) {
       const sourceProduct = await Warehouse.findOne({
         _id: existingFactory.warehouseFromId,
-        "productItems.productId": item.productId,
+        "productItems.rawProductId": item.productId,
       });
+      // console.log("sourceProduct", sourceProduct);
       if (sourceProduct) {
         const sourceProductItem = sourceProduct.productItems.find(
-          (pItem) => pItem.productId.toString() === item.productId.toString()
+          (pItem) => pItem.rawProductId.toString() === item.productId.toString()
         );
+        // console.log("sourceProductItem", sourceProductItem);
         if (sourceProductItem) {
           // sourceProductItem.price = item.price;
           sourceProductItem.currentStock -= item.transferQty;
@@ -195,15 +199,15 @@ export const updateWarehousetoWarehouse = async (req, res, next) => {
             _id: existingFactory.warehouseToId,
             "productItems.productId": item.destinationProductId,
           });
+          // console.log("calling destinationProduct to meet", destinationProduct);
+          // console.log("item.transfer", item);
           if (destinationProduct) {
-            console.log(
-              "calling destinationProduct to meet",
-              destinationProduct
-            );
             const destinationProductItem = destinationProduct.productItems.find(
               (pItem) =>
-                pItem.productId.toString() === item.productId.toString()
+                pItem.productId.toString() ===
+                item.destinationProductId.toString()
             );
+            // console.log("destinationProductItem", destinationProductItem);
             destinationProductItem.price = item.price;
             destinationProductItem.currentStock += item.transferQty;
             destinationProductItem.totalPrice += item.totalPrice;

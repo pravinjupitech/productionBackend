@@ -1,102 +1,113 @@
 import mongoose from "mongoose";
 
-const StockUpdationSchema = new mongoose.Schema({
+const StockUpdationSchema = new mongoose.Schema(
+  {
     created_by: {
-        type: String
+      type: String,
     },
     database: {
-        type: String
+      type: String,
     },
     warehouseToId: {
-        type: String
+      type: String,
     },
     warehouseFromId: {
-        type: String
+      type: String,
     },
     stockTransferDate: {
-        type: String
+      type: String,
     },
     exportId: {
-        type: String
+      type: String,
     },
-    productItems: [{
+    productItems: [
+      {
         productId: {
-            type: String
+          type: String,
+        },
+        destinationProductId: {
+          type: String,
         },
         unitType: {
-            type: String
+          type: String,
         },
         primaryUnit: {
-            type: String
+          type: String,
         },
         secondaryUnit: {
-            type: String
+          type: String,
         },
         secondarySize: {
-            type: String
+          type: String,
         },
         Size: {
-            type: Number
+          type: Number,
         },
         currentStock: {
-            type: Number
+          type: Number,
         },
         transferQty: {
-            type: Number
+          type: Number,
         },
         price: {
-            type: Number
+          type: Number,
         },
         totalPrice: {
-            type: Number
+          type: Number,
         },
         sgstRate: {
-            type: Number
+          type: Number,
         },
         cgstRate: {
-            type: Number
+          type: Number,
         },
         isgtRate: {
-            type: Number
+          type: Number,
         },
         taxableAmount: {
-            type: Number
+          type: Number,
         },
         grandTotal: {
-            type: Number
+          type: Number,
         },
         gstPercentage: {
-            type: String
+          type: String,
         },
         igstTaxType: {
-            type: Boolean
+          type: Boolean,
         },
         pendingStock: {
-            type: Number,
-            default: 0
+          type: Number,
+          default: 0,
         },
         damageItem: {
-            type: Object
-        }
-    }],
+          type: Object,
+        },
+      },
+    ],
     grandTotal: {
-        type: Number
+      type: Number,
     },
     transferStatus: {
-        type: String
+      type: String,
     },
     InwardStatus: {
-        type: String
+      type: String,
     },
     OutwardStatus: {
-        type: String
+      type: String,
     },
     warehouseNo: {
-        type: String
+      type: String,
     },
     status: {
-        type: String,
-        default: "Active"
-    }
-}, { timestamps: true })
-export const StockUpdation = mongoose.model("stockUpdation", StockUpdationSchema)
+      type: String,
+      default: "Active",
+    },
+  },
+  { timestamps: true }
+);
+export const StockUpdation = mongoose.model(
+  "stockUpdation",
+  StockUpdationSchema
+);
