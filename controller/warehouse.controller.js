@@ -147,7 +147,8 @@ export const ViewWarehouseById = async (req, res, next) => {
   try {
     let warehouse = await Warehouse.findById({ _id: req.params.id })
       .sort({ sortorder: -1 })
-      .populate({ path: "productItems.productId", model: "rowProduct" }); //raw product for did change
+      .populate({ path: "productItems.productId", model: "Product" })
+      .populate({ path: "productItems.rawProductId", model: "rowProduct" }); //raw product for did change
     return warehouse
       ? res.status(200).json({ Warehouse: warehouse, status: true })
       : res.status(404).json({ error: "Not Found", status: false });
