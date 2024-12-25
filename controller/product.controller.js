@@ -602,6 +602,10 @@ export const addProductInWarehouse1 = async (warehouse, warehouseId, id) => {
     if (!user) {
       return console.log("warehouse not found");
     }
+    console.log("warehouse", warehouse);
+    console.log("warehouseId", warehouseId);
+    console.log("ID", id.productId);
+
     const sourceProductItem = user.productItems.find(
       (pItem) => pItem.productId === id.productId
     );
