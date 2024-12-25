@@ -125,7 +125,7 @@ export const DeleteProduct = async (req, res, next) => {
     });
     if (warehouse) {
       warehouse.productItems = warehouse.productItems.filter(
-        (sub) => sub.productId.toString() !== req.params.id
+        (sub) => sub.rawProductId.toString() !== req.params.id
       );
       await warehouse.save();
     }
