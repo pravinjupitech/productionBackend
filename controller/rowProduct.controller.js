@@ -246,6 +246,7 @@ export const addProductInWarehouse1 = async (warehouse, warehouseId, id) => {
       user.markModified("productItems");
       await user.save();
     } else {
+      console;
       let ware = {
         rawProductId: id._id.toString(),
         // Size: warehouse.Size,
@@ -327,7 +328,7 @@ export const viewCurrentStock = async (req, res, next) => {
         .json({ message: "warehouse not found", status: false });
     }
     const productItem = warehouse.productItems.find(
-      (item) => item.rawProductId === productId
+      (item) => item.productId === productId
     );
     if (!productItem) {
       return res
