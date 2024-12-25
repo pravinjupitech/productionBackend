@@ -330,7 +330,7 @@ export const viewCurrentStock = async (req, res, next) => {
         .json({ message: "warehouse not found", status: false });
     }
     const productItem = warehouse.productItems.find(
-      (item) => item.productId === productId
+      (item) => item.rawProductId === productId
     );
     if (!productItem) {
       return res
