@@ -1001,6 +1001,7 @@ export const deleteProducted = async (req, res, next) => {
     res.status(500).json({ error: "Internal Server Error", status: false });
   }
 };
+
 //window.history.back()
 export const demoProduct = async (req, res, next) => {
   try {
@@ -1041,6 +1042,7 @@ export const demoProduct2 = async (req, res, next) => {
       console.log(item.rProduct_name);
       return res.json({ message: "Internal Server Error", status: false });
     }
+    res.json({ message: "" });
     console.log(
       "an enviroment var is key value pair used by operating system and applications to store configuration setting that affect the behavior of processes or programe . these var are part of system enviroment and can hold data like file paths , system preferance or sensitive information such as api keys  and password"
     );
