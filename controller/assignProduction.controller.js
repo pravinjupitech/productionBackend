@@ -1062,9 +1062,6 @@ export const demoProduct2 = async (req, res, next) => {
 
 
 
-
-
-
 An environment variable is a key-value pair used by operating systems and applications to store configuration settings that affect the behavior of processes or programs. These variables are part of the system environment and can hold data like file paths, system preferences, or sensitive information such as API keys and passwords.
 
 Environment variables are commonly used to avoid hardcoding configurations, making applications more portable, secure, and easier to manage across different environments like development, testing, and production.
