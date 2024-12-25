@@ -235,9 +235,11 @@ export const addProductInWarehouse1 = async (warehouse, warehouseId, id) => {
       return console.log("warehouse not found");
     }
     const sourceProductItem = user.productItems.find(
-      (pItem) => pItem.rawProductId === id.rawProductId
+      (pItem) => pItem.rawProductId === id.productId
     );
+    console.log("sourceProductItem", sourceProductItem);
     if (sourceProductItem) {
+      console.log("if condition");
       // sourceProductItem.Size += warehouse.Size;
       sourceProductItem.currentStock = warehouse.qty;
       //   sourceProductItem.price = warehouse.Purchase_Rate;
@@ -246,7 +248,6 @@ export const addProductInWarehouse1 = async (warehouse, warehouseId, id) => {
       user.markModified("productItems");
       await user.save();
     } else {
-      console;
       let ware = {
         rawProductId: id._id.toString(),
         // Size: warehouse.Size,
@@ -268,6 +269,7 @@ export const addProductInWarehouse1 = async (warehouse, warehouseId, id) => {
         //     oTaxRate: warehouse.GSTRate,
         //     oTotal: warehouse.qty * warehouse.Purchase_Rate,
       };
+      console.log("ware", ware);
       const updated = await Warehouse.updateOne(
         { _id: warehouseId },
         { $push: { productItems: ware } },
@@ -290,7 +292,7 @@ export const addProductInWarehouse = async (
       return console.log("warehouse not found");
     }
     const sourceProductItem = user.productItems.find(
-      (pItem) => pItem.rawProductId.toString() === rawProductId._id.toString()
+      (pItem) => pItem.rawProductId.toString() === productId._id.toString()
     );
     if (sourceProductItem) {
       //   sourceProductItem.gstPercentage = parseInt(warehouse.GSTRate);
