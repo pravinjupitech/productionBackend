@@ -635,6 +635,7 @@ export const addProductInWarehouse1 = async (warehouse, warehouseId, id) => {
         oTaxRate: warehouse.GSTRate,
         oTotal: warehouse.qty * warehouse.Purchase_Rate,
       };
+      console.log("calling");
       const updated = await Warehouse.updateOne(
         { _id: warehouseId },
         { $push: { productItems: ware } },
