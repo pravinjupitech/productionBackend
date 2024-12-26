@@ -77,7 +77,7 @@ export const addProduct = async (req, res) => {
 
 export const ViewProduct = async (req, res, next) => {
   try {
-    // const userId = req.params.id;
+    // const userId = req.params.id
     const database = req.params.database;
     const product = await RowProduct.find({
       database: database,
