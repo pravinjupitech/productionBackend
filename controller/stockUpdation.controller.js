@@ -166,6 +166,7 @@ export const viewWarehouseStock = async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
+
 export const updateWarehousetoWarehouse = async (req, res, next) => {
   try {
     const factoryId = req.params.id;
