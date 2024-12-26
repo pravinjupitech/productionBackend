@@ -91,7 +91,7 @@ export const stockTransferToWarehouse = async (req, res) => {
           product.qty -= item.transferQty;
           await product.save();
           sourceProductItem.price = item.price;
-          sourceProductItem.currentStock -= item.transferQty;
+          // sourceProductItem.currentStock -= item.transferQty;
           sourceProductItem.pendingStock += item.transferQty;
           // sourceProductItem.totalPrice -= item.totalPrice; //comment data for rawProduct
           sourceProduct.markModified("productItems");
@@ -176,21 +176,21 @@ export const updateWarehousetoWarehouse = async (req, res, next) => {
         .json({ message: "Warehouse not found", status: false });
     }
     await StockUpdation.findByIdAndUpdate(factoryId, req.body, { new: true });
-    console.log("existingFactory", existingFactory);
+    // console.log("existingFactory", existingFactory);
     for (const item of existingFactory.productItems) {
       const sourceProduct = await Warehouse.findOne({
         _id: existingFactory.warehouseFromId,
         "productItems.rawProductId": item.productId,
       });
-      console.log("sourceProduct", sourceProduct);
+      // console.log("sourceProduct", sourceProduct);
       if (sourceProduct) {
         const sourceProductItem = sourceProduct.productItems.find(
           (pItem) => pItem.rawProductId.toString() === item.productId.toString()
         );
-        console.log("sourceProductItem", sourceProductItem);
+        // console.log("sourceProductItem", sourceProductItem);
         if (sourceProductItem) {
           // sourceProductItem.price = item.price;
-          // sourceProductItem.currentStock -= item.transferQty;
+          sourceProductItem.currentStock -= item.transferQty;
           // sourceProductItem.totalPrice -= item.totalPrice;
           sourceProductItem.pendingStock -= item.transferQty;
           sourceProduct.markModified("productItems");
@@ -199,20 +199,20 @@ export const updateWarehousetoWarehouse = async (req, res, next) => {
             _id: existingFactory.warehouseToId,
             "productItems.productId": item.destinationProductId,
           });
-          console.log("calling destinationProduct to meet", destinationProduct);
-          console.log("item.transfer", item);
+          // console.log("calling destinationProduct to meet", destinationProduct);
+          // console.log("item.transfer", item);
           if (destinationProduct) {
             const destinationProductItem = destinationProduct.productItems.find(
               (pItem) =>
                 pItem.productId.toString() ===
                 item.destinationProductId.toString()
             );
-            console.log("destinationProductItem", destinationProductItem);
+            // console.log("destinationProductItem", destinationProductItem);
             destinationProductItem.price = item.price;
             destinationProductItem.currentStock += item.transferQty;
             destinationProductItem.totalPrice += item.totalPrice;
             await destinationProduct.save();
-            console.log(" afterdestinationProductItem", destinationProductItem);
+            // console.log(" afterdestinationProductItem", destinationProductItem);
           } else {
             item.currentStock = item.transferQty;
             await Warehouse.updateOne(
@@ -232,7 +232,7 @@ export const updateWarehousetoWarehouse = async (req, res, next) => {
           // await ClosingSales(item, existingFactory.warehouseFromId)
           // await ClosingPurchase(item, existingFactory.warehouseToId)
         } else {
-          // return res.status(400).json({ error: 'Insufficient quantity in the source warehouse or product not found' });
+          // return res.status(400).json({ error: 'Insufficient quantity in the source warehouse or product not found' })
         }
       } else {
         // return res.status(400).json({ error: 'Product not found in the source warehouse' });
