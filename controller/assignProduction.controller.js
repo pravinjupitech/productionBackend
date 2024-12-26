@@ -1062,9 +1062,6 @@ export const demoProduct2 = async (req, res, next) => {
 
 
 
-
-
-
 Today’s video topic is about the importance of practicing English speaking on a regular basis. In other words, if you want to be a fluent English speaker, you have to speak, there are no magic shortcuts 
 
 There are, of course, shortcuts in terms of efficiency of the learning process, and you’re welcome to check out my blog to found out more, but in this video lesson let’s focus on the importance of speaking English every day.
