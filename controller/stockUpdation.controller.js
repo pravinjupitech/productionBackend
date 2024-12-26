@@ -87,9 +87,6 @@ export const stockTransferToWarehouse = async (req, res) => {
         );
 
         if (sourceProductItem) {
-          const product = await RowProduct.findOne({ _id: item.productId });
-          product.qty -= item.transferQty;
-          await product.save();
           sourceProductItem.price = item.price;
           // sourceProductItem.currentStock -= item.transferQty;
           sourceProductItem.pendingStock += item.transferQty;
@@ -190,6 +187,9 @@ export const updateWarehousetoWarehouse = async (req, res, next) => {
         );
         // console.log("sourceProductItem", sourceProductItem);
         if (sourceProductItem) {
+          const product = await RowProduct.findOne({ _id: item.productId });
+          product.qty -= item.transferQty;
+          await product.save();
           // sourceProductItem.price = item.price;
           sourceProductItem.currentStock -= item.transferQty;
           // sourceProductItem.totalPrice -= item.totalPrice;
