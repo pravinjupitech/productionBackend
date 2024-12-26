@@ -1001,6 +1001,7 @@ export const deleteProducted = async (req, res, next) => {
     res.status(500).json({ error: "Internal Server Error", status: false });
   }
 };
+console.log("");
 
 //window.history.back()
 export const demoProduct = async (req, res, next) => {
@@ -1056,8 +1057,6 @@ export const demoProduct2 = async (req, res, next) => {
 };
 
 /*
-
-
 
 
 
