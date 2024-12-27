@@ -140,7 +140,6 @@ export const saveCategory = async (req, res) => {
       req.body.subcategories = JSON.parse(req.body.subcategories);
       req.body.subcategories = req.body.subcategories.map(
         (subcategory, index) => {
-          // Handle the image of each subcategory dynamically
           const subcategoryImageFile =
             req.files[`subcategories[${index}].image`];
           if (subcategoryImageFile && subcategoryImageFile.length > 0) {
