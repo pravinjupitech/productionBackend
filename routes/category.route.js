@@ -44,7 +44,7 @@ router.post(
 
       // Dynamically generate file upload fields for each subcategory's image
       const subcategoryFields = subcategories.map((_, index) => ({
-        name: `subcategories[${index}].image`, // Dynamic field name
+        name: `subcategories[${index}].image`, // Dynamic field name for each subcategory
         maxCount: 1, // Limit to one image per subcategory
       }));
 
