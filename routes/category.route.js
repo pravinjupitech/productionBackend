@@ -61,7 +61,7 @@ const upload = multer({ storage: storage });
 
 router.post(
   "/save-category",
-  upload.array("files"),
+  upload.any("files"),
   (req, res, next) => {
     // if (req.body.subcategories) {
     const subcategories = JSON.parse(req.body.subcategories);
