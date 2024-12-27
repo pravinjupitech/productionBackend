@@ -64,24 +64,19 @@ router.post(
   upload.any(),
   (req, res, next) => {
     // if (req.body.subcategories) {
-    const subcategories = JSON.parse(req.body.subcategories);
-    const subcategoryFields = [];
+    // const subcategories = JSON.parse(req.body.subcategories);
+    // const subcategoryFields = [];
     console.log(req.files);
     const files = req.files.filter(
       (file, index) => file.fieldname === `files[${index}]`
     );
+    console.log(files);
 
-    if (files.length === 0) {
-      return res
-        .status(400)
-        .send("No files uploaded or files with the wrong field name.");
-    }
-
-    files.forEach((file) => {
-      console.log("Uploaded file: ", file);
-      console.log("File path: ", file.path);
-      console.log("File type: ", file.mimetype);
-    });
+    // files.forEach((file) => {
+    //   console.log("Uploaded file: ", file);
+    //   console.log("File path: ", file.path);
+    //   console.log("File type: ", file.mimetype);
+    // });
     // } else {
     //   upload.fields([{ name: "image", maxCount: 1 }])(req, res, next);
     // }
