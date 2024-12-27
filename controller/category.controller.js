@@ -69,41 +69,31 @@ import { User } from "../model/user.model.js";
 
 export const saveCategory = async (req, res) => {
   try {
-    // Ensure user exists
     const user = await User.findById(req.body.created_by);
     if (!user) {
       return res.status(400).json({ message: "User Not Found", status: false });
     }
 
-    // Set the database from the user's database
     req.body.database = user.database;
 
-    // Handle the main category image upload (if it exists)
-    if (req.files && req.files["file"]) {
-      req.body.image = req.files["file"][0].filename; // Save the category image filename
+    if (req.files && req.files["image"]) {
+      req.body.image = req.files["image"][0].filename;
     }
 
-    // Handle subcategory images (if any)
     if (req.body.subcategories) {
-      // Parsing the subcategories array from FormData
       req.body.subcategories = JSON.parse(req.body.subcategories);
-
-      // Loop through subcategories and assign an image if provided
       req.body.subcategories = req.body.subcategories.map(
         (subcategory, index) => {
           const subcategoryImageFile =
             req.files[`subcategories[${index}].image`];
-
-          // Check if subcategory image exists
           if (subcategoryImageFile && subcategoryImageFile.length > 0) {
-            subcategory.image = subcategoryImageFile[0].filename; // Save the subcategory image filename
+            subcategory.image = subcategoryImageFile[0].filename;
           }
           return subcategory;
         }
       );
     }
 
-    // Check if a category with the same name and active status already exists in the database
     const existingCategory = await Category.findOne({
       name: req.body.name,
       database: req.body.database,
@@ -116,10 +106,8 @@ export const saveCategory = async (req, res) => {
         .json({ message: "Category already exists", status: false });
     }
 
-    // Create the category using the form data
     const category = await Category.create(req.body);
 
-    // Return success or failure response
     return category
       ? res
           .status(200)
@@ -169,6 +157,7 @@ export const ViewCategoryById = async (req, res, next) => {
     return res.status(500).json({ error: err, status: false });
   }
 };
+
 export const DeleteCategory = async (req, res, next) => {
   try {
     const category = await Category.findById({ _id: req.params.id });
