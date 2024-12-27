@@ -1,69 +1,135 @@
 import { Category } from "../model/category.model.js";
 import { User } from "../model/user.model.js";
 
+// export const saveCategory = async (req, res) => {
+//   try {
+//     const user = await User.findById({ _id: req.body.created_by });
+//     if (!user) {
+//       return res.status(400).json({ message: "User Not Found", status: false });
+//     }
+//     req.body.database = user.database;
+//     // if (req.file) {
+//     //   req.body.image = req.file.filename;
+//     // }
+
+//     // if (req.body.subcategories) {
+//     //   req.body.subcategories = JSON.parse(req.body.subcategories);
+//     //   req.body.subcategories = req.body.subcategories.map(
+//     //     (subcategory, index) => {
+//     //       if (req.files && req.files[`subcategories[${index}].image`]) {
+//     //         subcategory.image =
+//     //           req.files[`subcategories[${index}].image`][0].filename;
+//     //       }
+//     //       return subcategory;
+//     //     }
+//     //   );
+//     // }
+
+//     if (req.files && req.files["categoryImage"]) {
+//       req.body.image = req.files["categoryImage"][0].filename;
+//     }
+
+//     if (req.body.subcategories) {
+//       req.body.subcategories = JSON.parse(req.body.subcategories);
+
+//       req.body.subcategories = req.body.subcategories.map(
+//         (subcategory, index) => {
+//           const imageFile = req.files[`subcategories[${index}].image`];
+//           if (imageFile && imageFile.length > 0) {
+//             subcategory.image = imageFile[0].filename;
+//           }
+//           return subcategory;
+//         }
+//       );
+//     }
+
+//     const existingCategory = await Category.findOne({
+//       name: req.body.name,
+//       database: req.body.database,
+//       status: "Active",
+//     });
+//     if (existingCategory) {
+//       return res
+//         .status(400)
+//         .json({ message: "category already existing", status: false });
+//     }
+//     const category = await Category.create(req.body);
+//     return category
+//       ? res
+//           .status(200)
+//           .json({ message: "category save successfully", status: true })
+//       : res
+//           .status(400)
+//           .json({ message: "something went wrong", status: false });
+//   } catch (error) {
+//     console.error(error);
+//     return res.status(500).json({ error: error, status: false });
+//   }
+// };
+
 export const saveCategory = async (req, res) => {
   try {
-    const user = await User.findById({ _id: req.body.created_by });
+    // Ensure user exists
+    const user = await User.findById(req.body.created_by);
     if (!user) {
       return res.status(400).json({ message: "User Not Found", status: false });
     }
+
+    // Set the database from the user's database
     req.body.database = user.database;
-    // if (req.file) {
-    //   req.body.image = req.file.filename;
-    // }
 
-    // if (req.body.subcategories) {
-    //   req.body.subcategories = JSON.parse(req.body.subcategories);
-    //   req.body.subcategories = req.body.subcategories.map(
-    //     (subcategory, index) => {
-    //       if (req.files && req.files[`subcategories[${index}].image`]) {
-    //         subcategory.image =
-    //           req.files[`subcategories[${index}].image`][0].filename;
-    //       }
-    //       return subcategory;
-    //     }
-    //   );
-    // }
-
-    if (req.files && req.files["categoryImage"]) {
-      req.body.image = req.files["categoryImage"][0].filename;
+    // Handle the main category image upload (if it exists)
+    if (req.files && req.files["file"]) {
+      req.body.image = req.files["file"][0].filename; // Save the category image filename
     }
 
+    // Handle subcategory images (if any)
     if (req.body.subcategories) {
+      // Parsing the subcategories array from FormData
       req.body.subcategories = JSON.parse(req.body.subcategories);
 
+      // Loop through subcategories and assign an image if provided
       req.body.subcategories = req.body.subcategories.map(
         (subcategory, index) => {
-          const imageFile = req.files[`subcategories[${index}].image`];
-          if (imageFile && imageFile.length > 0) {
-            subcategory.image = imageFile[0].filename;
+          const subcategoryImageFile =
+            req.files[`subcategories[${index}].image`];
+
+          // Check if subcategory image exists
+          if (subcategoryImageFile && subcategoryImageFile.length > 0) {
+            subcategory.image = subcategoryImageFile[0].filename; // Save the subcategory image filename
           }
           return subcategory;
         }
       );
     }
 
+    // Check if a category with the same name and active status already exists in the database
     const existingCategory = await Category.findOne({
       name: req.body.name,
       database: req.body.database,
       status: "Active",
     });
+
     if (existingCategory) {
       return res
         .status(400)
-        .json({ message: "category already existing", status: false });
+        .json({ message: "Category already exists", status: false });
     }
+
+    // Create the category using the form data
     const category = await Category.create(req.body);
+
+    // Return success or failure response
     return category
       ? res
           .status(200)
-          .json({ message: "category save successfully", status: true })
+          .json({ message: "Category saved successfully", status: true })
       : res
           .status(400)
-          .json({ message: "something went wrong", status: false });
+          .json({ message: "Something went wrong", status: false });
   } catch (error) {
     console.error(error);
-    return res.status(500).json({ error: error, status: false });
+    return res.status(500).json({ error: error.message, status: false });
   }
 };
 
