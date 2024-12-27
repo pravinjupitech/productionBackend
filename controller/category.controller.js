@@ -1,108 +1,108 @@
 import { Category } from "../model/category.model.js";
 import { User } from "../model/user.model.js";
 
-// export const saveCategory = async (req, res) => {
-//   try {
-//     console.log("reqbody", req.body);
-//     const user = await User.findById({ _id: req.body.created_by });
-//     if (!user) {
-//       return res.status(400).json({ message: "User Not Found", status: false });
-//     }
-//     req.body.database = user.database;
-//     if (req.file) {
-//       req.body.image = req.file.filename;
-//     }
-
-//     // if (req.body.subcategories) {
-//     //   req.body.subcategories = JSON.parse(req.body.subcategories);
-//     //   req.body.subcategories = req.body.subcategories.map(
-//     //     (subcategory, index) => {
-//     //       if (req.files && req.files[`subcategories[${index}].image`]) {
-//     //         subcategory.image =
-//     //           req.files[`subcategories[${index}].image`][0].filename;
-//     //       }
-//     //       return subcategory;
-//     //     }
-//     //   );
-//     // }
-//     if (req.body.subcategories) {
-//       const subcategories = JSON.parse(req.body.subcategories);
-
-//       subcategories.forEach((subcategory, index) => {
-//         const file = req.files.find(
-//           (file) => file.fieldname === `subcategories[${index}].image`
-//         );
-//         if (file) {
-//           subcategory.image = file.filename;
-//         }
-//       });
-//     }
-
-//     const existingCategory = await Category.findOne({
-//       name: req.body.name,
-//       database: req.body.database,
-//       status: "Active",
-//     });
-//     if (existingCategory) {
-//       return res
-//         .status(400)
-//         .json({ message: "category already existing", status: false });
-//     }
-//     const category = await Category.create(req.body);
-//     return category
-//       ? res
-//           .status(200)
-//           .json({ message: "category save successfully", status: true })
-//       : res
-//           .status(400)
-//           .json({ message: "something went wrong", status: false });
-//   } catch (error) {
-//     console.error(error);
-//     return res.status(500).json({ error: error, status: false });
-//   }
-// };
-
 export const saveCategory = async (req, res) => {
   try {
-    const { name, description, created_by, subcategories } = req.body;
+    console.log("reqbody", req.body);
+    const user = await User.findById({ _id: req.body.created_by });
+    if (!user) {
+      return res.status(400).json({ message: "User Not Found", status: false });
+    }
+    req.body.database = user.database;
+    if (req.file) {
+      req.body.image = req.file.filename;
+    }
 
-    const mainImageFile = req.files.find((file) => file.fieldname === "image");
-    const mainImage = mainImageFile ? mainImageFile.filename : null;
+    // if (req.body.subcategories) {
+    //   req.body.subcategories = JSON.parse(req.body.subcategories);
+    //   req.body.subcategories = req.body.subcategories.map(
+    //     (subcategory, index) => {
+    //       if (req.files && req.files[`subcategories[${index}].image`]) {
+    //         subcategory.image =
+    //           req.files[`subcategories[${index}].image`][0].filename;
+    //       }
+    //       return subcategory;
+    //     }
+    //   );
+    // }
+    if (req.body.subcategories) {
+      const subcategories = JSON.parse(req.body.subcategories);
 
-    const parsedSubcategories = JSON.parse(subcategories || "[]");
-    const processedSubcategories = parsedSubcategories.map(
-      (subcategory, index) => {
-        const subImageFile = req.files.find(
+      subcategories.forEach((subcategory, index) => {
+        const file = req.files.find(
           (file) => file.fieldname === `subcategories[${index}].image`
         );
-        return {
-          ...subcategory,
-          image: subImageFile ? subImageFile.filename : null,
-        };
-      }
-    );
+        if (file) {
+          subcategory.image = file.filename;
+        }
+      });
+    }
 
-    const category = new Category({
-      name,
-      description,
-      created_by,
-      image: mainImage,
-      subcategories: processedSubcategories,
+    const existingCategory = await Category.findOne({
+      name: req.body.name,
+      database: req.body.database,
+      status: "Active",
     });
-
-    await category.save();
-
-    res.status(201).json({
-      message: "Category created successfully",
-      category,
-    });
+    if (existingCategory) {
+      return res
+        .status(400)
+        .json({ message: "category already existing", status: false });
+    }
+    const category = await Category.create(req.body);
+    return category
+      ? res
+          .status(200)
+          .json({ message: "category save successfully", status: true })
+      : res
+          .status(400)
+          .json({ message: "something went wrong", status: false });
   } catch (error) {
-    res.status(500).json({
-      message: "Internal server error",
-      error: error.message,
-    });
+    console.error(error);
+    return res.status(500).json({ error: error, status: false });
   }
 };
+
+// export const saveCategory = async (req, res) => {
+//   try {
+//     const { name, description, created_by, subcategories } = req.body;
+
+//     const mainImageFile = req.files.find((file) => file.fieldname === "image");
+//     const mainImage = mainImageFile ? mainImageFile.filename : null;
+
+//     const parsedSubcategories = JSON.parse(subcategories || "[]");
+//     const processedSubcategories = parsedSubcategories.map(
+//       (subcategory, index) => {
+//         const subImageFile = req.files.find(
+//           (file) => file.fieldname === `subcategories[${index}].image`
+//         );
+//         return {
+//           ...subcategory,
+//           image: subImageFile ? subImageFile.filename : null,
+//         };
+//       }
+//     );
+
+//     const category = new Category({
+//       name,
+//       description,
+//       created_by,
+//       image: mainImage,
+//       subcategories: processedSubcategories,
+//     });
+
+//     await category.save();
+
+//     res.status(201).json({
+//       message: "Category created successfully",
+//       category,
+//     });
+//   } catch (error) {
+//     res.status(500).json({
+//       message: "Internal server error",
+//       error: error.message,
+//     });
+//   }
+// };
 
 export const ViewCategory = async (req, res, next) => {
   try {
