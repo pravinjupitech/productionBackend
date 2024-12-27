@@ -28,14 +28,41 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 // router.post("/save-category", upload.single("file"), saveCategory);
+// router.post(
+//   "/save-category",
+//   upload.fields([
+//     { name: "image", maxCount: 1 },
+//     { name: "subcategories[0].image", maxCount: 1 },
+//   ]),
+//   saveCategory
+// );
 router.post(
   "/save-category",
-  upload.fields([
-    { name: "image", maxCount: 1 },
-    { name: "subcategories[0].image", maxCount: 1 },
-  ]),
+  (req, res, next) => {
+    // Check if there are subcategories and parse them
+    if (req.body.subcategories) {
+      const subcategories = JSON.parse(req.body.subcategories);
+
+      // Dynamically create fields for each subcategory image
+      const subcategoryFields = subcategories.map((_, index) => ({
+        name: `subcategories[${index}].image`, // Dynamic field for each subcategory image
+        maxCount: 1,
+      }));
+
+      // Add the main image field and the dynamic subcategory image fields
+      upload.fields([{ name: "image", maxCount: 1 }, ...subcategoryFields])(
+        req,
+        res,
+        next
+      );
+    } else {
+      // If no subcategories, handle only the main image
+      upload.fields([{ name: "image", maxCount: 1 }])(req, res, next);
+    }
+  },
   saveCategory
 );
+
 router.get("/view-category/:id/:database", ViewCategory);
 router.get("/view-category-by-id/:id", ViewCategoryById);
 router.get("/delete-category/:id", DeleteCategory);
