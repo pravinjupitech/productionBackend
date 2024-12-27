@@ -36,31 +36,47 @@ const upload = multer({ storage: storage });
 //   ]),
 //   saveCategory
 // );
+// router.post(
+//   "/save-category",
+//   (req, res, next) => {
+//     if (req.body.subcategories) {
+//       const subcategories = JSON.parse(req.body.subcategories);
+//       const subcategoryFields = [];
+//       subcategories.forEach((_, index) => {
+//         subcategoryFields.push({
+//           name: `images.${index}.image`,
+//         });
+//       });
+//       upload.fields([{ name: "image", maxCount: 1 }, ...subcategoryFields])(
+//         req,
+//         res,
+//         next
+//       );
+//     } else {
+//       upload.fields([{ name: "image", maxCount: 1 }])(req, res, next);
+//     }
+//   },
+//   saveCategory
+// );
+
 router.post(
   "/save-category",
+  upload.array("files"),
   (req, res, next) => {
-    if (req.body.subcategories) {
-      const subcategories = JSON.parse(req.body.subcategories);
-      console.log("hyy");
-      const subcategoryFields = [];
-      subcategories.forEach((_, index) => {
-        subcategoryFields.push({
-          name: `subcategories[${index}].image`,
-        });
+    // if (req.body.subcategories) {
+    const subcategories = JSON.parse(req.body.subcategories);
+    const subcategoryFields = [];
+    if (req.files) {
+      req.files.map((file) => {
+        console.log(file.filename);
       });
-      console.log("hello", subcategoryFields);
-      upload.fields([{ name: "image", maxCount: 1 }, ...subcategoryFields])(
-        req,
-        res,
-        next
-      );
-    } else {
-      upload.fields([{ name: "image", maxCount: 1 }])(req, res, next);
     }
+    // } else {
+    //   upload.fields([{ name: "image", maxCount: 1 }])(req, res, next);
+    // }
   },
   saveCategory
 );
-
 router.get("/view-category/:id/:database", ViewCategory);
 router.get("/view-category-by-id/:id", ViewCategoryById);
 router.get("/delete-category/:id", DeleteCategory);
