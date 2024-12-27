@@ -68,7 +68,7 @@ router.post(
     const subcategoryFields = [];
     if (req.files) {
       req.files.map((file) => {
-        console.log(file.filename);
+        console.log(file.originalname);
       });
     }
     // } else {
