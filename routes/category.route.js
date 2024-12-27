@@ -46,7 +46,6 @@ router.post(
       subcategories.forEach((_, index) => {
         subcategoryFields.push({
           name: `subcategories[${index}].image`,
-          maxCount: 1,
         });
       });
       upload.fields([{ name: "image", maxCount: 1 }, ...subcategoryFields])(
