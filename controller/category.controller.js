@@ -3,6 +3,7 @@ import { User } from "../model/user.model.js";
 
 export const saveCategory = async (req, res) => {
   try {
+    console.log("reqbody", req.body);
     const user = await User.findById({ _id: req.body.created_by });
     if (!user) {
       return res.status(400).json({ message: "User Not Found", status: false });
