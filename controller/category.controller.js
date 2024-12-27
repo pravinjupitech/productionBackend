@@ -131,19 +131,17 @@ export const saveCategory = async (req, res) => {
 
     req.body.database = user.database;
 
-    // Handle the main category image
     if (req.files && req.files["image"]) {
       req.body.image = req.files["image"][0].filename;
     }
 
-    // Handle dynamic subcategory images
     if (req.body.subcategories) {
       req.body.subcategories = JSON.parse(req.body.subcategories);
 
       req.body.subcategories = req.body.subcategories.map(
         (subcategory, index) => {
           const subcategoryImageFile =
-            req.files[`subcategories[${index}].image`];
+            req.files[`images[${index}].image`];
           if (subcategoryImageFile && subcategoryImageFile.length > 0) {
             subcategory.image = subcategoryImageFile[0].filename;
           }
@@ -152,7 +150,6 @@ export const saveCategory = async (req, res) => {
       );
     }
 
-    // Check if the category already exists
     const existingCategory = await Category.findOne({
       name: req.body.name,
       database: req.body.database,
@@ -165,7 +162,6 @@ export const saveCategory = async (req, res) => {
         .json({ message: "Category already exists", status: false });
     }
 
-    // Create the new category
     const category = await Category.create(req.body);
 
     return category
