@@ -39,24 +39,22 @@ const upload = multer({ storage: storage });
 router.post(
   "/save-category",
   (req, res, next) => {
-    // Check if there are subcategories and parse them
     if (req.body.subcategories) {
       const subcategories = JSON.parse(req.body.subcategories);
 
-      // Dynamically create fields for each subcategory image
-      const subcategoryFields = subcategories.map((_, index) => ({
-        name: `subcategories[${index}].image`, // Dynamic field for each subcategory image
-        maxCount: 1,
-      }));
-
-      // Add the main image field and the dynamic subcategory image fields
+      const subcategoryFields = [];
+      subcategories.forEach((_, index) => {
+        subcategoryFields.push({
+          name: `subcategories[${index}].image`,
+          maxCount: 1,
+        });
+      });
       upload.fields([{ name: "image", maxCount: 1 }, ...subcategoryFields])(
         req,
         res,
         next
       );
     } else {
-      // If no subcategories, handle only the main image
       upload.fields([{ name: "image", maxCount: 1 }])(req, res, next);
     }
   },
