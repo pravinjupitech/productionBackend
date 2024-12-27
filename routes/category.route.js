@@ -28,14 +28,7 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 // router.post("/save-category", upload.single("file"), saveCategory);
-router.post(
-  "/save-category",
-  upload.fields([
-    { name: "image", maxCount: 1 },
-    { name: "subcategories[].image", maxCount: 10 },
-  ]),
-  saveCategory
-);
+router.post("/save-category", upload.any(), saveCategory);
 router.get("/view-category/:id/:database", ViewCategory);
 router.get("/view-category-by-id/:id", ViewCategoryById);
 router.get("/delete-category/:id", DeleteCategory);
