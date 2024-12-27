@@ -66,12 +66,28 @@ router.post(
     // if (req.body.subcategories) {
     // const subcategories = JSON.parse(req.body.subcategories);
     // const subcategoryFields = [];
-    console.log(req.files);
-    const files = req.files.filter(
-      (file, index) => file.fieldname === `files[${index}]`
-    );
-    console.log(files);
-
+    // console.log(req.files);
+    // const files = req.files.filter(
+    //   (file, index) => file.fieldname === `files[${index}]`
+    // );
+    // console.log(files);
+    req.files.forEach((file) => {
+      if (file.fieldname === "files[0]") {
+        // Assign the main category image
+        req.body.image = file.originalname;
+      } else {
+        // Match subcategory index using regex
+        const match = file.fieldname.match(/files\[(\d+)\]/);
+        if (match) {
+          const subcategoryIndex = parseInt(match[1], 10) - 1; // Adjust index if `files[0]` is for the main image
+          if (req.body.subcategories[subcategoryIndex]) {
+            req.body.subcategories[subcategoryIndex]["image"] =
+              file.originalname;
+          }
+        }
+      }
+    });
+    console.log(req.body);
     // files.forEach((file) => {
     //   console.log("Uploaded file: ", file);
     //   console.log("File path: ", file.path);
