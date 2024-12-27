@@ -12,6 +12,21 @@ export const saveCategory = async (req, res) => {
     if (req.file) {
       req.body.image = req.file.filename;
     }
+
+    if (req.body.subcategories) {
+      req.body.subcategories = JSON.parse(req.body.subcategories);
+
+      req.body.subcategories = req.body.subcategories.map(
+        (subcategory, index) => {
+          if (req.files && req.files[`subcategories[${index}].image`]) {
+            subcategory.image =
+              req.files[`subcategories[${index}].image`][0].filename;
+          }
+          return subcategory;
+        }
+      );
+    }
+
     const existingCategory = await Category.findOne({
       name: req.body.name,
       database: req.body.database,
@@ -35,6 +50,7 @@ export const saveCategory = async (req, res) => {
     return res.status(500).json({ error: error, status: false });
   }
 };
+
 export const ViewCategory = async (req, res, next) => {
   try {
     const userId = req.params.id;
