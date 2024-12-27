@@ -41,13 +41,14 @@ router.post(
   (req, res, next) => {
     if (req.body.subcategories) {
       const subcategories = JSON.parse(req.body.subcategories);
-
+      console.log("hyy");
       const subcategoryFields = [];
       subcategories.forEach((_, index) => {
         subcategoryFields.push({
           name: `subcategories[${index}].image`,
         });
       });
+      console.log("hello", subcategoryFields);
       upload.fields([{ name: "image", maxCount: 1 }, ...subcategoryFields])(
         req,
         res,
