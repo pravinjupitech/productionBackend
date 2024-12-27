@@ -67,60 +67,6 @@ import { User } from "../model/user.model.js";
 //   }
 // };
 
-// export const saveCategory = async (req, res) => {
-//   try {
-//     const user = await User.findById(req.body.created_by);
-//     if (!user) {
-//       return res.status(400).json({ message: "User Not Found", status: false });
-//     }
-
-//     req.body.database = user.database;
-
-//     if (req.files && req.files["image"]) {
-//       req.body.image = req.files["image"][0].filename;
-//     }
-
-//     if (req.body.subcategories) {
-//       req.body.subcategories = JSON.parse(req.body.subcategories);
-//       req.body.subcategories = req.body.subcategories.map(
-//         (subcategory, index) => {
-//           const subcategoryImageFile =
-//             req.files[`subcategories[${index}].image`];
-//           if (subcategoryImageFile && subcategoryImageFile.length > 0) {
-//             subcategory.image = subcategoryImageFile[0].filename;
-//           }
-//           return subcategory;
-//         }
-//       );
-//     }
-
-//     const existingCategory = await Category.findOne({
-//       name: req.body.name,
-//       database: req.body.database,
-//       status: "Active",
-//     });
-
-//     if (existingCategory) {
-//       return res
-//         .status(400)
-//         .json({ message: "Category already exists", status: false });
-//     }
-
-//     const category = await Category.create(req.body);
-
-//     return category
-//       ? res
-//           .status(200)
-//           .json({ message: "Category saved successfully", status: true })
-//       : res
-//           .status(400)
-//           .json({ message: "Something went wrong", status: false });
-//   } catch (error) {
-//     console.error(error);
-//     return res.status(500).json({ error: error.message, status: false });
-//   }
-// };
-
 export const saveCategory = async (req, res) => {
   try {
     const user = await User.findById(req.body.created_by);
@@ -130,12 +76,10 @@ export const saveCategory = async (req, res) => {
 
     req.body.database = user.database;
 
-    // Handle main category image
     if (req.files && req.files["image"]) {
       req.body.image = req.files["image"][0].filename;
     }
 
-    // Handle subcategories and their images
     if (req.body.subcategories) {
       req.body.subcategories = JSON.parse(req.body.subcategories);
       req.body.subcategories = req.body.subcategories.map(
@@ -150,7 +94,6 @@ export const saveCategory = async (req, res) => {
       );
     }
 
-    // Check if the category already exists
     const existingCategory = await Category.findOne({
       name: req.body.name,
       database: req.body.database,
@@ -163,10 +106,8 @@ export const saveCategory = async (req, res) => {
         .json({ message: "Category already exists", status: false });
     }
 
-    // Create the category
     const category = await Category.create(req.body);
 
-    // Return the success response
     return category
       ? res
           .status(200)
