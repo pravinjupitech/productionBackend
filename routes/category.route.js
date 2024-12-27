@@ -32,7 +32,7 @@ const upload = multer({ storage: storage });
 router.post(
   "/save-category",
   upload.fields([
-    { name: "file", maxCount: 1 },
+    { name: "image", maxCount: 1 },
     { name: "subcategories[0].image", maxCount: 10 },
   ]),
   saveCategory
