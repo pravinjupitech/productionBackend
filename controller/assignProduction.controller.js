@@ -1001,7 +1001,6 @@ export const deleteProducted = async (req, res, next) => {
     res.status(500).json({ error: "Internal Server Error", status: false });
   }
 };
-console.log("");
 
 //window.history.back()
 export const demoProduct = async (req, res, next) => {
@@ -1059,6 +1058,16 @@ export const demoProduct2 = async (req, res, next) => {
 /*
 
 
+
+
+
+Respected Sir,
+
+I hope this email finds you well. I am writing to formally inform you that I will not be able to come to the office today as I need to visit my college for documentation purposes.
+
+kindly request your approval for the leave.
+
+ Best regards
 
 
 
