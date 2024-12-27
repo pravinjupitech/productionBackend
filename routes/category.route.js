@@ -67,7 +67,9 @@ router.post(
     const subcategories = JSON.parse(req.body.subcategories);
     const subcategoryFields = [];
     console.log(req.files);
-    const files = req.files.filter((file) => file.fieldname === "files[]");
+    const files = req.files.filter(
+      (file, index) => file.fieldname === `files[${index}]`
+    );
 
     if (files.length === 0) {
       return res
