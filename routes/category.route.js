@@ -27,7 +27,7 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage: storage });
 
-// router.post("/save-category", upload.single("file"), saveCategory);
+router.post("/save-category", upload.any(), saveCategory);
 // router.post(
 //   "/save-category",
 //   upload.fields([
@@ -59,46 +59,46 @@ const upload = multer({ storage: storage });
 //   saveCategory
 // );
 
-router.post(
-  "/save-category",
-  upload.any(),
-  (req, res, next) => {
-    try {
-      if (req.body.subcategories) {
-        req.body.subcategories = JSON.parse(req.body.subcategories);
-      }
+// router.post(
+//   "/save-category",
+//   upload.any(),
+//   (req, res, next) => {
+//     try {
+//       if (req.body.subcategories) {
+//         req.body.subcategories = JSON.parse(req.body.subcategories);
+//       }
 
-      if (req.files && req.files.length > 0) {
-        req.files.forEach((file) => {
-          if (file.fieldname === "image") {
-            req.body.image = file.filename;
-          }
-          console.log("file", file);
-          const match = file.fieldname.match(/images\[(\d+)\]\.image/);
-          if (match) {
-            console.log("match call");
-            const subcategoryIndex = parseInt(match[1], 10);
-            if (
-              req.body.subcategories &&
-              req.body.subcategories[subcategoryIndex]
-            ) {
-              req.body.subcategories[subcategoryIndex].image = file.filename;
-            }
-            console.log("subcategories", req.body.subcategories);
-          }
-        });
-      }
+//       if (req.files && req.files.length > 0) {
+//         req.files.forEach((file) => {
+//           if (file.fieldname === "image") {
+//             req.body.image = file.filename;
+//           }
+//           console.log("file", file);
+//           const match = file.fieldname.match(/images\[(\d+)\]\.image/);
+//           if (match) {
+//             console.log("match call");
+//             const subcategoryIndex = parseInt(match[1], 10);
+//             if (
+//               req.body.subcategories &&
+//               req.body.subcategories[subcategoryIndex]
+//             ) {
+//               req.body.subcategories[subcategoryIndex].image = file.filename;
+//             }
+//             console.log("subcategories", req.body.subcategories);
+//           }
+//         });
+//       }
 
-      next();
-    } catch (error) {
-      console.error(error);
-      res
-        .status(500)
-        .json({ message: "Error processing files", status: false });
-    }
-  },
-  saveCategory
-);
+//       next();
+//     } catch (error) {
+//       console.error(error);
+//       res
+//         .status(500)
+//         .json({ message: "Error processing files", status: false });
+//     }
+//   },
+//   saveCategory
+// );
 router.get("/view-category/:id/:database", ViewCategory);
 router.get("/view-category-by-id/:id", ViewCategoryById);
 router.get("/delete-category/:id", DeleteCategory);
