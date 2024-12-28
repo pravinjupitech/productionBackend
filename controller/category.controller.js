@@ -123,16 +123,39 @@ import { User } from "../model/user.model.js";
 
 export const saveCategory = async (req, res) => {
   try {
-    // Validate if the user exists
     const user = await User.findById(req.body.created_by);
     if (!user) {
       return res.status(400).json({ message: "User Not Found", status: false });
     }
 
-    // Assign the user's database to the category
     req.body.database = user.database;
 
-    // Check if the category already exists
+    // Parse subcategories if provided
+    if (req.body.subcategories) {
+      req.body.subcategories = JSON.parse(req.body.subcategories);
+    } else {
+      req.body.subcategories = [];
+    }
+
+    // Assign images
+    req.files.forEach((file) => {
+      const match = file.fieldname.match(/files\[(\d+)\]/); // Matches files[0], files[1], etc.
+      if (match) {
+        const index = parseInt(match[1], 10);
+        if (index === 0) {
+          // Assign image to the main category
+          req.body.image = file.filename;
+        } else {
+          // Assign image to a subcategory
+          const subcategoryIndex = index - 1; // Adjust index for subcategories
+          if (req.body.subcategories[subcategoryIndex]) {
+            req.body.subcategories[subcategoryIndex].image = file.filename;
+          }
+        }
+      }
+    });
+
+    // Check for an existing active category with the same name and database
     const existingCategory = await Category.findOne({
       name: req.body.name,
       database: req.body.database,
