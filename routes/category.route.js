@@ -63,43 +63,39 @@ router.post(
   "/save-category",
   upload.any(),
   (req, res, next) => {
-    // if (req.body.subcategories) {
-    // const subcategories = JSON.parse(req.body.subcategories);
-    // const subcategoryFields = [];
-    // console.log(req.files);
-    // const files = req.files.filter(
-    //   (file, index) => file.fieldname === `files[${index}]`
-    // );
-    // console.log(files);
-    req.files.forEach((file, index) => {
-      if (file.fieldname === "files[0]") {
-        // Assign the main category image
-        req.body.image = file.originalname;
-      } else if (file.fieldname === `files[${index}]`) {
-        // Match subcategory index using regex
-        const match = file.fieldname.match(/files\[(\d+)\]/);
-        console.log("calling1");
-        if (match) {
-          const subcategoryIndex = parseInt(match[1], 10); // Adjust index if `files[0]` is for the main image
-
-          if (req.body.subcategories[subcategoryIndex]) {
-            console.log("calliing 2");
-            req.body.subcategories[subcategoryIndex]["image"] =
-              file.originalname;
-            console.log("dffffffffffffffffffffffff", req.body.subcategories);
-          }
-        }
+    try {
+      if (req.body.subcategories) {
+        req.body.subcategories = JSON.parse(req.body.subcategories);
       }
-    });
-    console.log(req.body);
-    // files.forEach((file) => {
-    //   console.log("Uploaded file: ", file);
-    //   console.log("File path: ", file.path);
-    //   console.log("File type: ", file.mimetype);
-    // });
-    // } else {
-    //   upload.fields([{ name: "image", maxCount: 1 }])(req, res, next);
-    // }
+
+      if (req.files && req.files.length > 0) {
+        req.files.forEach((file) => {
+          if (file.fieldname === "image") {
+            req.body.image = file.filename;
+          }
+          console.log("file", file);
+          const match = file.fieldname.match(/images\[(\d+)\]\.image/);
+          if (match) {
+            console.log("match call");
+            const subcategoryIndex = parseInt(match[1], 10);
+            if (
+              req.body.subcategories &&
+              req.body.subcategories[subcategoryIndex]
+            ) {
+              req.body.subcategories[subcategoryIndex].image = file.filename;
+            }
+            console.log("subcategories", req.body.subcategories);
+          }
+        });
+      }
+
+      next();
+    } catch (error) {
+      console.error(error);
+      res
+        .status(500)
+        .json({ message: "Error processing files", status: false });
+    }
   },
   saveCategory
 );
