@@ -73,9 +73,10 @@ router.post(
           if (file.fieldname === "image") {
             req.body.image = file.filename;
           }
-
+          console.log("file", file);
           const match = file.fieldname.match(/images\[(\d+)\]\.image/);
           if (match) {
+            console.log("match call");
             const subcategoryIndex = parseInt(match[1], 10);
             if (
               req.body.subcategories &&
@@ -83,6 +84,7 @@ router.post(
             ) {
               req.body.subcategories[subcategoryIndex].image = file.filename;
             }
+            console.log("subcategories", req.body.subcategories);
           }
         });
       }
