@@ -690,7 +690,7 @@ export const updateProducted = async (req, res, next) => {
               });
             }
           });
-        }
+        } //console.log("")
         if (item.wProduct_name !== null) {
           const Rowproduct = await RowProduct.findById(item.wProduct_name);
           item.wProduct_name_Units.map((data) => {
@@ -711,7 +711,7 @@ export const updateProducted = async (req, res, next) => {
                         );
                         await Rowproduct.save();
                       } else if (data.value == exitingData.value) {
-                        return;
+                        return 0;
                       } else {
                         let qty = exitingData.value - data.value;
                         Rowproduct.qty -= qty;
@@ -1002,7 +1002,7 @@ export const deleteProducted = async (req, res, next) => {
   }
 };
 
-//window.history.back()
+//window.history.back()  
 export const demoProduct = async (req, res, next) => {
   try {
     let arr = [1, 2, 3, 3, 4, 5, 5, 5];
@@ -1031,6 +1031,7 @@ export const demoProduct2 = async (req, res, next) => {
           "worker threads, cluster module ,external module ka use karke bana sakte hai worker threads ko computationally heavy tasks while cluster module use when than server scable on multiple cores",
       });
     }
+    console.log("");
     const { id } = req.params;
     const exitingData = await StartProduction.findById(id);
     if (!exitingData) {
@@ -1055,7 +1056,7 @@ export const demoProduct2 = async (req, res, next) => {
   }
 };
 
-/* 
+/*
 
 
 
