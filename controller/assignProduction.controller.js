@@ -1055,22 +1055,16 @@ export const demoProduct2 = async (req, res, next) => {
   }
 };
 
-/*  
+/* 
 
 
 
 
 
 
-Today’s video topic is about the importance of practicing English speaking on a regular basis. In other words, if you want to be a fluent English speaker, you have to speak, there are no magic shortcuts 
 
-There are, of course, shortcuts in terms of efficiency of the learning process, and you’re welcome to check out my blog to found out more, but in this video lesson let’s focus on the importance of speaking English every day.
 
-By the way, did you know that the most viewed video on my YouTube channel so far is the one where I’m talking about the importance of speaking English with yourself in case you’ve got no-one else to talk to? I guess it’s a good indicator of a typical situation that foreign English speakers find themselves in.
 
-You know – even if you live in an English speaking country, there might not be enough face-to-face communication with other English speakers. On many occasions foreigners living under such circumstances won’t go the extra mile to practice some English because it’s not a necessity and they can do without it.
-
-If you’re willing to improve your spoken English, however, you can do so much more to step up your English fluency and having regular conversations with yourself is definitely better that no spoken practice at all!
 
 
 An environment variable is a key-value pair used by operating systems and applications to store configuration settings that affect the behavior of processes or programs. These variables are part of the system environment and can hold data like file paths, system preferences, or sensitive information such as API keys and passwords.
