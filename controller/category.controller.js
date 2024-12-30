@@ -7,7 +7,6 @@ export const saveCategory = async (req, res) => {
     if (!user) {
       return res.status(400).json({ message: "User Not Found", status: false });
     }
-
     req.body.database = user.database;
 
     if (req.body.subcategories) {
