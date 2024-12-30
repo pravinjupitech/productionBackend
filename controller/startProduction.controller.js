@@ -1351,7 +1351,7 @@ export const productionlapseWarehouse = async (qty, warehouseId, productId) => {
         .json({ message: "warehouse not found", status: false });
     }
     const sourceProductItem = warehouse.productItems.find(
-      (pItem) => pItem.productId.toString() === productId.toString()
+      (pItem) => pItem.rawProductId.toString() === productId.toString()
     );
     if (sourceProductItem) {
       sourceProductItem.currentStock -= qty;
@@ -1373,7 +1373,7 @@ export const productionAddWarehouse = async (qty, warehouseId, productId) => {
         .json({ message: "warehouse not found", status: false });
     }
     const sourceProductItem = warehouse.productItems.find(
-      (pItem) => pItem.productId.toString() === productId.toString()
+      (pItem) => pItem.rawProductId.toString() === productId.toString()
     );
     if (sourceProductItem) {
       sourceProductItem.currentStock += qty;
