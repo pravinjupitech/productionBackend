@@ -17,6 +17,7 @@ export const createProduction = async (req, res, next) => {
 
       if (item?.finalProductDetails) {
         for (let item1 of item?.finalProductDetails) {
+          console.log("FINAL ADD");
           await updateProductQty(
             item1?.fProduct_name,
             item1?.fProduct_name_Units,
@@ -28,6 +29,7 @@ export const createProduction = async (req, res, next) => {
 
       if (item?.wastageProductDetails) {
         for (let item1 of item?.wastageProductDetails) {
+          console.log("FINAL ADD");
           await updateProductQty(
             item1?.wProduct_name,
             item1?.wProduct_name_Units,
@@ -1350,6 +1352,9 @@ export const productionlapseWarehouse = async (qty, warehouseId, productId) => {
         .status(404)
         .json({ message: "warehouse not found", status: false });
     }
+    console.log("qty", qty);
+    console.log("warehouseId", warehouseId);
+    console.log("productId", productId);
     const sourceProductItem = warehouse.productItems.find(
       (pItem) => pItem.rawProductId.toString() === productId.toString()
     );
@@ -1372,6 +1377,9 @@ export const productionAddWarehouse = async (qty, warehouseId, productId) => {
         .status(404)
         .json({ message: "warehouse not found", status: false });
     }
+    console.log("qty", qty);
+    console.log("warehouseId", warehouseId);
+    console.log("productId", productId);
     const sourceProductItem = warehouse.productItems.find(
       (pItem) => pItem.rawProductId.toString() === productId.toString()
     );
