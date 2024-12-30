@@ -994,6 +994,7 @@ export const deleteProducted = async (req, res, next) => {
         }
       });
     }
+    console.log("");
     await AssignProduction.findByIdAndDelete(id);
     res.status(200).json({ message: "Data Deleted", status: false });
   } catch (error) {
@@ -1002,7 +1003,7 @@ export const deleteProducted = async (req, res, next) => {
   }
 };
 
-//window.history.back()  
+//window.history.back()
 export const demoProduct = async (req, res, next) => {
   try {
     let arr = [1, 2, 3, 3, 4, 5, 5, 5];
