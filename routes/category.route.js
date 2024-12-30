@@ -31,7 +31,7 @@ router.post("/save-category", upload.any(), saveCategory);
 router.get("/view-category/:id/:database", ViewCategory);
 router.get("/view-category-by-id/:id", ViewCategoryById);
 router.get("/delete-category/:id", DeleteCategory);
-router.put("/update-category/:id", upload.single("file"), UpdateCategory);
+router.put("/update-category/:id", upload.any(), UpdateCategory);
 router.post("/save-subcategory", upload.single("file"), saveSubCategory);
 router.put(
   "/update-categories/:categoryId/subcategories/:subcategoryId",
