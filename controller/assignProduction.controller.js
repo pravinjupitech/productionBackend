@@ -1081,7 +1081,6 @@ Promise.allSettled->Waits for all promises and returns the response, whether res
 
 
 
-
 Authentication is user identity verify on system and authorization is user and system allowed to do.
 
 let arr = [1, 2, 3, 4, 5, 3, 2];
