@@ -1352,6 +1352,7 @@ export const productionlapseWarehouse = async (qty, warehouseId, productId) => {
         .status(404)
         .json({ message: "warehouse not found", status: false });
     }
+    console.log(" before warehouse", warehouse);
     console.log("qty", qty);
     console.log("warehouseId", warehouseId);
     console.log("productId", productId);
@@ -1364,6 +1365,7 @@ export const productionlapseWarehouse = async (qty, warehouseId, productId) => {
       warehouse.markModified("productItems");
       await warehouse.save();
     }
+    console.log("after warehouse", warehouse);
   } catch (error) {
     console.log(error);
   }
@@ -1377,6 +1379,7 @@ export const productionAddWarehouse = async (qty, warehouseId, productId) => {
         .status(404)
         .json({ message: "warehouse not found", status: false });
     }
+    console.log(" before warehouse", warehouse);
     console.log("qty", qty);
     console.log("warehouseId", warehouseId);
     console.log("productId", productId);
@@ -1389,6 +1392,7 @@ export const productionAddWarehouse = async (qty, warehouseId, productId) => {
       warehouse.markModified("productItems");
       await warehouse.save();
     }
+    console.log("after warehouse", warehouse);
   } catch (error) {
     console.log(error);
   }
