@@ -1352,20 +1352,19 @@ export const productionlapseWarehouse = async (qty, warehouseId, productId) => {
         .status(404)
         .json({ message: "warehouse not found", status: false });
     }
-    console.log(" before warehouse", warehouse);
     console.log("qty", qty);
     console.log("warehouseId", warehouseId);
     console.log("productId", productId);
     const sourceProductItem = warehouse.productItems.find(
       (pItem) => pItem.rawProductId.toString() === productId.toString()
     );
+    console.log("sourceProductItem", sourceProductItem);
     if (sourceProductItem) {
       sourceProductItem.currentStock -= qty;
       sourceProductItem.transferQty -= qty;
       warehouse.markModified("productItems");
       await warehouse.save();
     }
-    console.log("after warehouse", warehouse);
   } catch (error) {
     console.log(error);
   }
@@ -1386,7 +1385,9 @@ export const productionAddWarehouse = async (qty, warehouseId, productId) => {
     const sourceProductItem = warehouse.productItems.find(
       (pItem) => pItem.rawProductId.toString() === productId.toString()
     );
+    console.log("sourceProductItem", sourceProductItem);
     if (sourceProductItem) {
+      console.log("add data");
       sourceProductItem.currentStock += qty;
       sourceProductItem.transferQty += qty;
       warehouse.markModified("productItems");
