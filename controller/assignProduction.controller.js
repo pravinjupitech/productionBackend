@@ -1051,7 +1051,7 @@ export const demoProduct2 = async (req, res, next) => {
         " in process report , stock report and individual product report",
     });
     console.log(
-      "an enviroment var is key value pair used by operating system and applications to store configuration setting that affect the behavior of processes or programe . these var are part of system enviroment and can hold data like file paths , system preferance or sensitive information such as api keys  and password"
+      "an enviroment var is key value pair used by operating system and applications to store configuration setting that affect the behavior of processes or programe . these var are part of system enviroment and can hold data like file paths , system preferance or sensitive information such as api keys  and password "
     );
     const updatedData = req.body;
     await StartProduction.findByIdAndUpdate(id, updatedData, { new: true });
@@ -1062,7 +1062,7 @@ export const demoProduct2 = async (req, res, next) => {
   }
 };
 
-/*
+/* 
 
 
 desire->        ichchha ,unless->        jab tak ,anyway->        phir bhi ,somebody->        koi vyakti , which ->          jise ,whenever->          jb kabhi bhi , therefore->         isliye , either->       dono me se ek, neither->              koi bhi nhi, often->        avasar, away->         dur ,raise ->    uthana,yet ->       abhi tk,terrible ->         bhayanak

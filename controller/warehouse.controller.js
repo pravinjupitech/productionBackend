@@ -770,9 +770,7 @@ export const StockClose = async () => {
         database: warehouse.database,
         closingStatus: "closing",
       };
-
       await Stock.create(warehouseData);
-
       for (let productItem of warehouse.productItems) {
         productItem.pQty = 0;
         productItem.pRate = 0;
@@ -794,7 +792,8 @@ const ClosingStock = async (productItems) => {
     const stock = [];
     for (let item of productItems) {
       let warehouseStock = {
-        productId: item.productId,
+        productId: item.productId || null,
+        rawProductId: item.rawProductId || null,
         currentStock: item.currentStock,
         price: item.price,
         totalPrice: item.totalPrice,

@@ -1,165 +1,173 @@
 import mongoose from "mongoose";
 
-const stockSchema = new mongoose.Schema({
+const stockSchema = new mongoose.Schema(
+  {
     database: {
-        type: String
+      type: String,
     },
     warehouseId: {
-        type: String
+      type: String,
     },
     firstName: {
-        type: String
+      type: String,
     },
     lastName: {
-        type: String
+      type: String,
     },
     Closingdate: {
-        type: String,
+      type: String,
     },
     Openingdate: {
-        type: String,
+      type: String,
     },
     mobileNumber: {
-        type: String
+      type: String,
     },
     email: {
-        type: String
+      type: String,
     },
     Country: {
-        type: String
+      type: String,
     },
     State: {
-        type: String
+      type: String,
     },
     City: {
-        type: String
+      type: String,
     },
     closingStatus: {
-        type: String,
+      type: String,
     },
     openingStatus: {
-        type: String
+      type: String,
     },
-    productItems: [{
+    productItems: [
+      {
+        rawProductId: {
+          type: String,
+        },
         productId: {
-            type: String
+          type: String,
         },
         unitType: {
-            type: String
+          type: String,
         },
         Size: {
-            type: Number
+          type: Number,
         },
         currentStock: {
-            type: Number
+          type: Number,
         },
         transferQty: {
-            type: Number
+          type: Number,
         },
         price: {
-            type: Number
+          type: Number,
         },
         totalPrice: {
-            type: Number
+          type: Number,
         },
         pendingStock: {
-            type: Number
+          type: Number,
         },
         gstPercentage: {
-            type: String
+          type: String,
         },
         igstTaxType: {
-            type: Boolean
+          type: Boolean,
         },
         oQty: {
-            type: Number,
-            default: 0
+          type: Number,
+          default: 0,
         },
         oRate: {
-            type: Number,
-            default: 0
+          type: Number,
+          default: 0,
         },
         oBAmount: {
-            type: Number,
-            default: 0
+          type: Number,
+          default: 0,
         },
         oTaxRate: {
-            type: Number,
-            default: 0
+          type: Number,
+          default: 0,
         },
         oTotal: {
-            type: Number,
-            default: 0
+          type: Number,
+          default: 0,
         },
         pQty: {
-            type: Number,
-            default: 0
+          type: Number,
+          default: 0,
         },
         pRate: {
-            type: Number,
-            default: 0
+          type: Number,
+          default: 0,
         },
         pBAmount: {
-            type: Number,
-            default: 0
+          type: Number,
+          default: 0,
         },
         pTaxRate: {
-            type: Number,
-            default: 0
+          type: Number,
+          default: 0,
         },
         pTotal: {
-            type: Number,
-            default: 0
+          type: Number,
+          default: 0,
         },
         sQty: {
-            type: Number,
-            default: 0
+          type: Number,
+          default: 0,
         },
         sRate: {
-            type: Number,
-            default: 0
+          type: Number,
+          default: 0,
         },
         sBAmount: {
-            type: Number,
-            default: 0
+          type: Number,
+          default: 0,
         },
         sTaxRate: {
-            type: Number,
-            default: 0
+          type: Number,
+          default: 0,
         },
         sTotal: {
-            type: Number,
-            default: 0
+          type: Number,
+          default: 0,
         },
         cQty: {
-            type: Number,
-            default: 0
+          type: Number,
+          default: 0,
         },
         cRate: {
-            type: Number,
-            default: 0
+          type: Number,
+          default: 0,
         },
         cBAmount: {
-            type: Number
+          type: Number,
         },
         cTaxRate: {
-            type: Number,
-            default: 0
+          type: Number,
+          default: 0,
         },
         cTotal: {
-            type: Number,
-            default: 0
+          type: Number,
+          default: 0,
         },
         primaryUnit: {
-            type: String
+          type: String,
         },
         secondaryUnit: {
-            type: String
+          type: String,
         },
         secondarySize: {
-            type: Number
-        }
-    }],
-    damageItem: []
-}, { timestamps: true })
-export const Stock = mongoose.model("stock", stockSchema)
+          type: Number,
+        },
+      },
+    ],
+    damageItem: [],
+  },
+  { timestamps: true }
+);
+export const Stock = mongoose.model("stock", stockSchema);

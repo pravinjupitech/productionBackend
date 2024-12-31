@@ -121,8 +121,14 @@ export const DeleteCategory = async (req, res, next) => {
     return res.status(500).json({ error: err, status: false });
   }
 };
+
 export const UpdateCategory = async (req, res, next) => {
   try {
+    if (req.body.subcategories) {
+      req.body.subcategories = JSON.parse(req.body.subcategories);
+    } else {
+      req.body.subcategories = [];
+    }
     if (req.files) {
       req.files.forEach((file) => {
         const match = file.fieldname.match(/files\[(\d+)\]/);
