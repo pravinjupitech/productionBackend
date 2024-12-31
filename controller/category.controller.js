@@ -30,16 +30,18 @@ export const saveCategory = async (req, res) => {
     //   }
     // })
 
-    req.files.forEach((file, index) => {
-      if (index == 0) {
-        req.body.image = file.filename;
-      } else {
-        const subcategoryIndex = index - 1;
-        if (req.body.subcategories[subcategoryIndex]) {
-          req.body.subcategories[subcategoryIndex].image = file.filename;
+    if (req.files) {
+      req.files.forEach((file, index) => {
+        if (index == 0) {
+          req.body.image = file.filename;
+        } else {
+          const subcategoryIndex = index - 1;
+          if (req.body.subcategories[subcategoryIndex]) {
+            req.body.subcategories[subcategoryIndex].image = file.filename;
+          }
         }
-      }
-    });
+      });
+    }
 
     const existingCategory = await Category.findOne({
       name: req.body.name,
@@ -121,20 +123,22 @@ export const DeleteCategory = async (req, res, next) => {
 };
 export const UpdateCategory = async (req, res, next) => {
   try {
-    req.files.forEach((file) => {
-      const match = file.fieldname.match(/files\[(\d+)\]/);
-      if (match) {
-        const index = parseInt(match[1], 10);
-        if (index === 0) {
-          req.body.image = file.filename;
-        } else {
-          const subcategoryIndex = index - 1;
-          if (req.body.subcategories[subcategoryIndex]) {
-            req.body.subcategories[subcategoryIndex].image = file.filename;
+    if (req.files) {
+      req.files.forEach((file) => {
+        const match = file.fieldname.match(/files\[(\d+)\]/);
+        if (match) {
+          const index = parseInt(match[1], 10);
+          if (index === 0) {
+            req.body.image = file.filename;
+          } else {
+            const subcategoryIndex = index - 1;
+            if (req.body.subcategories[subcategoryIndex]) {
+              req.body.subcategories[subcategoryIndex].image = file.filename;
+            }
           }
         }
-      }
-    });
+      });
+    }
     const categoryId = req.params.id;
     const existingCategory = await Category.findById(categoryId);
     if (!existingCategory) {
