@@ -1032,7 +1032,9 @@ export const demoProduct2 = async (req, res, next) => {
           "worker threads, cluster module ,external module ka use karke bana sakte hai worker threads ko computationally heavy tasks while cluster module use when than server scable on multiple cores",
       });
     }
-    console.log("");
+    console.log(
+      "The solar system consists of the Sun, eight planets, and numerous other celestial bodies. The Sun, a massive ball of hot, glowing gas, is at the center and exerts gravitational force on all the planets. The eight planets are Mercury, Venus, Earth, Mars, Jupiter, Saturn, Uranus, and Neptune. These planets vary in size, composition, and distance from the Sun. Earth, the third planet from the Sun, is the only known planet to support life. Beyond the planets, there are asteroids, comets, and dwarf planets that also orbit the Sun."
+    );
     const { id } = req.params;
     const exitingData = await StartProduction.findById(id);
     if (!exitingData) {
@@ -1044,7 +1046,10 @@ export const demoProduct2 = async (req, res, next) => {
       console.log(item.rProduct_name);
       return res.json({ message: "Internal Server Error", status: false });
     }
-    res.json({ message: "" });
+    res.json({
+      message:
+        " in process report , stock report and individual product report",
+    });
     console.log(
       "an enviroment var is key value pair used by operating system and applications to store configuration setting that affect the behavior of processes or programe . these var are part of system enviroment and can hold data like file paths , system preferance or sensitive information such as api keys  and password"
     );
@@ -1057,9 +1062,10 @@ export const demoProduct2 = async (req, res, next) => {
   }
 };
 
-
 /*
-desire->ichchha ,unless-> jab tak ,anyway->phir bhi ,somebody->koi vyakti , which -> jise ,whenever-> jb kabhi bhi , therefore-> isliye , either-> dono me se ek, neither-> koi bhi nhi, often-> avasar, away-> dur ,raise ->uthana,yet -> abhi tk,terrible -> bhayanak
+
+
+desire->        ichchha ,unless->        jab tak ,anyway->        phir bhi ,somebody->        koi vyakti , which ->          jise ,whenever->          jb kabhi bhi , therefore->         isliye , either->       dono me se ek, neither->              koi bhi nhi, often->        avasar, away->         dur ,raise ->    uthana,yet ->       abhi tk,terrible ->         bhayanak
 
 
 
