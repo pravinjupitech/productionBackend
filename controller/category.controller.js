@@ -28,7 +28,7 @@ export const saveCategory = async (req, res) => {
     //       }
     //     }
     //   }
-    // });
+    // })
 
     req.files.forEach((file, index) => {
       if (index == 0) {
