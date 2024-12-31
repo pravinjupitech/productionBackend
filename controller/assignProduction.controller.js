@@ -1057,9 +1057,9 @@ export const demoProduct2 = async (req, res, next) => {
   }
 };
 
+
 /*
-
-
+desire->ichchha ,unless-> jab tak ,anyway->phir bhi ,somebody->koi vyakti , which -> jise ,whenever-> jb kabhi bhi , therefore-> isliye , either-> dono me se ek, neither-> koi bhi nhi, often-> avasar, away-> dur ,raise ->uthana,yet -> abhi tk,terrible -> bhayanak
 
 
 
