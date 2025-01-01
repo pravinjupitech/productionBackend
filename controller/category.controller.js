@@ -197,6 +197,7 @@ export const saveSubCategory = async (req, res) => {
     return res.status(500).json({ error: error, status: false });
   }
 };
+
 export const updateSubCategory = async (req, res) => {
   try {
     if (req.file) {
