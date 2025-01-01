@@ -192,7 +192,7 @@ mongoose
 cron.schedule("0 20 * * *", () => {
   // ViewAllWarehouse()
   // closingStockUpdated();
-  StockClose();
+  // StockClose();
 });
 // cron.schedule('0 9 * * *', () => {
 //   viewOpeningStockWarehouse()

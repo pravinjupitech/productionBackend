@@ -690,7 +690,7 @@ export const updateProducted = async (req, res, next) => {
               });
             }
           });
-        } //console.log("")
+        } 
         if (item.wProduct_name !== null) {
           const Rowproduct = await RowProduct.findById(item.wProduct_name);
           item.wProduct_name_Units.map((data) => {
