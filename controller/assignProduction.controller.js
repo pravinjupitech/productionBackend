@@ -1032,9 +1032,7 @@ export const demoProduct2 = async (req, res, next) => {
           "worker threads, cluster module ,external module ka use karke bana sakte hai worker threads ko computationally heavy tasks while cluster module use when than server scable on multiple cores",
       });
     }
-    console.log(
-      "The solar system consists of the Sun, eight planets, and numerous other celestial bodies. The Sun, a massive ball of hot, glowing gas, is at the center and exerts gravitational force on all the planets. The eight planets are Mercury, Venus, Earth, Mars, Jupiter, Saturn, Uranus, and Neptune. These planets vary in size, composition, and distance from the Sun. Earth, the third planet from the Sun, is the only known planet to support life. Beyond the planets, there are asteroids, comets, and dwarf planets that also orbit the Sun."
-    );
+    console.log("");
     const { id } = req.params;
     const exitingData = await StartProduction.findById(id);
     if (!exitingData) {
