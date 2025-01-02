@@ -1053,7 +1053,7 @@ export const demoProduct2 = async (req, res, next) => {
     console.log(
       "an enviroment var is key value pair used by operating system and applications to store configuration setting that affect the behavior of processes or programe . these var are part of system enviroment and can hold data like file paths , system preferance or sensitive information such as api keys  and password "
     );
-    console.log("");
+    console.log("I am on leave right now");
     const updatedData = req.body;
     await StartProduction.findByIdAndUpdate(id, updatedData, { new: true });
     return res.status(200).json({ message: "Data Updated ", status: true });
@@ -1071,9 +1071,7 @@ export const demoProduct2 = async (req, res, next) => {
 
 
 
-
-
-express->   abhivyakti karna , certain->   nischit  , exposes->  ujagar  describe->  varnan karna  , ourselves->  hum svyam  ,exposure->  khulasa  ,struggle->   sangharsh,eluate -> vyakhya karna  ,encouragement->    protsahan , rational->  tarksangat ,Whether ->  chahe  ,concise ->  sanchipt
+express->   abhivyakti karna , certain->   nischit  , exposes->  ujagar , describe->  varnan karna  , ourselves->  hum svyam  ,exposure->  khulasa  ,struggle->   sangharsh,eluate -> vyakhya karna  ,encouragement->    protsahan , rational->  tarksangat ,Whether ->  chahe  ,concise ->  sanchipt, encourage-> protsahit karna  , them -> unhe
 
 
 
