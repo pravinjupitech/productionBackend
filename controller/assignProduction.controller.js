@@ -1032,7 +1032,9 @@ export const demoProduct2 = async (req, res, next) => {
           "worker threads, cluster module ,external module ka use karke bana sakte hai worker threads ko computationally heavy tasks while cluster module use when than server scable on multiple cores",
       });
     }
+
     console.log("");
+
     const { id } = req.params;
     const exitingData = await StartProduction.findById(id);
     if (!exitingData) {
@@ -1044,10 +1046,7 @@ export const demoProduct2 = async (req, res, next) => {
       console.log(item.rProduct_name);
       return res.json({ message: "Internal Server Error", status: false });
     }
-    res.json({
-      message:
-        " in process report , stock report and individual product report",
-    });
+    res.json({ message: "" });
     console.log(
       "an enviroment var is key value pair used by operating system and applications to store configuration setting that affect the behavior of processes or programe . these var are part of system enviroment and can hold data like file paths , system preferance or sensitive information such as api keys  and password "
     );
