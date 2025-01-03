@@ -331,10 +331,14 @@ export const viewCurrentStock = async (req, res, next) => {
         .status(404)
         .json({ message: "warehouse not found", status: false });
     }
-    const productItem = warehouse.productItems.find(
+    const rawProductItem = warehouse.productItems.find(
       (item) => item.rawProductId === productId
     );
-    if (!productItem) {
+    const MainProductItem = warehouse.productItems.find(
+      (item) => item.productId === productId
+    );
+    const productItem = rawProductItem ? rawProductItem : MainProductItem;
+    if (!rawProductItem && !MainProductItem) {
       return res
         .status(404)
         .json({ message: "Product not found in the warehouse", status: false });
