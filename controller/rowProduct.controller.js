@@ -291,7 +291,7 @@ export const addProductInWarehouse = async (
       return console.log("warehouse not found");
     }
     const sourceProductItem = user.productItems.find(
-      (pItem) => pItem.rawProductId.toString() === productId._id.toString()
+      (pItem) => pItem.rawProductId === productId._id
     );
     if (sourceProductItem) {
       //   sourceProductItem.gstPercentage = parseInt(warehouse.GSTRate);
