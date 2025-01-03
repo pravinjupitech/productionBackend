@@ -236,7 +236,7 @@ export const addProductInWarehouse1 = async (warehouse, warehouseId, id) => {
     }
     console.log("  add  time id._id", id._id);
     const sourceProductItem = user.productItems.find(
-      (pItem) => pItem.rawProductId === id._id
+      (pItem) => pItem.rawProductId === id._id.toString()
     );
     console.log("sourceProductItem", sourceProductItem);
     if (sourceProductItem) {
