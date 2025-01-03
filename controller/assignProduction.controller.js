@@ -128,9 +128,7 @@ export const viewProduct = async (req, res, next) => {
       database: req.params.database,
     })
       .sort({ sortorder: -1 })
-      .populate({ path: "user_name", model: "user" })
-      .populate({ path: "product_details.fProduct_name", model: "product" })
-      .populate({ path: "processName", model: "category" });
+      .populate({ path: "user_name", model: "user" });
     return product.length > 0
       ? res.status(200).json({ message: "Data Found", product, status: true })
       : res.status(404).json({ message: "Not Found", status: false });
@@ -1049,8 +1047,8 @@ export const demoProduct2 = async (req, res, next) => {
     console.log(
       "an enviroment var is key value pair used by operating system and applications to store configuration setting that affect the behavior of processes or programe . these var are part of system enviroment and can hold data like file paths , system preferance or sensitive information such as api keys  and password "
     );
-    console.log("I am on leave right now");
-    console.log("a very good morning all of you");
+    console.log("");
+
     const updatedData = req.body;
     await StartProduction.findByIdAndUpdate(id, updatedData, { new: true });
     return res.status(200).json({ message: "Data Updated ", status: true });
@@ -1062,15 +1060,13 @@ export const demoProduct2 = async (req, res, next) => {
 
 /*
 
-until-> jab tk ,abstract->    sar, whisper->   fusfusana,  instance->    udaharan , wide->    chouda, follow->    anusaran karna ,extremely ->   atyant ,  fake ->   nakli, partial->     anshik , fally  ->   faltu , awake->   jagana ,passive ->   niskriya   ,additional->    atirikt
 
 
 
 
+until-> jab tk ,abstract->    sar, whisper->   fusfusana,  instance->    udaharan , wide->    chouda, follow->    anusaran karna ,extremely ->   atyant ,  fake ->   nakli, partial->     anshik , fally  ->   faltu , awake->     jagana ,passive ->       niskriya,   additional->    atirikt
 
 express->   abhivyakti karna , certain->   nischit  , exposes->  ujagar , describe->  varnan karna  , ourselves->  hum svyam  ,exposure->  khulasa  ,struggle->   sangharsh,eluate -> vyakhya karna  ,encouragement->    protsahan , rational->  tarksangat ,Whether ->  chahe  ,concise ->  sanchipt, encourage-> protsahit karna  , them -> unhe
-
-
 
 cluster->     sammuh, intonation->     aawaj ka uthar chataw , context->   sandharbh , appreciate->    prashansha karna, creature->    jantu, determind->   nishchay , beyond ->   aage,collab->  sahyoj, noise->   shor  ,dispute-> vivad   should->  chahiye  nobody-> koi nhi
 
