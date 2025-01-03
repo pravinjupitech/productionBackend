@@ -234,10 +234,11 @@ export const addProductInWarehouse1 = async (warehouse, warehouseId, id) => {
     if (!user) {
       return console.log("warehouse not found");
     }
+    console.log("  add  time id._id", id._id);
     const sourceProductItem = user.productItems.find(
       (pItem) => pItem.rawProductId === id._id
     );
-    // console.log("sourceProductItem", sourceProductItem);
+    console.log("sourceProductItem", sourceProductItem);
     if (sourceProductItem) {
       // console.log("if condition");
       // sourceProductItem.Size += warehouse.Size;
@@ -290,11 +291,11 @@ export const addProductInWarehouse = async (
     if (!user) {
       return console.log("warehouse not found");
     }
-    console.log("productId._id", productId._id);
+    // console.log("productId._id", productId._id);
     const sourceProductItem = user.productItems.find(
       (pItem) => pItem.rawProductId === productId._id.toString()
     );
-    console.log("update-sourceProductItem", sourceProductItem);
+    // console.log("update-sourceProductItem", sourceProductItem);
     if (sourceProductItem) {
       //   sourceProductItem.gstPercentage = parseInt(warehouse.GSTRate);
       sourceProductItem.currentStock = parseInt(warehouse.Opening_Stock);
