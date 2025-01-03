@@ -290,6 +290,7 @@ export const addProductInWarehouse = async (
     if (!user) {
       return console.log("warehouse not found");
     }
+    console.log("productId._id", productId._id);
     const sourceProductItem = user.productItems.find(
       (pItem) => pItem.rawProductId === productId._id
     );
