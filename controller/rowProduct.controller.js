@@ -237,9 +237,9 @@ export const addProductInWarehouse1 = async (warehouse, warehouseId, id) => {
     const sourceProductItem = user.productItems.find(
       (pItem) => pItem.rawProductId === id._id
     );
-    console.log("sourceProductItem", sourceProductItem);
+    // console.log("sourceProductItem", sourceProductItem);
     if (sourceProductItem) {
-      console.log("if condition");
+      // console.log("if condition");
       // sourceProductItem.Size += warehouse.Size;
       sourceProductItem.currentStock = warehouse.qty;
       //   sourceProductItem.price = warehouse.Purchase_Rate;
@@ -293,6 +293,7 @@ export const addProductInWarehouse = async (
     const sourceProductItem = user.productItems.find(
       (pItem) => pItem.rawProductId === productId._id
     );
+    console.log("update-sourceProductItem", sourceProductItem);
     if (sourceProductItem) {
       //   sourceProductItem.gstPercentage = parseInt(warehouse.GSTRate);
       sourceProductItem.currentStock = parseInt(warehouse.Opening_Stock);
