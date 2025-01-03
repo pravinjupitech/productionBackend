@@ -994,7 +994,6 @@ export const deleteProducted = async (req, res, next) => {
         }
       });
     }
-    console.log("");
     await AssignProduction.findByIdAndDelete(id);
     res.status(200).json({ message: "Data Deleted", status: false });
   } catch (error) {
@@ -1051,6 +1050,7 @@ export const demoProduct2 = async (req, res, next) => {
       "an enviroment var is key value pair used by operating system and applications to store configuration setting that affect the behavior of processes or programe . these var are part of system enviroment and can hold data like file paths , system preferance or sensitive information such as api keys  and password "
     );
     console.log("I am on leave right now");
+    console.log("a very good morning all of you");
     const updatedData = req.body;
     await StartProduction.findByIdAndUpdate(id, updatedData, { new: true });
     return res.status(200).json({ message: "Data Updated ", status: true });
@@ -1062,7 +1062,7 @@ export const demoProduct2 = async (req, res, next) => {
 
 /*
 
-
+until-> jab tk ,abstract->    sar, whisper->   fusfusana,  instance->    udaharan , wide->    chouda, follow->    anusaran karna ,extremely ->   atyant ,  fake ->   nakli, partial->     anshik , fally  ->   faltu , awake->   jagana ,passive ->   niskriya   ,additional->    atirikt
 
 
 
