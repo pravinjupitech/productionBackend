@@ -292,7 +292,7 @@ export const addProductInWarehouse = async (
     }
     console.log("productId._id", productId._id);
     const sourceProductItem = user.productItems.find(
-      (pItem) => pItem.rawProductId.toString() === productId._id.toString()
+      (pItem) => pItem.rawProductId === productId._id.toString()
     );
     console.log("update-sourceProductItem", sourceProductItem);
     if (sourceProductItem) {
