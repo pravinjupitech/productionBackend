@@ -202,22 +202,23 @@ export const updateWarehousetoWarehouse = async (req, res, next) => {
       const sourceProduct = sourceMainProduct
         ? sourceMainProduct
         : sourceRawProduct;
-      console.log("sourceProduct", sourceProduct);
+      // console.log("sourceProduct", sourceProduct);
       if (sourceProduct) {
         const sourceRawProductItem = sourceProduct.productItems.find(
-          (pItem) => pItem.rawProductId.toString() === item.productId.toString()
+          (pItem) => pItem.rawProductId === item.productId
         );
         const sourceMainProductItem = sourceProduct.productItems.find(
-          (pItem) => pItem.productId.toString() === item.productId.toString()
+          (pItem) => pItem.productId === item.productId
         );
         const sourceProductItem = sourceMainProductItem
           ? sourceMainProductItem
           : sourceRawProductItem;
-        console.log("sourceProductItem", sourceProductItem);
+        // console.log("sourceProductItem", sourceProductItem);
         if (sourceProductItem) {
-          const product = await RowProduct.findOne({ _id: item.productId });
-          product.qty -= item.transferQty;
-          await product.save();
+          // const product = await RowProduct.findOne({ _id: item.productId });
+          // product.qty -= item.transferQty;
+          // await product.save();
+
           // sourceProductItem.price = item.price;
           sourceProductItem.currentStock -= item.transferQty;
           // sourceProductItem.totalPrice -= item.totalPrice;
@@ -240,15 +241,11 @@ export const updateWarehousetoWarehouse = async (req, res, next) => {
           if (destinationProduct) {
             const destinationMainProductItem =
               destinationProduct.productItems.find(
-                (pItem) =>
-                  pItem.productId.toString() ===
-                  item.destinationProductId.toString()
+                (pItem) => pItem.productId === item.destinationProductId
               );
             const destinationRawProductItem =
               destinationProduct.productItems.find(
-                (pItem) =>
-                  pItem.rawProductId.toString() ===
-                  item.destinationProductId.toString()
+                (pItem) => pItem.rawProductId === item.destinationProductId
               );
             const destinationProductItem = destinationMainProductItem
               ? destinationMainProductItem
@@ -256,7 +253,8 @@ export const updateWarehousetoWarehouse = async (req, res, next) => {
             // console.log("destinationProductItem", destinationProductItem);
             destinationProductItem.price = item.price;
             destinationProductItem.currentStock += item.transferQty;
-            destinationProductItem.totalPrice += item.totalPrice;
+            // destinationProductItem.totalPrice += item.totalPrice;
+
             await destinationProduct.save();
             // console.log(" afterdestinationProductItem", destinationProductItem);
           } else {
