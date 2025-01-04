@@ -32,6 +32,7 @@ export const viewInWardStockToWarehouse = async (req, res, next) => {
     return res.status(500).json({ error: err, status: false });
   }
 };
+
 export const viewOutWardStockToWarehouse = async (req, res, next) => {
   try {
     const stock = await StockUpdation.find({
@@ -95,6 +96,10 @@ export const stockTransferToWarehouse = async (req, res) => {
         const sourceRawProductItem = sourceProduct.productItems.find(
           (pItem) => pItem.rawProductId === item.productId
         );
+        req.body.productItems["rawProductId"] = sourceRawProductItem
+          ? item.productId
+          : null;
+
         const sourceMainProductItem = sourceProduct.productItems.find(
           (pItem) => pItem.productId === item.productId
         );
