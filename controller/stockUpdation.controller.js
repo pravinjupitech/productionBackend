@@ -81,16 +81,16 @@ export const stockTransferToWarehouse = async (req, res) => {
         _id: warehouseFromId,
         "productItems.rawProductId": item.productId,
       });
-      console.log("sourceMainProduct", sourceMainProduct);
+      // console.log("sourceMainProduct", sourceMainProduct);
       const sourceRawProduct = await Warehouse.findOne({
         _id: warehouseFromId,
         "productItems.productId": item.productId,
       });
-      console.log("sourceRawProduct", sourceRawProduct);
+      // console.log("sourceRawProduct", sourceRawProduct);
       const sourceProduct = sourceMainProduct
         ? sourceMainProduct
         : sourceRawProduct;
-      console.log("sourceproduct", sourceProduct);
+      // console.log("sourceproduct", sourceProduct);
       if (sourceProduct) {
         const sourceRawProductItem = sourceProduct.productItems.find(
           (pItem) => pItem.rawProductId === item.productId
@@ -191,16 +191,29 @@ export const updateWarehousetoWarehouse = async (req, res, next) => {
     await StockUpdation.findByIdAndUpdate(factoryId, req.body, { new: true });
     // console.log("existingFactory", existingFactory);
     for (const item of existingFactory.productItems) {
-      const sourceProduct = await Warehouse.findOne({
+      const sourceRawProduct = await Warehouse.findOne({
         _id: existingFactory.warehouseFromId,
         "productItems.rawProductId": item.productId,
       });
-      // console.log("sourceProduct", sourceProduct);
+      const sourceMainProduct = await Warehouse.findOne({
+        _id: existingFactory.warehouseFromId,
+        "productItems.productId": item.productId,
+      });
+      const sourceProduct = sourceMainProduct
+        ? sourceMainProduct
+        : sourceRawProduct;
+      console.log("sourceProduct", sourceProduct);
       if (sourceProduct) {
-        const sourceProductItem = sourceProduct.productItems.find(
+        const sourceRawProductItem = sourceProduct.productItems.find(
           (pItem) => pItem.rawProductId.toString() === item.productId.toString()
         );
-        // console.log("sourceProductItem", sourceProductItem);
+        const sourceMainProductItem = sourceProduct.productItems.find(
+          (pItem) => pItem.productId.toString() === item.productId.toString()
+        );
+        const sourceProductItem = sourceMainProductItem
+          ? sourceMainProductItem
+          : sourceRawProductItem;
+        console.log("sourceProductItem", sourceProductItem);
         if (sourceProductItem) {
           const product = await RowProduct.findOne({ _id: item.productId });
           product.qty -= item.transferQty;
@@ -211,18 +224,35 @@ export const updateWarehousetoWarehouse = async (req, res, next) => {
           sourceProductItem.pendingStock -= item.transferQty;
           sourceProduct.markModified("productItems");
           await sourceProduct.save();
-          const destinationProduct = await Warehouse.findOne({
+          const destinationMainProduct = await Warehouse.findOne({
             _id: existingFactory.warehouseToId,
             "productItems.productId": item.destinationProductId,
           });
+          const destinationRawProduct = await Warehouse.findOne({
+            _id: existingFactory.warehouseToId,
+            "productItems.rawProductId": item.destinationProductId,
+          });
+          const destinationProduct = destinationMainProduct
+            ? destinationMainProduct
+            : destinationRawProduct;
           // console.log("calling destinationProduct to meet", destinationProduct);
           // console.log("item.transfer", item);
           if (destinationProduct) {
-            const destinationProductItem = destinationProduct.productItems.find(
-              (pItem) =>
-                pItem.productId.toString() ===
-                item.destinationProductId.toString()
-            );
+            const destinationMainProductItem =
+              destinationProduct.productItems.find(
+                (pItem) =>
+                  pItem.productId.toString() ===
+                  item.destinationProductId.toString()
+              );
+            const destinationRawProductItem =
+              destinationProduct.productItems.find(
+                (pItem) =>
+                  pItem.rawProductId.toString() ===
+                  item.destinationProductId.toString()
+              );
+            const destinationProductItem = destinationMainProductItem
+              ? destinationMainProductItem
+              : destinationRawProductItem;
             // console.log("destinationProductItem", destinationProductItem);
             destinationProductItem.price = item.price;
             destinationProductItem.currentStock += item.transferQty;
