@@ -77,15 +77,30 @@ export const stockTransferToWarehouse = async (req, res) => {
       OutwardStatus,
     } = req.body;
     for (const item of productItems) {
-      const sourceProduct = await Warehouse.findOne({
+      const sourceMainProduct = await Warehouse.findOne({
         _id: warehouseFromId,
         "productItems.rawProductId": item.productId,
       });
+      console.log("sourceMainProduct", sourceMainProduct);
+      const sourceRawProduct = await Warehouse.findOne({
+        _id: warehouseFromId,
+        "productItems.productId": item.productId,
+      });
+      console.log("sourceRawProduct", sourceRawProduct);
+      const sourceProduct = sourceMainProduct
+        ? sourceMainProduct
+        : sourceRawProduct;
+      console.log("sourceproduct", sourceProduct);
       if (sourceProduct) {
-        const sourceProductItem = sourceProduct.productItems.find(
-          (pItem) => pItem.rawProductId.toString() === item.productId.toString()
+        const sourceRawProductItem = sourceProduct.productItems.find(
+          (pItem) => pItem.rawProductId === item.productId
         );
-
+        const sourceMainProductItem = sourceProduct.productItems.find(
+          (pItem) => pItem.productId === item.productId
+        );
+        const sourceProductItem = sourceMainProductItem
+          ? sourceMainProductItem
+          : sourceRawProductItem;
         if (sourceProductItem) {
           sourceProductItem.price = item.price;
           // sourceProductItem.currentStock -= item.transferQty;
