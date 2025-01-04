@@ -25,6 +25,7 @@ const StockUpdationSchema = new mongoose.Schema(
         productId: {
           type: String,
         },
+        rawProductId: { type: String },
         destinationProductId: {
           type: String,
         },
