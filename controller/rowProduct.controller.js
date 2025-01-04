@@ -193,16 +193,8 @@ export const UpdateProduct = async (req, res, next) => {
       //       (1 + groupDiscount / 100);
       //   }
       if (existingProduct.Opening_Stock !== parseInt(req.body.Opening_Stock)) {
-        console.log(
-          "existingProduct.Opening_Stock",
-          existingProduct.Opening_Stock
-        );
-        console.log("req.body.Opening_Stock", req.body.Opening_Stock);
         const qty = req.body.Opening_Stock - existingProduct.Opening_Stock;
-        console.log("qty", qty);
         req.body.qty = existingProduct.qty + qty;
-        console.log("existing qty", existingProduct.qty);
-        console.log("req.body.qty", req.body.qty);
         await addProductInWarehouse(
           req.body,
           req.body.warehouse,
@@ -210,14 +202,6 @@ export const UpdateProduct = async (req, res, next) => {
         );
       }
 
-      // if (existingProduct.Opening_Stock !== parseInt(req.body.Opening_Stock)) {
-      //   req.body.qty = req.body.Opening_Stock;
-      //   await addProductInWarehouse(
-      //     req.body,
-      //     req.body.warehouse,
-      //     existingProduct
-      //   );
-      // }
       const updatedProduct = req.body;
       const product = await RowProduct.findByIdAndUpdate(
         productId,
