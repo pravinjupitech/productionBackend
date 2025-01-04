@@ -103,6 +103,9 @@ export const stockTransferToWarehouse = async (req, res) => {
           item.rawProductId = sourceRawProductItem
             ? sourceRawProductItem.rawProductId
             : null;
+          item.productId = sourceMainProductItem
+            ? sourceMainProductItem.productId
+            : null;
           sourceProductItem.price = item.price;
           // sourceProductItem.currentStock -= item.transferQty;
           sourceProductItem.pendingStock += item.transferQty;
@@ -164,7 +167,8 @@ export const viewWarehouseStock = async (req, res) => {
     const database = req.params.database;
     const warehouse = await StockUpdation.find({ database: database })
       .sort({ sortorder: -1 })
-      .populate({ path: "productItems.productId", model: "rowProduct" }) //change for rawProduct
+      .populate({ path: "productItems.rawProductId", model: "rowProduct" })
+      .populate({ path: "productItems.productId", model: "product" })
       .populate({ path: "warehouseToId", model: "warehouse" })
       .populate({ path: "warehouseFromId", model: "warehouse" });
     if (warehouse.length > 0) {
