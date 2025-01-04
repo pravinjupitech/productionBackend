@@ -310,8 +310,8 @@ export const addProductInWarehouse = async (
       //   sourceProductItem.price = parseInt(warehouse.Purchase_Rate);
       //   sourceProductItem.totalPrice =
       //     parseInt(warehouse.qty) * parseInt(warehouse.Purchase_Rate);
-      sourceProductItem.transferQty = parseInt(warehouse.Opening_Stock);
-      sourceProductItem.oQty = parseInt(warehouse.qty);
+      sourceProductItem.transferQty = parseInt(warehouse.qty);
+      sourceProductItem.oQty = parseInt(warehouse.Opening_Stock);
       //   sourceProductItem.oRate = parseInt(warehouse.Purchase_Rate);
       //   sourceProductItem.oBAmount =
       //     (parseInt(warehouse.Opening_Stock) *
