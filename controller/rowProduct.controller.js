@@ -192,24 +192,32 @@ export const UpdateProduct = async (req, res, next) => {
       //       (1 + parseInt(req.body.GSTRate) / 100) *
       //       (1 + groupDiscount / 100);
       //   }
-      // if (existingProduct.Opening_Stock !== parseInt(req.body.Opening_Stock)) {
-      //   const qty = req.body.Opening_Stock - existingProduct.Opening_Stock;
-      //   req.body.qty = existingProduct.qty + qty;
-      //   await addProductInWarehouse(
-      //     req.body,
-      //     req.body.warehouse,
-      //     existingProduct
-      //   );
-      // }
-
       if (existingProduct.Opening_Stock !== parseInt(req.body.Opening_Stock)) {
-        req.body.qty = req.body.Opening_Stock;
+        console.log(
+          "existingProduct.Opening_Stock",
+          existingProduct.Opening_Stock
+        );
+        console.log("req.body.Opening_Stock", req.body.Opening_Stock);
+        const qty = req.body.Opening_Stock - existingProduct.Opening_Stock;
+        console.log("qty", qty);
+        req.body.qty = existingProduct.qty + qty;
+        console.log("existing qty", existingProduct.qty);
+        console.log("req.body.qty", req.body.qty);
         await addProductInWarehouse(
           req.body,
           req.body.warehouse,
           existingProduct
         );
       }
+
+      // if (existingProduct.Opening_Stock !== parseInt(req.body.Opening_Stock)) {
+      //   req.body.qty = req.body.Opening_Stock;
+      //   await addProductInWarehouse(
+      //     req.body,
+      //     req.body.warehouse,
+      //     existingProduct
+      //   );
+      // }
       const updatedProduct = req.body;
       const product = await RowProduct.findByIdAndUpdate(
         productId,
@@ -298,12 +306,12 @@ export const addProductInWarehouse = async (
     // console.log("update-sourceProductItem", sourceProductItem);
     if (sourceProductItem) {
       //   sourceProductItem.gstPercentage = parseInt(warehouse.GSTRate);
-      sourceProductItem.currentStock = parseInt(warehouse.Opening_Stock);
+      sourceProductItem.currentStock = parseInt(warehouse.qty);
       //   sourceProductItem.price = parseInt(warehouse.Purchase_Rate);
       //   sourceProductItem.totalPrice =
       //     parseInt(warehouse.qty) * parseInt(warehouse.Purchase_Rate);
       sourceProductItem.transferQty = parseInt(warehouse.Opening_Stock);
-      sourceProductItem.oQty = parseInt(warehouse.Opening_Stock);
+      sourceProductItem.oQty = parseInt(warehouse.qty);
       //   sourceProductItem.oRate = parseInt(warehouse.Purchase_Rate);
       //   sourceProductItem.oBAmount =
       //     (parseInt(warehouse.Opening_Stock) *
