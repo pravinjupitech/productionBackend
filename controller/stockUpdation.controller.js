@@ -88,25 +88,21 @@ export const stockTransferToWarehouse = async (req, res) => {
         "productItems.productId": item.productId,
       });
       // console.log("sourceRawProduct", sourceRawProduct);
-      const sourceProduct = sourceMainProduct
-        ? sourceMainProduct
-        : sourceRawProduct;
+      const sourceProduct = sourceMainProduct || sourceRawProduct;
       // console.log("sourceproduct", sourceProduct);
       if (sourceProduct) {
         const sourceRawProductItem = sourceProduct.productItems.find(
           (pItem) => pItem.rawProductId === item.productId
         );
-        req.body.productItems["rawProductId"] = sourceRawProductItem
-          ? item.productId
-          : null;
 
         const sourceMainProductItem = sourceProduct.productItems.find(
           (pItem) => pItem.productId === item.productId
         );
-        const sourceProductItem = sourceMainProductItem
-          ? sourceMainProductItem
-          : sourceRawProductItem;
+        const sourceProductItem = sourceMainProductItem || sourceRawProductItem;
         if (sourceProductItem) {
+          item.rawProductId = sourceRawProductItem
+            ? sourceRawProductItem.rawProductId
+            : null;
           sourceProductItem.price = item.price;
           // sourceProductItem.currentStock -= item.transferQty;
           sourceProductItem.pendingStock += item.transferQty;
@@ -204,9 +200,7 @@ export const updateWarehousetoWarehouse = async (req, res, next) => {
         _id: existingFactory.warehouseFromId,
         "productItems.productId": item.productId,
       });
-      const sourceProduct = sourceMainProduct
-        ? sourceMainProduct
-        : sourceRawProduct;
+      const sourceProduct = sourceMainProduct || sourceRawProduct;
       // console.log("sourceProduct", sourceProduct);
       if (sourceProduct) {
         const sourceRawProductItem = sourceProduct.productItems.find(
@@ -215,9 +209,7 @@ export const updateWarehousetoWarehouse = async (req, res, next) => {
         const sourceMainProductItem = sourceProduct.productItems.find(
           (pItem) => pItem.productId === item.productId
         );
-        const sourceProductItem = sourceMainProductItem
-          ? sourceMainProductItem
-          : sourceRawProductItem;
+        const sourceProductItem = sourceMainProductItem || sourceRawProductItem;
         // console.log("sourceProductItem", sourceProductItem);
         if (sourceProductItem) {
           // const product = await RowProduct.findOne({ _id: item.productId });
@@ -238,9 +230,8 @@ export const updateWarehousetoWarehouse = async (req, res, next) => {
             _id: existingFactory.warehouseToId,
             "productItems.rawProductId": item.destinationProductId,
           });
-          const destinationProduct = destinationMainProduct
-            ? destinationMainProduct
-            : destinationRawProduct;
+          const destinationProduct =
+            destinationMainProduct || destinationRawProduct;
           // console.log("calling destinationProduct to meet", destinationProduct);
           // console.log("item.transfer", item);
           if (destinationProduct) {
@@ -252,9 +243,8 @@ export const updateWarehousetoWarehouse = async (req, res, next) => {
               destinationProduct.productItems.find(
                 (pItem) => pItem.rawProductId === item.destinationProductId
               );
-            const destinationProductItem = destinationMainProductItem
-              ? destinationMainProductItem
-              : destinationRawProductItem;
+            const destinationProductItem =
+              destinationMainProductItem || destinationRawProductItem;
             // console.log("destinationProductItem", destinationProductItem);
             destinationProductItem.price = item.price;
             destinationProductItem.currentStock += item.transferQty;
