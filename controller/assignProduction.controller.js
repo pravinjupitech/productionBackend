@@ -1057,8 +1057,8 @@ export const demoProduct2 = async (req, res, next) => {
   }
 };
 
-/*
-potential->   sambhawana, kind ->    dayalu,  devoted ->   samarpit, somewhere ->  kahi,  hand out ->    sopna,necessary ->   jaruri ,would ->  chahoege , further ->  or yah bhi, usually ->  amator pr , flock ->(swarm) jhund, harm ->  chot ,
+/* 
+potential->   sambhawana, kind ->    dayalu,  devoted ->   samarpit, somewhere ->  kahi,  hand out ->    sopna,necessary ->   jaruri ,would ->  chahoege , further ->  (or yah bhi ,aage), usually ->  amator pr , flock ->(swarm) jhund, harm ->  chot ,
 
 until-> jab tk ,abstract->    sar, whisper->   fusfusana,  instance->    udaharan , wide->    chouda, follow->    anusaran karna ,extremely ->   atyant ,  fake ->   nakli, partial->     anshik , fally  ->   faltu , awake->     jagana ,passive ->       niskriya,   additional->    atirikt
 
