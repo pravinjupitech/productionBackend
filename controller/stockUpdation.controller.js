@@ -216,9 +216,10 @@ export const updateWarehousetoWarehouse = async (req, res, next) => {
         const sourceProductItem = sourceMainProductItem || sourceRawProductItem;
         // console.log("sourceProductItem", sourceProductItem);
         if (sourceProductItem) {
-          // const product = await RowProduct.findOne({ _id: item.productId });
-          // product.qty -= item.transferQty;
-          // await product.save();
+          const modelName = sourceMainProductItem ? Product : RowProduct;
+          const product = await modelName.findOne({ _id: item.productId });
+          product.qty -= item.transferQty;
+          await product.save();
 
           // sourceProductItem.price = item.price;
           sourceProductItem.currentStock -= item.transferQty;
@@ -249,13 +250,20 @@ export const updateWarehousetoWarehouse = async (req, res, next) => {
               );
             const destinationProductItem =
               destinationMainProductItem || destinationRawProductItem;
-            // console.log("destinationProductItem", destinationProductItem);
-            destinationProductItem.price = item.price;
-            destinationProductItem.currentStock += item.transferQty;
-            // destinationProductItem.totalPrice += item.totalPrice;
-
-            await destinationProduct.save();
-            // console.log(" afterdestinationProductItem", destinationProductItem);
+            if (destinationProductItem) {
+              const modelName = destinationMainProductItem
+                ? Product
+                : RowProduct;
+              const product = await modelName.findOne({ _id: item.productId });
+              product.qty += item.transferQty;
+              await product.save();
+              // console.log("destinationProductItem", destinationProductItem);
+              destinationProductItem.price = item.price;
+              destinationProductItem.currentStock += item.transferQty;
+              // destinationProductItem.totalPrice += item.totalPrice;
+              await destinationProduct.save();
+              // console.log(" afterdestinationProductItem", destinationProductItem);
+            }
           } else {
             item.currentStock = item.transferQty;
             await Warehouse.updateOne(

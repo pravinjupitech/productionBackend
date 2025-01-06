@@ -1057,7 +1057,7 @@ export const demoProduct2 = async (req, res, next) => {
 
 /* 
 
-
+eager->    atsuk,youth ->   yuva,deprised->    vanchit, irrelevant->   vyarth ,bluff->   dhoka , preferably-> visheshtah , might->  ho sakta hai ,burd ->   bojhh, disappointed->   nirasha , earlier->   pahle , gesture-> isara , 
 
 
 
