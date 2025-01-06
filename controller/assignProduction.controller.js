@@ -1061,6 +1061,9 @@ export const demoProduct2 = async (req, res, next) => {
 
 
 
+
+
+
 eager->    utsuk,youth ->   yuva,deprised->    vanchit, irrelevant->   vyarth ,bluff->   dhoka , preferably-> visheshtah , might->  ho sakta hai ,burden ->   bojhh, disappointed->   nirasha , earlier->   pahle , gesture-> isara , 
 
 potential->   sambhawana, kind ->    dayalu,  devoted ->   samarpit, somewhere ->  kahi,  hand out ->    sopna,necessary ->   jaruri ,would ->  chahoege , further ->  (or yah bhi ,aage), usually ->  amator pr , flock ->(swarm) jhund, harm ->  chot ,
