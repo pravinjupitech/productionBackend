@@ -217,8 +217,9 @@ export const updateWarehousetoWarehouse = async (req, res, next) => {
         // console.log("sourceProductItem", sourceProductItem);
         const modelName = sourceProductItem.rawProductId ? RowProduct : Product;
         console.log("modelName souce", modelName);
+        const product = await modelName.findOne({ _id: item.productId });
+        console.log("source Product", product);
         if (sourceProductItem) {
-          // const product = await modelName.findOne({ _id: item.productId });
           // if (product) {
           //   product.qty -= item.transferQty;
           //   await product.save();
@@ -260,6 +261,8 @@ export const updateWarehousetoWarehouse = async (req, res, next) => {
               ? RowProduct
               : Product;
             console.log("modelName", modelName);
+            const product = await modelName.findOne({ _id: item.productId });
+            console.log("destination Product", product);
             if (destinationProductItem) {
               // const product = await modelName.findOne({
               //   _id: item.productId,
