@@ -216,13 +216,17 @@ export const updateWarehousetoWarehouse = async (req, res, next) => {
         const sourceProductItem = sourceMainProductItem || sourceRawProductItem;
         // console.log("sourceProductItem", sourceProductItem);
         if (sourceProductItem) {
-          const modelName = sourceMainProductItem ? Product : RowProduct;
-          console.log("modelName".modelName);
+          const modelName = sourceProductItem.rawProductId
+            ? RowProduct
+            : Product;
           const product = await modelName.findOne({ _id: item.productId });
-          console.log("source product", product);
-          product.qty -= item.transferQty;
-          await product.save();
-
+          if (product) {
+            product.qty -= item.transferQty;
+            await product.save();
+          } else {
+            console.error("Source product not found in model:", modelName.name);
+            continue;
+          }
           // sourceProductItem.price = item.price;
           sourceProductItem.currentStock -= item.transferQty;
           // sourceProductItem.totalPrice -= item.totalPrice;
@@ -253,14 +257,22 @@ export const updateWarehousetoWarehouse = async (req, res, next) => {
             const destinationProductItem =
               destinationMainProductItem || destinationRawProductItem;
             if (destinationProductItem) {
-              const modelName = destinationMainProductItem
-                ? Product
-                : RowProduct;
-              console.log("modelName".modelName);
-              const product = await modelName.findOne({ _id: item.productId });
-              console.log("destination product", product);
-              product.qty += item.transferQty;
-              await product.save();
+              const modelName = destinationProductItem.rawProductId
+                ? RowProduct
+                : Product;
+              const product = await modelName.findOne({
+                _id: item.productId,
+              });
+              if (product) {
+                product.qty += item.transferQty;
+                await product.save();
+              } else {
+                console.error(
+                  "Destination product not found in model:",
+                  modelName.name
+                );
+                continue;
+              }
               // console.log("destinationProductItem", destinationProductItem);
               destinationProductItem.price = item.price;
               destinationProductItem.currentStock += item.transferQty;
