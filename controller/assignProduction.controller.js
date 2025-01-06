@@ -1029,9 +1029,7 @@ export const demoProduct2 = async (req, res, next) => {
           "worker threads, cluster module ,external module ka use karke bana sakte hai worker threads ko computationally heavy tasks while cluster module use when than server scable on multiple cores",
       });
     }
-
     console.log("");
-
     const { id } = req.params;
     const exitingData = await StartProduction.findById(id);
     if (!exitingData) {
@@ -1058,9 +1056,16 @@ export const demoProduct2 = async (req, res, next) => {
 };
 
 /* 
+
+
+
+
+
+
+
 potential->   sambhawana, kind ->    dayalu,  devoted ->   samarpit, somewhere ->  kahi,  hand out ->    sopna,necessary ->   jaruri ,would ->  chahoege , further ->  (or yah bhi ,aage), usually ->  amator pr , flock ->(swarm) jhund, harm ->  chot ,
 
-until-> jab tk ,abstract->    sar, whisper->   fusfusana,  instance->    udaharan , wide->    chouda, follow->    anusaran karna ,extremely ->   atyant ,  fake ->   nakli, partial->     anshik , fally  ->   faltu , awake->     jagana ,passive ->       niskriya,   additional->    atirikt
+until-> jab tk ,abstract->    sar, whisper->   fusfusana,  instance->    udaharan , wide->    chouda, follow->    anusaran karna ,extremely ->   atyant ,  fake ->   nakli, partial->     anshik , fally  ->   faltu , awake->     jagana ,passive ->       niskriya,   additional ->    atirikt
 
 express->   abhivyakti karna , certain->   nischit  , exposes->  ujagar , describe->  varnan karna  , ourselves->  hum svyam  ,exposure->  khulasa  ,struggle->   sangharsh,eluate -> vyakhya karna  ,encouragement->    protsahan , rational->  tarksangat ,Whether ->  chahe  ,concise ->  sanchipt, encourage-> protsahit karna  , them -> unhe
 
