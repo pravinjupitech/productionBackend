@@ -219,15 +219,11 @@ export const updateWarehousetoWarehouse = async (req, res, next) => {
         console.log("modelName souce", modelName);
         const product = await modelName.findOne({ _id: item.productId });
         console.log("source Product", product);
+        if (product) {
+          product.qty -= item.transferQty;
+          await product.save();
+        }
         if (sourceProductItem) {
-          // if (product) {
-          //   product.qty -= item.transferQty;
-          //   await product.save();
-          // } else {
-          //   console.error("Source product not found in model:", modelName.name);
-          //   continue;
-          // }
-
           // sourceProductItem.price = item.price;
           sourceProductItem.currentStock -= item.transferQty;
           // sourceProductItem.totalPrice -= item.totalPrice;
@@ -261,22 +257,15 @@ export const updateWarehousetoWarehouse = async (req, res, next) => {
               ? RowProduct
               : Product;
             console.log("modelName", modelName);
-            const product = await modelName.findOne({ _id: item.productId });
+            const product = await modelName.findOne({
+              _id: item.destinationProductId,
+            });
             console.log("destination Product", product);
+            if (product) {
+              product.qty += item.transferQty;
+              await product.save();
+            }
             if (destinationProductItem) {
-              // const product = await modelName.findOne({
-              //   _id: item.productId,
-              // });
-              // if (product) {
-              //   product.qty += item.transferQty;
-              //   await product.save();
-              // } else {
-              //   console.error(
-              //     "Destination product not found in model:",
-              //     modelName.name
-              //   );
-              //   continue;
-              // }
               // console.log("destinationProductItem", destinationProductItem);
               destinationProductItem.price = item.price;
               destinationProductItem.currentStock += item.transferQty;
