@@ -65,6 +65,12 @@ const rowProductSchema = new mongoose.Schema(
       type: String,
       default: "Active",
     },
+    targetValues: [
+      {
+        rawMaterial: { type: String },
+        unit: [],
+      },
+    ],
   },
   { timestamps: true }
 );
