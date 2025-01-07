@@ -1072,9 +1072,9 @@ until-> jab tk ,abstract->    sar, whisper->   fusfusana,  instance->    udahara
 
 express->   abhivyakti karna , certain->   nischit  , exposes->  ujagar , describe->  varnan karna  , ourselves->  hum svyam  ,exposure->  khulasa  ,struggle->   sangharsh,eluate -> vyakhya karna  ,encouragement->    protsahan , rational->  tarksangat ,Whether ->  chahe  ,concise ->  sanchipt, encourage-> protsahit karna  , them -> unhe
 
-cluster->     sammuh, intonation->     aawaj ka uthar chataw , context->   sandharbh , appreciate->    prashansha karna, creature->    jantu, determind->   nishchay , beyond ->   aage,collab->  sahyoj, noise->   shor  ,dispute-> vivad   should->  chahiye  nobody-> koi nhi
+cluster ->     sammuh, intonation->     aawaj ka uthar chataw , context->   sandharbh , appreciate->    prashansha karna, creature->    jantu, determind->   nishchay , beyond ->   aage,collab->  sahyoj, noise->   shor  ,dispute-> vivad   should->  chahiye  nobody-> koi nhi
 
-desire->        ichchha ,unless->        jab tak ,anyway->        phir bhi ,somebody->        koi vyakti , which ->          jise ,whenever->          jb kabhi bhi , therefore->         isliye , either->       dono me se ek, neither->              koi bhi nhi, often->        avasar, away->         dur ,raise ->    uthana,yet ->       abhi tk,terrible ->         bhayanak
+desire->        ichchha ,unless->        jab tak ,anyway->        phir bhi ,somebody->        koi vyakti , which ->          jise ,whenever->          jb kabhi bhi , therefore->         isliye , either->       dono me se ek, neither ->              koi bhi nhi, often->        avasar, away->         dur ,raise ->    uthana,yet ->       abhi tk,terrible ->         bhayanak
 
 
 An environment variable is a key-value pair used by operating systems and applications to store configuration settings that affect the behavior of processes or programs. These variables are part of the system environment and can hold data like file paths, system preferences, or sensitive information such as API keys and passwords.
