@@ -1060,9 +1060,7 @@ export const demoProduct2 = async (req, res, next) => {
 
 
 
-
-
-
+spail ->  failana , recognize->    pahchanna,ill ->  bimaar ,hunger->  bhukh , while   -> jabki, claim -> dava , dump  ->  gandi jagah , clay  - mitti, manifestation ->  abhivyakti, enough ->  paryapt , aptive -> upyukt , static -> sthir, slicely  -> tukde tukde karke , stay -> rahna 
 
 eager->    utsuk,youth ->   yuva,deprised->    vanchit, irrelevant->   vyarth ,bluff->   dhoka , preferably-> visheshtah , might->  ho sakta hai ,burden ->   bojhh, disappointed->   nirasha , earlier->   pahle , gesture-> isara , 
 
