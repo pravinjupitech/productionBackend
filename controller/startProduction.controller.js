@@ -108,6 +108,7 @@ export const viewByIdProduct = async (req, res, next) => {
       path: "product_details.user_name",
       model: "user",
     });
+    console.log("product", product);
     console.log(
       "productionStepData",
       product.product_details.flatMap((item) =>
