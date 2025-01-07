@@ -1001,6 +1001,7 @@ export const deleteProducted = async (req, res, next) => {
 };
 
 //window.history.back()
+
 export const demoProduct = async (req, res, next) => {
   try {
     let arr = [1, 2, 3, 3, 4, 5, 5, 5];
