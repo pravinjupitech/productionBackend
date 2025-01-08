@@ -1074,9 +1074,9 @@ His fourth class is gym. It is just exercising.
 
 History is his last class of the day. Lucas has a hard time staying awake. Many lessons are boring, and he is very tired after doing gym
 
-bring ->  lana,emphasis->    jor , lexical->   sabdik,drilling->  boring,dril ->  abhyas, insist->  agrah karna, considered  -> mana
+bring ->  lana,emphasis->    jor , lexical->   sabdik,drilling->  boring,dril ->  abhyas, insist->  agrah karna, considered  -> mana ,tire->   thaka hua ,pupil->   chhatra
 
-1. i make a mistake not a i do a mistake,  d consonant sound di vowel sound,
+1. i make a mistake not a i do a mistake, the after consonant sound then called d otherwise di vowel sound,
 
 spail ->  failana , recognize->    pahchanna,ill ->  bimaar ,hunger->  bhukh , while   -> jabki, claim -> dava , dump  ->  gandi jagah , clay  - mitti, manifestation ->  abhivyakti, enough ->  paryapt , aptive -> upyukt , static -> sthir, slicely  -> tukde tukde karke , stay -> rahna 
 
