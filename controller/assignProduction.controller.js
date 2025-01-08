@@ -999,7 +999,6 @@ export const deleteProducted = async (req, res, next) => {
     res.status(500).json({ error: "Internal Server Error", status: false });
   }
 };
-
 //window.history.back()
 
 export const demoProduct = async (req, res, next) => {
@@ -1056,8 +1055,7 @@ export const demoProduct2 = async (req, res, next) => {
   }
 };
 console.log("");
-
-/*
+/*  
 
 Lucas goes to school every day of the week. He has many subjects to go to each school day: English, art, science, mathematics, gym, and history. His mother packs a big backpack full of books and lunch for Lucas.
 

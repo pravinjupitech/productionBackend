@@ -1,77 +1,80 @@
-import mongoose from "mongoose"
+import mongoose from "mongoose";
 
-const LedgerSchema = new mongoose.Schema({
+const LedgerSchema = new mongoose.Schema(
+  {
     created_by: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "user",
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "user",
     },
     database: {
-        type: String
+      type: String,
     },
     date: {
-        type: Date
+      type: Date,
     },
     userId: {
-        type: String
+      type: String,
     },
     partyId: {
-        type: String
+      type: String,
     },
     expenseId: {
-        type: String
+      type: String,
     },
     transporterId: {
-        type: String
+      type: String,
     },
     orderId: {
-        type: String
+      type: String,
     },
     name: {
-        type: String
+      type: String,
     },
     voucherType: {
-        type: String
+      type: String,
     },
     voucherNo: {
-        type: Number
+      type: Number,
     },
     debit: {
-        type: Number
+      type: Number,
     },
     credit: {
-        type: Number
+      type: Number,
     },
     balance: {
-        type: Number
+      type: Number,
     },
     reason: {
-        type: String
+      type: String,
     },
     debitBalance: {
-        type: Number
+      type: Number,
     },
     creditBalance: {
-        type: Number
+      type: Number,
     },
     closingBalance: {
-        type: Number
+      type: Number,
     },
     dummyDebitBalance: {
-        type: Number
+      type: Number,
     },
     dummyCreditBalance: {
-        type: Number
+      type: Number,
     },
     ledgerType: {
-        type: String
+      type: String,
     },
     particular: {
-        type: String
+      type: String,
     },
 
     paymentMode: {
-        type: String
-    }
-}, { timestamps: true })
+      type: String,
+    },
+  },
+  { timestamps: true }
+);
 
-export const Ledger = mongoose.model("ledger", LedgerSchema)
+export const Ledger = mongoose.model("ledger", LedgerSchema);
