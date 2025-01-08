@@ -92,8 +92,7 @@ export const createOrderWithInvoice = async (req, res, next) => {
           const warehouse = await Warehouse.findById(product.warehouse);
           if (warehouse) {
             const pro = warehouse.productItems.find(
-              (item) =>
-                item.productId.toString() === orderItem.productId.toString()
+              (item) => item.productId === orderItem.productId
             );
             pro.currentStock -= orderItem.qty;
             product.qty -= orderItem.qty;
