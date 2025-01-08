@@ -92,7 +92,8 @@ export const createOrderWithInvoice = async (req, res, next) => {
           const warehouse = await Warehouse.findById(product.warehouse);
           if (warehouse) {
             const pro = warehouse.productItems.find(
-              (item) => item.productId === orderItem.productId
+              (item) =>
+                item.productId.toString() === orderItem.productId.toString()
             );
             pro.currentStock -= orderItem.qty;
             product.qty -= orderItem.qty;
@@ -107,6 +108,7 @@ export const createOrderWithInvoice = async (req, res, next) => {
       req.body.userId = party.created_by;
       req.body.database = user.database;
       const savedOrder = CreateOrder.create(req.body);
+      console.log("savedorder", savedOrder);
       if (savedOrder) {
         const particular = "SalesInvoice";
         await ledgerPartyForDebit(savedOrder, particular);
