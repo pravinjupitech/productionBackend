@@ -103,9 +103,9 @@ export const stockTransferToWarehouse = async (req, res) => {
           item.rawProductId = sourceRawProductItem
             ? sourceRawProductItem.rawProductId
             : null;
-          // item.productId = sourceMainProductItem
-          //   ? sourceMainProductItem.productId
-          //   : null;
+          item.productId = sourceMainProductItem
+            ? sourceMainProductItem.productId
+            : null;
           sourceProductItem.price = item.price;
           // sourceProductItem.currentStock -= item.transferQty;
           sourceProductItem.pendingStock += item.transferQty;
