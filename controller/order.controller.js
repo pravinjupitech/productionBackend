@@ -107,8 +107,8 @@ export const createOrderWithInvoice = async (req, res, next) => {
       req.body.status = "completed";
       req.body.userId = party.created_by;
       req.body.database = user.database;
-      const savedOrder = CreateOrder.create(req.body);
-      console.log("savedorder", savedOrder);
+      const savedOrder = await CreateOrder.create(req.body);
+      // console.log("savedorder", savedOrder);
       if (savedOrder) {
         const particular = "SalesInvoice";
         await ledgerPartyForDebit(savedOrder, particular);

@@ -1055,6 +1055,7 @@ export const demoProduct2 = async (req, res, next) => {
     res.status(500).json({ error: "Internal Server Error", status: false });
   }
 };
+console.log("");
 
 /*
 
@@ -1074,7 +1075,7 @@ His fourth class is gym. It is just exercising.
 
 History is his last class of the day. Lucas has a hard time staying awake. Many lessons are boring, and he is very tired after doing gym
 
-bring ->  lana,emphasis->    jor , lexical->   sabdik,drilling->  boring,dril ->  abhyas, insist->  agrah karna, considered  -> mana ,tire->   thaka hua ,pupil->   chhatra
+bring ->  lana,emphasis->    jor , lexical->   sabdik,drilling->  boring,dril ->  abhyas, insist->  agrah karna, considered  -> mana ,tire->   thaka hua ,pupil->   chhatra ,figure out  -> pata lagana
 
 1. i make a mistake not a i do a mistake, the after consonant sound then called d otherwise di vowel sound,
 
