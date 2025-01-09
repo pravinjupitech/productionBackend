@@ -40,7 +40,7 @@ const rawProductTargetSchema = new mongoose.Schema(
           type: Number,
         },
         threeMonthsTargetSecondary: {
-          type: String,
+          type: Number,
         },
         sixMonthsTargetPrimary: {
           type: Number,
