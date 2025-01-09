@@ -13,3 +13,8 @@ export const saveTarget = async (req, res, next) => {
     res.status(500).json({ error: "Internal Server Error", status: false });
   }
 };
+
+// export const viewAll=async(req,res,next)=>{
+//     const {database}=req.params;
+//     const target=await RawProductTarget.find(database)
+// }

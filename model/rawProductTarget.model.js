@@ -4,6 +4,9 @@ const rawProductTargetSchema = new mongoose.Schema(
     product: {
       type: String,
     },
+    database: {
+      type: String,
+    },
     currentStock: {
       type: Number,
     },
