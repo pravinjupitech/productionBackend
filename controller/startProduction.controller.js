@@ -1401,22 +1401,23 @@ export const productTarget = async (req, res, next) => {
     }
     const existingProductList = await StartProduction.find({});
     let totalStock = 0;
-
     existingProductList.forEach((item) => {
       item.product_details.forEach((product) => {
         product.finalProductDetails.forEach((data) => {
-          const stocks = data.fProduct_name_Units.reduce((total, unit) => {
-            if (unit.unit === existingProduct.stockUnit) {
-              return total + unit.value;
-            }
-            return total;
-          }, 0);
-          totalStock += stocks;
+          if (data.fProduct_name === id) {
+            const stocks = data.fProduct_name_Units.reduce((total, unit) => {
+              if (unit.unit === existingProduct.stockUnit) {
+                return total + unit.value;
+              }
+              return total;
+            }, 0);
+            totalStock += stocks;
+          }
         });
       });
     });
     return res.status(200).json({
-      message: "Calculation successful",
+      message: "Current Target Found",
       status: true,
       id: existingProduct._id,
       product: existingProduct.Product_Title,
