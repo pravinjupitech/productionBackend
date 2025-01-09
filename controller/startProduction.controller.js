@@ -108,32 +108,6 @@ export const viewByIdProduct = async (req, res, next) => {
       path: "product_details.user_name",
       model: "user",
     });
-    if (product) {
-      console.log(
-        "productionStepData",
-        product.product_details.flatMap((item) =>
-          item.finalProductDetails.flatMap((item1) =>
-            item1.fProduct_name_Units.flatMap(
-              (item2) => item2.conversionFactors
-            )
-          )
-        )
-      );
-    }
-    const arr = [
-      [1, 2],
-      [
-        [3, 4, 5],
-        [6, 7, 8, 9],
-      ],
-      [
-        [10, 11, 12, 13],
-        [14, 15, 16, 17],
-      ],
-    ];
-    const flArr = arr.flatMap((item) => item.flatMap((item1) => item1));
-    console.log("updateArray", flArr);
-    console.log("existing array", arr);
     return product
       ? res.status(200).json({ message: "Data Found", product, status: true })
       : res.status(404).json({ message: "Not Found", status: false });
@@ -1386,6 +1360,73 @@ export const productionAddWarehouse = async (qty, warehouseId, productId) => {
     }
   } catch (error) {
     console.log(error);
+  }
+};
+
+export const productTargets = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const existingProduct = await RowProduct.findById(id);
+    if (!existingProduct) {
+      return res.status(404).json({ messae: "Not Found", status: false });
+    }
+    const existingProductList = await StartProduction.find({});
+    for (let item of existingProductList) {
+      item.product_details.map((product) => {
+        product.finalProductDetails.map((data) => {
+          const findData = data.fProduct_name_Units.reduce((acc, tot) => {
+            if (acc.unit === existingProduct.stockUnit) {
+              return (tot += value);
+            }
+          }, 0);
+          console.log(findData);
+        });
+      });
+    }
+  } catch (error) {
+    console.log(error);
+    return res
+      .status(500)
+      .json({ error: "Internal Server Error", status: false });
+  }
+};
+export const productTarget = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const existingProduct = await RowProduct.findById(id);
+    if (!existingProduct) {
+      return res
+        .status(404)
+        .json({ message: "Product not found", status: false });
+    }
+    const existingProductList = await StartProduction.find({});
+    let totalUnits = 0;
+
+    existingProductList.forEach((item) => {
+      item.product_details.forEach((product) => {
+        product.finalProductDetails.forEach((data) => {
+          const units = data.fProduct_name_Units.reduce((total, unit) => {
+            if (unit.unit === existingProduct.stockUnit) {
+              return total + unit.value;
+            }
+            return total;
+          }, 0);
+          totalUnits += units;
+        });
+      });
+    });
+    return res.status(200).json({
+      message: "Calculation successful",
+      status: true,
+      id: existingProduct._id,
+      product: existingProduct.Product_Title,
+      totalUnits,
+    });
+  } catch (error) {
+    console.error(error);
+    return res
+      .status(500)
+      .json({ error: "Internal Server Error", status: false });
   }
 };
 
