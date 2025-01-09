@@ -14,9 +14,17 @@ export const saveTarget = async (req, res, next) => {
   }
 };
 
-// export const viewAll = async (req, res, next) => {
-//   const { database } = req.params;
-//   const target = await RawProductTarget.find({ database });
-//   return target.length>0?res.status(200).json({message:"Data Found",target,status:true}):res.status(404).json({message:"Not Found",status:""})
-
-// };
+export const viewAll = async (req, res, next) => {
+  try {
+    const { database } = req.params;
+    const target = await RawProductTarget.find({ database });
+    return target.length > 0
+      ? res.status(200).json({ message: "Data Found", target, status: true })
+      : res.status(404).json({ message: "Not Found", status: false });
+  } catch (error) {
+    console.log(error);
+    return res
+      .status(500)
+      .json({ error: "Internal Server Error", status: false });
+  }
+};
