@@ -67,6 +67,7 @@ export const purchaseInvoiceOrder = async (req, res, next) => {
       const date1 = new Date();
       const date2 = new Date(req.body.date);
       if (date1.toDateString() === date2.toDateString()) {
+        console.log("calling 1st");
         for (const orderItem of orderItems) {
           const product = await Product.findOne({ _id: orderItem.productId });
           if (product) {
@@ -106,6 +107,7 @@ export const purchaseInvoiceOrder = async (req, res, next) => {
             product.partyId = req.body.partyId;
             product.purchaseStatus = true;
             product.qty += orderItem.qty;
+            console.log("1st product", product);
             await product.save();
             await addProductInWarehouse2(product, product.warehouse, orderItem);
           } else {
@@ -127,6 +129,7 @@ export const purchaseInvoiceOrder = async (req, res, next) => {
               .status(400)
               .json({ message: "Something Went Wrong", status: false });
       } else if (date1 > date2) {
+        console.log("second call");
         for (const orderItem of orderItems) {
           const product = await Product.findOne({ _id: orderItem.productId });
           if (product) {
@@ -153,6 +156,7 @@ export const purchaseInvoiceOrder = async (req, res, next) => {
                 product.SalesRate *
                 (1 + product.GSTRate / 100) *
                 (1 + groupDiscount / 100);
+              console.log("productmrp.....", product.Product_MRP);
             } else {
               product.SalesRate =
                 (product.Purchase_Rate * (100 + product.ProfitPercentage)) /
@@ -161,11 +165,13 @@ export const purchaseInvoiceOrder = async (req, res, next) => {
                 product.SalesRate *
                 (1 + product.GSTRate / 100) *
                 (1 + groupDiscount / 100);
+              console.log("productmrp,,,profit", product.Product_MRP);
             }
             product.purchaseDate = new Date();
             product.partyId = req.body.partyId;
             product.purchaseStatus = true;
             product.qty += orderItem.qty;
+            console.log("product 2nd ", product);
             await product.save();
             await addProductInWarehouse3(
               product,
