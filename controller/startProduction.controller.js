@@ -1363,33 +1363,6 @@ export const productionAddWarehouse = async (qty, warehouseId, productId) => {
   }
 };
 
-export const productTargets = async (req, res, next) => {
-  try {
-    const { id } = req.params;
-    const existingProduct = await RowProduct.findById(id);
-    if (!existingProduct) {
-      return res.status(404).json({ messae: "Not Found", status: false });
-    }
-    const existingProductList = await StartProduction.find({});
-    for (let item of existingProductList) {
-      item.product_details.map((product) => {
-        product.finalProductDetails.map((data) => {
-          const findData = data.fProduct_name_Units.reduce((acc, tot) => {
-            if (acc.unit === existingProduct.stockUnit) {
-              return (tot += value);
-            }
-          }, 0);
-          console.log(findData);
-        });
-      });
-    }
-  } catch (error) {
-    console.log(error);
-    return res
-      .status(500)
-      .json({ error: "Internal Server Error", status: false });
-  }
-};
 export const productTarget = async (req, res, next) => {
   try {
     const { id } = req.params;
