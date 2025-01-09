@@ -68,6 +68,7 @@ const rowProductSchema = new mongoose.Schema(
     targetValues: [
       {
         rawMaterial: { type: String },
+        step: { type: String },
         unit: [],
       },
     ],
