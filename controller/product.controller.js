@@ -29,14 +29,12 @@ export const SaveProduct = async (req, res) => {
       database: req.body.database,
       status: "Active",
     });
-    console.log("group", group);
     if (group.length > 0) {
       const maxDiscount = group.reduce((max, group) => {
         return group.discount > max.discount ? group : max;
       });
       groupDiscount = maxDiscount.discount;
     }
-    console.log("groupDiscount", groupDiscount);
     if (req.files) {
       let images = [];
       req.files.map((file) => {
@@ -46,13 +44,10 @@ export const SaveProduct = async (req, res) => {
     }
     if (!req.body.ProfitPercentage || req.body.ProfitPercentage === 0) {
       req.body.SalesRate = req.body.Purchase_Rate * 1.03;
-      console.log("SalesRate", req.body.SalesRate);
       req.body.Product_MRP =
         req.body.SalesRate *
         (1 + req.body.GSTRate / 100) *
         (1 + groupDiscount / 100);
-      console.log("gst", req.body.GSTRate);
-      console.log("product_mrp", req.body.Product_MRP);
       // const latest = (req.body.SalesRate + (req.body.SalesRate * req.body.GSTRate / 100))
       // req.body.Product_MRP = latest + (latest * (groupDiscount) / 100);
     }

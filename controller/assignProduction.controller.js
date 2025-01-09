@@ -1028,6 +1028,9 @@ export const demoProduct2 = async (req, res, next) => {
           "worker threads, cluster module ,external module ka use karke bana sakte hai worker threads ko computationally heavy tasks while cluster module use when than server scable on multiple cores",
       });
     }
+
+let arr=[{id:1, price:200}]
+
     const { id } = req.params;
     const exitingData = await StartProduction.findById(id);
     if (!exitingData) {
@@ -1052,7 +1055,6 @@ export const demoProduct2 = async (req, res, next) => {
     res.status(500).json({ error: "Internal Server Error", status: false });
   }
 };
-console.log("");
 
 /*
 
@@ -1077,25 +1079,5 @@ The next class is mathematics, which most of the students just call math. Kyle h
 His fourth class is gym. It is just exercising.
 
 History is his last class of the day. Lucas has a hard time staying awake. Many lessons are boring, and he is very tired after doing gym
-
-appeare  ->  dikhai dena , trouble ->   musibat ,exclaim->   chillana, theme->   vishay ,passing -> marg, climb -> chadna , themselves->  khud,through->  ke madhyam se
-
-bring ->  lana,emphasis->    jor , lexical->   sabdik,drilling->  boring,dril ->  abhyas, insist->  agrah karna, considered  -> mana ,tire->   thaka hua ,pupil->   chhatra ,figure out  -> pata lagana
-
-1. i make a mistake not a i do a mistake, the after consonant sound then called d otherwise di vowel sound,
-
-spail ->  failana , recognize->    pahchanna,ill ->  bimaar ,hunger->  bhukh , while   -> jabki, claim -> dava , dump  ->  gandi jagah , clay  - mitti, manifestation ->  abhivyakti, enough ->  paryapt , aptive -> upyukt , static -> sthir, slicely  -> tukde tukde karke , stay -> rahna 
-
-eager->    utsuk,youth ->   yuva,deprised->    vanchit, irrelevant->   vyarth ,bluff->   dhoka , preferably-> visheshtah , might->  ho sakta hai ,burden ->   bojhh, disappointed->   nirasha , earlier->   pahle , gesture-> isara , 
-
-potential->   sambhawana, kind ->    dayalu,  devoted ->   samarpit, somewhere ->  kahi,  hand out ->    sopna,necessary ->   jaruri ,would ->  chahoege , further ->  (or yah bhi ,aage), usually ->  amator pr , flock ->(swarm) jhund, harm ->  chot ,
-
-until-> jab tk ,abstract->    sar, whisper->   fusfusana,  instance->    udaharan , wide->    chouda, follow->    anusaran karna ,extremely ->   atyant ,  fake ->   nakli, partial->     anshik , fally  ->   faltu , awake->     jagana ,passive ->       niskriya,   additional ->    atirikt
-
-express->   abhivyakti karna , certain->   nischit  , exposes->  ujagar , describe->  varnan karna  , ourselves->  hum svyam  ,exposure->  khulasa  ,struggle->   sangharsh,eluate -> vyakhya karna  ,encouragement->    protsahan , rational->  tarksangat ,Whether ->  chahe  ,concise ->  sanchipt, encourage-> protsahit karna  , them -> unhe
-
-cluster ->     sammuh, intonation->     aawaj ka uthar chataw , context->   sandharbh , appreciate->    prashansha karna, creature->    jantu, determind->   nishchay , beyond ->   aage,collab->  sahyoj, noise->   shor  ,dispute-> vivad   should->  chahiye  nobody-> koi nhi
-
-desire->        ichchha ,unless->        jab tak ,anyway->        phir bhi ,somebody->        koi vyakti , which ->          jise ,whenever->          jb kabhi bhi , therefore->         isliye , either->       dono me se ek, neither ->              koi bhi nhi, often->        avasar, away->         dur ,raise ->    uthana,yet ->       abhi tk,terrible ->         bhayanak
 
 */
