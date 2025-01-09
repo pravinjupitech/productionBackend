@@ -1022,34 +1022,62 @@ export const demoProduct = async (req, res, next) => {
 
 export const demoProduct2 = async (req, res, next) => {
   try {
-    if (req.body.processName) {
-      return res.status(404).json({
-        message:
-          "worker threads, cluster module ,external module ka use karke bana sakte hai worker threads ko computationally heavy tasks while cluster module use when than server scable on multiple cores",
-      });
-    }
+    // let arr = [
+    //   { id: 1, price: 200 },
+    //   { id: 1, price: 200 },
+    //   { id: 2, price: 200 },
+    //   { id: 1, price: 200 },
+    //   { id: 2, price: 200 },
+    //   { id: 3, price: 200 },
+    // ];
 
-let arr=[{id:1, price:200}]
+    // let arr1 = [
+    //   { id: 1, name: "praveen" },
+    //   { id: 2, name: "jiten" },
+    //   { id: 3, name: "tushar" },
+    // ];
 
-    const { id } = req.params;
-    const exitingData = await StartProduction.findById(id);
-    if (!exitingData) {
-      return res.status(404).json({ message: "Data Not Found", status: false });
-    }
-    res.status(404).json({ message: "Data Not Found", status: false });
-    const { product_details } = req.body;
-    for (let item of product_details) {
-      console.log(item.rProduct_name);
-      return res.json({ message: "Internal Server Error", status: false });
-    }
-    res.json({ message: "" });
+    // let mergedArray = arr.map(item => {
+    //   let matchedItem = arr1.find(element => element.id === item.id);
+    //   return { ...item, ...matchedItem };
+    // });
+
+    // console.log(mergedArray);
+
+    let arr = [
+      { id: 1, price: 200 },
+      { id: 1, price: 200 },
+      { id: 2, price: 200 },
+      { id: 1, price: 200 },
+      { id: 2, price: 200 },
+      { id: 3, price: 200 },
+    ];
+
+    let arr1 = [
+      { id: 1, name: "praveen" },
+      { id: 2, name: "jiten" },
+      { id: 3, name: "tushar" },
+    ];
+
+    let priceMap = arr.reduce((acc, item) => {
+      if (!acc[item.id]) {
+        acc[item.id] = { id: item.id, price: 0 };
+      }
+      acc[item.id].price += item.price;
+      return acc;
+    }, {});
+    let uniquePriceArray = Object.values(priceMap);
+    let mergedArray = uniquePriceArray.map((item) => {
+      let matchedItem = arr1.find((element) => element.id === item.id);
+      return { ...item, ...matchedItem };
+    });
+
+    console.log(mergedArray);
     console.log(
       "an enviroment var is key value pair used by operating system and applications to store configuration setting that affect the behavior of processes or programe . these var are part of system enviroment and can hold data like file paths , system preferance or sensitive information such as api keys  and password "
     );
     console.log("");
-    const updatedData = req.body;
-    await StartProduction.findByIdAndUpdate(id, updatedData, { new: true });
-    return res.status(200).json({ message: "Data Updated ", status: true });
+
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: "Internal Server Error", status: false });
