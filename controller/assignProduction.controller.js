@@ -1000,7 +1000,6 @@ export const deleteProducted = async (req, res, next) => {
   }
 };
 //window.history.back()
-
 export const demoProduct = async (req, res, next) => {
   try {
     let arr = [1, 2, 3, 3, 4, 5, 5, 5];
@@ -1029,7 +1028,6 @@ export const demoProduct2 = async (req, res, next) => {
           "worker threads, cluster module ,external module ka use karke bana sakte hai worker threads ko computationally heavy tasks while cluster module use when than server scable on multiple cores",
       });
     }
-    console.log("");
     const { id } = req.params;
     const exitingData = await StartProduction.findById(id);
     if (!exitingData) {
@@ -1055,7 +1053,14 @@ export const demoProduct2 = async (req, res, next) => {
   }
 };
 console.log("");
+
 /*  
+
+
+
+
+
+
 
 Lucas goes to school every day of the week. He has many subjects to go to each school day: English, art, science, mathematics, gym, and history. His mother packs a big backpack full of books and lunch for Lucas.
 
@@ -1072,6 +1077,8 @@ The next class is mathematics, which most of the students just call math. Kyle h
 His fourth class is gym. It is just exercising.
 
 History is his last class of the day. Lucas has a hard time staying awake. Many lessons are boring, and he is very tired after doing gym
+
+appeare  ->  dikhai dena , trouble ->   musibat ,exclaim->   chillana, theme->   vishay ,passing -> marg, climb -> chadna , themselves->  khud,through->  ke madhyam se
 
 bring ->  lana,emphasis->    jor , lexical->   sabdik,drilling->  boring,dril ->  abhyas, insist->  agrah karna, considered  -> mana ,tire->   thaka hua ,pupil->   chhatra ,figure out  -> pata lagana
 
