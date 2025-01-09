@@ -24,6 +24,9 @@ const rawProductTargetSchema = new mongoose.Schema(
         secondaryUnit: {
           type: Number,
         },
+        secondaryTarget: {
+          type: Number,
+        },
         dailyTargetPrimary: {
           type: Number,
         },
