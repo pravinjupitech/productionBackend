@@ -1400,18 +1400,18 @@ export const productTarget = async (req, res, next) => {
         .json({ message: "Product not found", status: false });
     }
     const existingProductList = await StartProduction.find({});
-    let totalUnits = 0;
+    let totalStock = 0;
 
     existingProductList.forEach((item) => {
       item.product_details.forEach((product) => {
         product.finalProductDetails.forEach((data) => {
-          const units = data.fProduct_name_Units.reduce((total, unit) => {
+          const stocks = data.fProduct_name_Units.reduce((total, unit) => {
             if (unit.unit === existingProduct.stockUnit) {
               return total + unit.value;
             }
             return total;
           }, 0);
-          totalUnits += units;
+          totalStock += stocks;
         });
       });
     });
@@ -1420,7 +1420,7 @@ export const productTarget = async (req, res, next) => {
       status: true,
       id: existingProduct._id,
       product: existingProduct.Product_Title,
-      totalUnits,
+      totalStock,
     });
   } catch (error) {
     console.error(error);
