@@ -19,7 +19,7 @@ const rawProductTargetSchema = new mongoose.Schema(
           type: String,
         },
         primaryTarget: {
-          type: String,
+          type: Number,
         },
         secondaryUnit: {
           type: String,
