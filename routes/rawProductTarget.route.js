@@ -1,5 +1,6 @@
 import express from "express";
 import {
+  deleteTarget,
   saveTarget,
   updateTarget,
   viewAllTarget,
@@ -11,5 +12,5 @@ router.post("/save", saveTarget);
 router.get("/view/:database", viewAllTarget);
 router.get("/view-by-id/:id", viewByIdTarget);
 router.put("/update-target/:id/:innerId", updateTarget);
-router.put("/delete-target/:id/:innerId", updateTarget);
+router.delete("/delete-target/:id/:innerId", deleteTarget);
 export default router;
