@@ -37,6 +37,7 @@ export const viewByIdTarget = async (req, res, next) => {
       const findData = target.Target.find(
         (item) => item._id.toString() === innerId
       );
+      // const findData = target.Target.id(innerId);
       res
         .status(200)
         .json({ message: "Data Found", targets: findData, status: true });
