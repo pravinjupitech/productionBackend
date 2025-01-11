@@ -138,12 +138,12 @@ export const deleteTarget = async (req, res, next) => {
 //         .sort({ date: 1, sortorder: -1 })
 //         .populate({ path: "partyId", model: "customer" });
 //       if (ledger.length === 0) {
-//         const obj = {
-//           partyId: items,
-//           totalBillAmount: totalBillAmount,
-//           totalReceipt: totalReceipt,
-//         };
-//         ledgerData.push(obj);
+//         // const obj = {
+//         //   partyId: items,
+//         //   totalBillAmount: totalBillAmount,
+//         //   totalReceipt: totalReceipt,
+//         // };
+//         // ledgerData.push(obj);
 //       }
 //       for (let item of ledger) {
 //         const existingLedger = await ledgerData.find(
