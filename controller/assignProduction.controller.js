@@ -1076,16 +1076,16 @@ export const demoProduct2 = async (req, res, next) => {
     console.log(
       "an enviroment var is key value pair used by operating system and applications to store configuration setting that affect the behavior of processes or programe . these var are part of system enviroment and can hold data like file paths , system preferance or sensitive information such as api keys  and password "
     );
-    console.log("");
+    console.log("who-kon, whom-kisko,whose-> kiska  which-kon, and that");
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: "Internal Server Error", status: false });
   }
 };
 
-/* 
-
-
+/*preposition long time in other on , larg place in small at place,position fix on ,cunjection exam (equal weigth)-> i like a color green and blue,
+i am busy with work not about work,i enter a room not a into room ,
+beside->  ke bagal me , endless  ->  anthin, majority  ->  bahumat, coordinating->   samnvay, slightly->  thoda ,below  -> niche , obstinate -> jiddi ,early bird-> jaldi uthkar kam suru karne wala vyakti,
 
 
 
