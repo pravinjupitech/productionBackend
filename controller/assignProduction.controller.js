@@ -992,11 +992,6 @@ export const deleteProducted = async (req, res, next) => {
         }
       });
     }
-    res.status(200).json({
-      message:
-        "destructor is method that is called automatically when the object is made a scope or destoryed",
-      status: true,
-    });
     await AssignProduction.findByIdAndDelete(id);
     res.status(200).json({ message: "Data Deleted", status: false });
   } catch (error) {
@@ -1018,6 +1013,7 @@ export const demoProduct = async (req, res, next) => {
         repeatedNumbers.push(Number(num));
       }
     }
+    res.status(200).json({ message: "" });
     console.log("Repeated numbers: char is ", repeatedNumbers);
   } catch (error) {
     console.log(error);
@@ -1027,28 +1023,6 @@ export const demoProduct = async (req, res, next) => {
 
 export const demoProduct2 = async (req, res, next) => {
   try {
-    // let arr = [
-    //   { id: 1, price: 200 },
-    //   { id: 1, price: 200 },
-    //   { id: 2, price: 200 },
-    //   { id: 1, price: 200 },
-    //   { id: 2, price: 200 },
-    //   { id: 3, price: 200 },
-    // ];
-
-    // let arr1 = [
-    //   { id: 1, name: "praveen" },
-    //   { id: 2, name: "jiten" },
-    //   { id: 3, name: "tushar" },
-    // ];
-
-    // let mergedArray = arr.map(item => {
-    //   let matchedItem = arr1.find(element => element.id === item.id);
-    //   return { ...item, ...matchedItem };
-    // });
-
-    // console.log(mergedArray);
-
     let arr = [
       { id: 1, price: 200 },
       { id: 1, price: 200 },
@@ -1059,9 +1033,9 @@ export const demoProduct2 = async (req, res, next) => {
     ];
 
     let arr1 = [
-      { id: 1, name: "praveen" },
-      { id: 2, name: "jiten" },
-      { id: 3, name: "tushar" },
+      { id: 1, name: "production Manager" },
+      { id: 2, name: "labour" },
+      { id: 3, name: "Incharge" },
     ];
 
     let priceMap = arr.reduce((acc, item) => {
@@ -1077,11 +1051,11 @@ export const demoProduct2 = async (req, res, next) => {
       return { ...item, ...matchedItem };
     });
     console.log(mergedArray);
-    res.status(500).json({ message: "" });
+    res.status(500).json({ message: "", status: false });
     console.log(
       "an enviroment var is key value pair used by operating system and applications to store configuration setting that affect the behavior of processes or programe . these var are part of system enviroment and can hold data like file paths , system preferance or sensitive information such as api keys  and password "
     );
-    console.log("");
+    console.log(" ");
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: "Internal Server Error", status: false });
