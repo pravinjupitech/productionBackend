@@ -82,7 +82,6 @@ export const updateTarget = async (req, res, next) => {
       .json({ error: "Internal Server Error", status: false });
   }
 };
-
 export const deleteTarget = async (req, res, next) => {
   try {
     const { id, innerId } = req.params;
