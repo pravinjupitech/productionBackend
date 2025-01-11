@@ -992,6 +992,11 @@ export const deleteProducted = async (req, res, next) => {
         }
       });
     }
+    res.status(200).json({
+      message:
+        "destructor is method that is called automatically when the object is made a scope or destoryed",
+      status: true,
+    });
     await AssignProduction.findByIdAndDelete(id);
     res.status(200).json({ message: "Data Deleted", status: false });
   } catch (error) {
@@ -1076,14 +1081,19 @@ export const demoProduct2 = async (req, res, next) => {
     console.log(
       "an enviroment var is key value pair used by operating system and applications to store configuration setting that affect the behavior of processes or programe . these var are part of system enviroment and can hold data like file paths , system preferance or sensitive information such as api keys  and password "
     );
-    console.log("who-kon, whom-kisko,whose-> kiska  which-kon, and that");
+    console.log("");
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: "Internal Server Error", status: false });
   }
 };
 
-/*
+/* 
+
+
+
+
+
 
 Lucas goes to school every day of the week. He has many subjects to go to each school day: English, art, science, mathematics, gym, and history. His mother packs a big backpack full of books and lunch for Lucas.
 
