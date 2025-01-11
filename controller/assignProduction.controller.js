@@ -1083,12 +1083,7 @@ export const demoProduct2 = async (req, res, next) => {
   }
 };
 
-/*preposition long time in other on , larg place in small at place,position fix on ,cunjection exam (equal weigth)-> i like a color green and blue,
-i am busy with work not about work,i enter a room not a into room ,
-beside->  ke bagal me , endless  ->  anthin, majority  ->  bahumat, coordinating->   samnvay, slightly->  thoda ,below  -> niche , obstinate -> jiddi ,early bird-> jaldi uthkar kam suru karne wala vyakti,
-
-
-
+/*
 
 Lucas goes to school every day of the week. He has many subjects to go to each school day: English, art, science, mathematics, gym, and history. His mother packs a big backpack full of books and lunch for Lucas.
 
