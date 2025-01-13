@@ -32,7 +32,7 @@ export const viewAllTarget = async (req, res, next) => {
 export const viewByIdTarget = async (req, res, next) => {
   try {
     const { id, innerId } = req.params;
-    const target = await RawProductTarget.findById(id);
+    const target = await RawProductTarget.findById(id).sort({ sortorder: -1 });
     if (target) {
       const findData = target.Target.find(
         (item) => item._id.toString() === innerId
