@@ -1053,19 +1053,18 @@ export const demoProduct2 = async (req, res, next) => {
     console.log(mergedArray);
     res.status(500).json({ message: "", status: false });
     console.log(
-      "an enviroment var is key value pair used by operating system and applications to store configuration setting that affect the behavior of processes or programe . these var are part of system enviroment and can hold data like file paths , system preferance or sensitive information such as api keys  and password "
+      "an enviroment var is key value pair used by operating system and applications to store configuration setting that affect the behavior of processes or programe . these var are part of system enviroment and can hold data like file paths , system preferance or sensitive information such as api keys  and password"
     );
-    console.log(" ");
+    console.log("");
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: "Internal Server Error", status: false });
   }
 };
 
-/* 
+/*
 
-
-
+ 
 
 
 
