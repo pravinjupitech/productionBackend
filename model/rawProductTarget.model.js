@@ -15,6 +15,9 @@ const rawProductTargetSchema = new mongoose.Schema(
         duration: {
           type: String,
         },
+        dayCount: {
+          type: Number,
+        },
         primaryUnit: {
           type: String,
         },
