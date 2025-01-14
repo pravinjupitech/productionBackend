@@ -1064,7 +1064,9 @@ export const demoProduct2 = async (req, res, next) => {
 };
 
 /*
- 
+ assume  -> man lijiye ,companion  -> sathi ,borrow -> udhar ,stail -> puchh, committed -> pratibaddha, reflexive-> karmkarta  , closures->  band,stretching ->  khich ,revaluation-> punhmulyankan, eternity-> anantkal ,glowrious ->  achamkadar,luminous -> spast,
+
+
 In MongoDB, aggregation is a powerful framework used to process, transform, and analyze data stored in collections. It allows you to perform complex queries and transformations on data, similar to SQL's GROUP BY, JOIN, and aggregate functions.
 
 Key Concepts in Aggregation
