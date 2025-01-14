@@ -9,6 +9,12 @@ const rawProductTargetSchema = new mongoose.Schema(
         product: {
           type: String,
         },
+        productId: {
+          type: String,
+        },
+        monthRange: {
+          type: String,
+        },
         currentStock: {
           type: Number,
         },
