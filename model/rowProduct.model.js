@@ -47,15 +47,7 @@ const rowProductSchema = new mongoose.Schema(
       type: Number,
     },
     Units: [],
-    rawValues: [
-      {
-        rawMaterial: { type: String },
-        unit: { type: String },
-        qty: { type: Number },
-        rate: { type: Number },
-        Price: { type: Number },
-      },
-    ],
+    rawValues: [],
     grossTotal: {
       type: Number,
     },
@@ -66,14 +58,7 @@ const rowProductSchema = new mongoose.Schema(
       type: String,
       default: "Active",
     },
-    targetValues: [
-      {
-        rawMaterial: { type: String },
-        rawProductId: { type: String },
-        step: { type: String },
-        unit: [],
-      },
-    ],
+    targetValues: [],
   },
   { timestamps: true }
 );
