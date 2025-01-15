@@ -71,7 +71,7 @@ const rawProductTargetSchema = new mongoose.Schema(
             rawMaterial: {
               type: String,
             },
-            step:{type:String},
+            step: { type: String },
             unit: [
               {
                 unit: {
