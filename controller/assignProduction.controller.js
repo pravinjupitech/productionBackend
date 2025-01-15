@@ -1056,7 +1056,7 @@ export const demoProduct2 = async (req, res, next) => {
     console.log(
       "an enviroment var is key value pair used by operating system and applications to store configuration setting that affect the behavior of processes or programe . these var are part of system enviroment and can hold data like file paths , system preferance or sensitive information such as api keys  and password"
     );
-    console.log(" in mongoDb aggregation is  powerful framework used to process ,transform and analyze data stored in collections");
+    console.log("");
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: "Internal Server Error", status: false });
@@ -1064,8 +1064,8 @@ export const demoProduct2 = async (req, res, next) => {
 };
 
 /*
-
-In MongoDB, aggregation is a powerful framework used to process, transform, and analyze data stored in collections. It allows you to perform complex queries and transformations on data, similar to SQL's GROUP BY, JOIN, and aggregate functions.        
+whatever-> jo kuch bhi ho.
+In MongoDB, aggregation is a powerful framework used to process, transform, and analyze data stored in collections. It allows you to perform complex queries and transformations on data, similar to SQL's GROUP BY, JOIN, and aggregate functions.
 
 Key Concepts in Aggregation
 Aggregation Pipeline: The aggregation framework operates as a pipeline, where data passes through a series of stages, and each stage performs an operation on the data. The output of one stage serves as the input for the next. 
