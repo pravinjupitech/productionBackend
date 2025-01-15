@@ -61,7 +61,7 @@ const rowProductSchema = new mongoose.Schema(
     },
     expensePercentage: { type: Number },
     netAmount: { type: Number },
-    rawProductId: { type: String },
+
     status: {
       type: String,
       default: "Active",
@@ -69,6 +69,7 @@ const rowProductSchema = new mongoose.Schema(
     targetValues: [
       {
         rawMaterial: { type: String },
+        rawProductId: { type: String },
         step: { type: String },
         unit: [],
       },
