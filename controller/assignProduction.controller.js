@@ -1064,10 +1064,9 @@ export const demoProduct2 = async (req, res, next) => {
 };
 
 /*
-overcome-> pr kabu pana , negotiation -> batchit, lot of  -> bahut sa ,occupied -> kabja hona , depth-> gahrai ,wake up -> jago ,disability-> vikalangta , impliced -> fasaya gaya , faith -> (vishwas,astha), aspire-> mhatwakansha karna , miserable->  dukhi , negious -> nakaratmak ,nebulous -> aspast ,bargain-> soida karna ,cosmic -> branhmandia ,polite -> vinmra ,huge -> vishal ,too->  bahut , hence -> es tarah ,
 
 
-In MongoDB, aggregation is a powerful framework used to process, transform, and analyze data stored in collections. It allows you to perform complex queries and transformations on data, similar to SQL's GROUP BY, JOIN, and aggregate functions.
+In MongoDB, aggregation is a powerful framework used to process, transform, and analyze data stored in collections. It allows you to perform complex queries and transformations on data, similar to SQL's GROUP BY, JOIN, and aggregate functions.        
 
 Key Concepts in Aggregation
 Aggregation Pipeline: The aggregation framework operates as a pipeline, where data passes through a series of stages, and each stage performs an operation on the data. The output of one stage serves as the input for the next. 
