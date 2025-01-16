@@ -66,37 +66,7 @@ const rawProductTargetSchema = new mongoose.Schema(
         yearlyTargetSecondary: {
           type: Number,
         },
-        requiredProducts: [
-          {
-            rawMaterial: {
-              type: String,
-            },
-            rawProductId: { type: String },
-            step: { type: String },
-            unit: [
-              {
-                unit: {
-                  type: String,
-                },
-                dailyTarget: {
-                  type: Number,
-                },
-                monthlyTarget: {
-                  type: Number,
-                },
-                threeMonthsTarget: {
-                  type: Number,
-                },
-                sixMonthsTarget: {
-                  type: Number,
-                },
-                yearlyTarget: {
-                  type: Number,
-                },
-              },
-            ],
-          },
-        ],
+        requiredProducts: [],
       },
     ],
   },
