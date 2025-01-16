@@ -1052,11 +1052,16 @@ export const demoProduct2 = async (req, res, next) => {
       return { ...item, ...matchedItem };
     });
     console.log(mergedArray);
-    res.status(500).json({ message: "", status: false });
+    res.status(500).json({
+      message: "",
+      status: false,
+    });
     console.log(
       "an enviroment var is key value pair used by operating system and applications to store configuration setting that affect the behavior of processes or programe . these var are part of system enviroment and can hold data like file paths , system preferance or sensitive information such as api keys  and password"
     );
-    console.log("");
+    console.log(
+      "Aggregation Pipeline: The aggregation framework operates as a pipeline, where data passes through a series of stages, and each stage performs an operation on the data. The output of one stage serves as the input for the next."
+    );
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: "Internal Server Error", status: false });

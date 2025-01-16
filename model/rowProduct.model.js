@@ -18,7 +18,9 @@ const rowProductSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "warehouse",
     },
-    warehouseName: { type: String },
+    warehouseName: {
+      type: String,
+    },
     SubStep: {
       type: String,
     },
@@ -57,11 +59,11 @@ const rowProductSchema = new mongoose.Schema(
     netAmount: {
       type: Number,
     },
+    targetValues: [],
     status: {
       type: String,
       default: "Active",
     },
-    targetValues: [],
   },
   { timestamps: true }
 );
