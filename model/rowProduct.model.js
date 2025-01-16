@@ -51,9 +51,12 @@ const rowProductSchema = new mongoose.Schema(
     grossTotal: {
       type: Number,
     },
-    expensePercentage: { type: Number },
-    netAmount: { type: Number },
-
+    expensePercentage: {
+      type: Number,
+    },
+    netAmount: {
+      type: Number,
+    },
     status: {
       type: String,
       default: "Active",
