@@ -82,6 +82,7 @@ export const updateTarget = async (req, res, next) => {
       .json({ error: "Internal Server Error", status: false });
   }
 };
+
 export const deleteTarget = async (req, res, next) => {
   try {
     const { id, innerId } = req.params;
@@ -121,29 +122,21 @@ export const deleteTarget = async (req, res, next) => {
 
 // export const viewLedgerByPartySalesApp = async (req, res, next) => {
 //   try {
-//     const customer = await Customer.find({ created_by: req.params.id }).sort({
-//       date: 1,
-//       sortorder: -1,
-//     });
+//     const customer = await Customer.find({ created_by: req.params.id });
 //     if (customer.length === 0) {
 //       return res
 //         .status(404)
 //         .json({ message: "Customer Not Found", status: false });
 //     }
 //     let ledgerData = [];
-//     let totalBillAmount = 0;
-//     let totalReceipt = 0;
 //     for (let items of customer) {
+//       let totalBillAmount = 0;
+//       let totalReceipt = 0;
 //       const ledger = await Ledger.find({ partyId: items._id })
 //         .sort({ date: 1, sortorder: -1 })
 //         .populate({ path: "partyId", model: "customer" });
 //       if (ledger.length === 0) {
-//         // const obj = {
-//         //   partyId: items,
-//         //   totalBillAmount: totalBillAmount,
-//         //   totalReceipt: totalReceipt,
-//         // };
-//         // ledgerData.push(obj);
+//         console.log("party ledger not found");
 //       }
 //       for (let item of ledger) {
 //         const existingLedger = await ledgerData.find(
