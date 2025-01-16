@@ -1060,7 +1060,7 @@ export const demoProduct2 = async (req, res, next) => {
       "an enviroment var is key value pair used by operating system and applications to store configuration setting that affect the behavior of processes or programe . these var are part of system enviroment and can hold data like file paths , system preferance or sensitive information such as api keys  and password"
     );
     console.log(
-      "Aggregation Pipeline: The aggregation framework operates as a pipeline, where data passes through a series of stages, and each stage performs an operation on the data. The output of one stage serves as the input for the next."
+      "$match: Filters documents (like WHERE in SQL).$group: Groups documents by a specified field and applies aggregate functions (e.g., SUM, AVG).$project: Shapes the documents, selecting specific fields or creating computed fields.$sort: Orders the documents.$limit and $skip: Control the number of documents.$lookup: Performs a left outer join with another collection.Aggregate Functions: Functions like sum, avg, min, max, and count can be applied within certain stages, such as $group."
     );
   } catch (error) {
     console.log(error);
