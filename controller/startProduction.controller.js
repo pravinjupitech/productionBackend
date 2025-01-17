@@ -123,13 +123,13 @@ export const viewProduct = async (req, res, next) => {
         $lookup: {
           from: "steps", // Name of the second collection
           localField: "processName", // Field in StartProduction
-          foreignField: "processName", // Field in Processes
+          foreignField: "processName", // Field in steps
           as: "processDetails", // Output array field
         },
       },
-      // {
-      //   $unwind: "$processDetails", // Optional: Flatten the array
-      // },
+      {
+        $unwind: "$processDetails",
+      },
       {
         $group: {
           _id: "$processName", // Group by processName
@@ -1456,11 +1456,10 @@ export const productTarget = async (req, res, next) => {
   }
 };
 
-export const productTargets = async (req, res, next) => {
+export const demoCodes = async (req, res, next) => {
   try {
+    //productTarget
     const { id } = req.params;
-
-    // Step 1: Find the product by its ID
     const existingProduct = await RowProduct.findById(id);
     if (!existingProduct) {
       return res
@@ -1468,42 +1467,37 @@ export const productTargets = async (req, res, next) => {
         .json({ message: "Product not found", status: false });
     }
 
-    // Step 2: Aggregate to calculate total stock
     const result = await StartProduction.aggregate([
       {
-        $unwind: "$product_details", // Unwind the product_details array
+        $unwind: "$product_details",
       },
       {
-        $unwind: "$product_details.finalProductDetails", // Unwind the finalProductDetails array
+        $unwind: "$product_details.finalProductDetails",
       },
       {
         $match: {
-          "product_details.finalProductDetails.fProduct_name": id, // Match the specific product ID
+          "product_details.finalProductDetails.fProduct_name": id,
         },
       },
       {
-        $unwind: "$product_details.finalProductDetails.fProduct_name_Units", // Unwind the fProduct_name_Units array
+        $unwind: "$product_details.finalProductDetails.fProduct_name_Units",
       },
       {
         $match: {
           "product_details.finalProductDetails.fProduct_name_Units.unit":
-            existingProduct.stockUnit, // Match the stock unit
+            existingProduct.stockUnit,
         },
       },
       {
         $group: {
-          _id: null, // Group all matching results
+          _id: null,
           totalStock: {
-            $sum: "$product_details.finalProductDetails.fProduct_name_Units.value", // Sum the stock values
+            $sum: "$product_details.finalProductDetails.fProduct_name_Units.value",
           },
         },
       },
     ]);
-
-    // Step 3: Determine totalStock
     const totalStock = result.length > 0 ? result[0].totalStock : 0;
-
-    // Step 4: Send the response
     return res.status(200).json({
       message: "Current Target Found",
       status: true,
@@ -1518,32 +1512,3 @@ export const productTargets = async (req, res, next) => {
       .json({ error: "Internal Server Error", status: false });
   }
 };
-
-/*
-
-
-
-
-
-
-in mongo db aggregate framework used to complex data processing and analysis opration on collection
-  let error = {};
-  if (!data.patientName) {
-    error.patientName = "Patient Name is Required";
-  }
-  if (!data.phoneNumder || !/^\d{10}$/.test(data.phoneNumder)) {
-    error.phoneNumder = "Enter valid (10 number)";
-  }
-  if (!data.address) {
-    error.address = "Address Is Required";
-  }
-  if (!data.email || !data.email.includes("@gmail.com")) {
-    error.email = "valid Email";
-  }
-  if (Object.keys(error).length > 0) {
-    setErrors(error);
-    return;
-  }
-
-
-*/
