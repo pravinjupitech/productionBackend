@@ -999,6 +999,7 @@ export const deleteProducted = async (req, res, next) => {
     res.status(500).json({ error: "Internal Server Error", status: false });
   }
 };
+
 //window.history.back()
 
 export const demoProduct = async (req, res, next) => {
@@ -1014,7 +1015,7 @@ export const demoProduct = async (req, res, next) => {
         repeatedNumbers.push(Number(num));
       }
     }
-    res.status(200).json({ message: "" });
+    res.status(200).json({ message: "", status: true });
     console.log("Repeated numbers: char is ", repeatedNumbers);
   } catch (error) {
     console.log(error);
@@ -1052,16 +1053,11 @@ export const demoProduct2 = async (req, res, next) => {
       return { ...item, ...matchedItem };
     });
     console.log(mergedArray);
-    res.status(500).json({
-      message: "",
-      status: false,
-    });
+    res.status(500).json({ message: "", status: false });
     console.log(
       "an enviroment var is key value pair used by operating system and applications to store configuration setting that affect the behavior of processes or programe . these var are part of system enviroment and can hold data like file paths , system preferance or sensitive information such as api keys  and password"
     );
-    console.log(
-      "$match: Filters documents (like WHERE in SQL).$group: Groups documents by a specified field and applies aggregate functions (e.g., SUM, AVG).$project: Shapes the documents, selecting specific fields or creating computed fields.$sort: Orders the documents.$limit and $skip: Control the number of documents.$lookup: Performs a left outer join with another collection.Aggregate Functions: Functions like sum, avg, min, max, and count can be applied within certain stages, such as $group."
-    );
+    console.log("");
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: "Internal Server Error", status: false });
@@ -1069,7 +1065,7 @@ export const demoProduct2 = async (req, res, next) => {
 };
 
 /*
-
+inspire-> prerit karna , effective-> prabhavi , suffering-> kast ,nicely-> acchi tarah se , afford-> vahan ,miracle-> chamatkar , settle-> niptara karna ,throw away-> fek dena , enemy-> dusman, as long as-> jb tk ki, acquired-> adhigrahit , severe-> gambhir ,worth -> layak, very ofter-> bahut bar ,beggar-> yachak,passivity-> sahansilata,
 
 In MongoDB, aggregation is a powerful framework used to process, transform, and analyze data stored in collections. It allows you to perform complex queries and transformations on data, similar to SQL's GROUP BY, JOIN, and aggregate functions.
 
