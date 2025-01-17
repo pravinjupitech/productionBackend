@@ -89,7 +89,7 @@ export const deleteTarget = async (req, res, next) => {
     const existingProduct = await RawProductTarget.findById(id);
     if (existingProduct) {
       const findIndex = existingProduct.Target.findIndex(
-        (item) => item._id.toString() === innerId
+        (item) => item._id.toString() !== innerId
       );
       if (findIndex !== -1) {
         existingProduct.Target.splice(findIndex, 1);
