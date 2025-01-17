@@ -1057,15 +1057,16 @@ export const demoProduct2 = async (req, res, next) => {
     console.log(
       "an enviroment var is key value pair used by operating system and applications to store configuration setting that affect the behavior of processes or programe . these var are part of system enviroment and can hold data like file paths , system preferance or sensitive information such as api keys  and password"
     );
-    console.log("");
+    console.log(
+      "$match: Filters documents (like WHERE in SQL).$group: Groups documents by a specified field and applies aggregate functions (e.g., SUM, AVG).$project: Shapes the documents, selecting specific fields or creating computed fields.$sort: Orders the documents.$limit and $skip: Control the number of documents.$lookup: Performs a left outer join with another collection.Aggregate Functions: Functions like sum, avg, min, max, and count can be applied within certain stages, such as $group."
+    );
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: "Internal Server Error", status: false });
   }
 };
 
-/*
-
+/* 
 
 In MongoDB, aggregation is a powerful framework used to process, transform, and analyze data stored in collections. It allows you to perform complex queries and transformations on data, similar to SQL's GROUP BY, JOIN, and aggregate functions.
 
