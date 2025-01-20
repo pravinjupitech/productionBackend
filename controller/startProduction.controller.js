@@ -93,56 +93,56 @@ export const viewProduct = async (req, res, next) => {
         model: "rowProduct",
       })
       .populate({ path: "processName", model: "category" });
-    const products = await StartProduction.aggregate([
-      {
-        $group: {
-          _id: "$processName",
-          count: { $sum: 1 },
-        },
-      },
-      {
-        $match: {
-          count: { $gt: 1 },
-        },
-      },
-    ]);
-    console.log(products);
-    const allProcesses = await StartProduction.aggregate([
-      {
-        $group: {
-          _id: "$processName",
-          count: { $sum: 1 },
-        },
-      },
-    ]);
-    console.log("allprocess", allProcesses);
+    // const products = await StartProduction.aggregate([
+    //   {
+    //     $group: {
+    //       _id: "$processName",
+    //       count: { $sum: 1 },
+    //     },
+    //   },
+    //   {
+    //     $match: {
+    //       count: { $gt: 1 },
+    //     },
+    //   },
+    // ]);
+    // console.log(products);
+    // const allProcesses = await StartProduction.aggregate([
+    //   {
+    //     $group: {
+    //       _id: "$processName",
+    //       count: { $sum: 1 },
+    //     },
+    //   },
+    // ]);
+    // console.log("allprocess", allProcesses);
 
-    const result = await StartProduction.aggregate([
-      {
-        $lookup: {
-          from: "steps",
-          localField: "processName",
-          foreignField: "processName",
-          as: "processDetails",
-        },
-      },
-      {
-        $unwind: "$processDetails",
-      },
-      {
-        $group: {
-          _id: "$processName",
-          count: { $sum: 1 },
-          details: { $push: "$processDetails" },
-        },
-      },
-      {
-        $match: {
-          count: { $gt: 1 },
-        },
-      },
-    ]);
-    console.log("result", result);
+    // const result = await StartProduction.aggregate([
+    //   {
+    //     $lookup: {
+    //       from: "steps",
+    //       localField: "processName",
+    //       foreignField: "processName",
+    //       as: "processDetails",
+    //     },
+    //   },
+    //   {
+    //     $unwind: "$processDetails",
+    //   },
+    //   {
+    //     $group: {
+    //       _id: "$processName",
+    //       count: { $sum: 1 },
+    //       details: { $push: "$processDetails" },
+    //     },
+    //   },
+    //   {
+    //     $match: {
+    //       count: { $gt: 1 },
+    //     },
+    //   },
+    // ]);
+    // console.log("result", result);
     return product.length > 0
       ? res.status(200).json({ message: "Data Found", product, status: true })
       : res.status(404).json({ message: "Not Found", status: false });
