@@ -93,6 +93,7 @@ export const viewProduct = async (req, res, next) => {
         model: "rowProduct",
       })
       .populate({ path: "processName", model: "category" });
+
     // const products = await StartProduction.aggregate([
     //   {
     //     $group: {
