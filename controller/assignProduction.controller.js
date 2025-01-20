@@ -1047,6 +1047,7 @@ export const demoProduct2 = async (req, res, next) => {
       acc[item.id].price += item.price;
       return acc;
     }, {});
+
     let uniquePriceArray = Object.values(priceMap);
     let mergedArray = uniquePriceArray.map((item) => {
       let matchedItem = arr1.find((element) => element.id === item.id);
@@ -1066,8 +1067,7 @@ export const demoProduct2 = async (req, res, next) => {
 
 /*
 
-
-
+I want to looking for new challenges and opportunities for career growth and I want to expand my skill set and gain new experiences
 
 In MongoDB, aggregation is a powerful framework used to process, transform, and analyze data stored in collections. It allows you to perform complex queries and transformations on data, similar to SQL's GROUP BY, JOIN, and aggregate functions.
 
@@ -1090,6 +1090,6 @@ Joining data from multiple collections using $lookup.
 Transforming data, such as calculating derived fields.
 Filtering and sorting data.
 
-
+I want to looking for new challenges and opportunities for career growth and I want to expand my skill set and gain new experiences
 
 */
