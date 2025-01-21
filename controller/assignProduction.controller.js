@@ -1001,7 +1001,6 @@ export const deleteProducted = async (req, res, next) => {
 };
 
 //window.history.back()
-
 export const demoProduct = async (req, res, next) => {
   try {
     let arr = [1, 2, 3, 3, 4, 5, 5, 5];
@@ -1058,14 +1057,16 @@ export const demoProduct2 = async (req, res, next) => {
     console.log(
       "an enviroment var is key value pair used by operating system and applications to store configuration setting that affect the behavior of processes or programe . these var are part of system enviroment and can hold data like file paths , system preferance or sensitive information such as api keys  and password"
     );
+    console.log("");
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: "Internal Server Error", status: false });
   }
 };
 
-/* 
-because I am a hard worker who wants to help your company succeed. I have the skills and experience needed for the job, and I am eager to learn and grow with your team
+/*
+
+
 
 In MongoDB, aggregation is a powerful framework used to process, transform, and analyze data stored in collections. It allows you to perform complex queries and transformations on data, similar to SQL's GROUP BY, JOIN, and aggregate functions.
 
@@ -1079,8 +1080,10 @@ $group: Groups documents by a specified field and applies aggregate functions (e
 $project: Shapes the documents, selecting specific fields or creating computed fields.
 $sort: Orders the documents.
 $limit and $skip: Control the number of documents.
-$lookup: Performs a left outer join with another collection.
+$lookup: the $lookup stage is used to perform a left outer join between two collections. It allows you to combine data from two collections into a single result set.
 Aggregate Functions: Functions like sum, avg, min, max, and count can be applied within certain stages, such as $group.
+
+
 
 Ques->why should we are hired?
  answer-> because I am a hard worker who wants to help your company succeed. I have the skills and experience needed for the job, and I am eager to learn and grow with your team
