@@ -1069,7 +1069,6 @@ export const demoProduct2 = async (req, res, next) => {
 };
 
 /*
-discourage->   himmat todna , relevant -> upyukt , construct-> nirman karna , make up -.pura karna ,serve -> seva karna , participle -> kradant , corresponding-> sangat , awareness-> jagrukta , faulty -> kharab,timeline-> es samay , summarize-> sanshipt karna
 
 
 
