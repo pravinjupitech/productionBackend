@@ -1053,7 +1053,6 @@ export const demoProduct2 = async (req, res, next) => {
       return { ...item, ...matchedItem };
     });
     console.log(mergedArray);
-    res.status(500).json({ message: "", status: false });
     console.log(
       "an enviroment var is key value pair used by operating system and applications to store configuration setting that affect the behavior of processes or programe . these var are part of system enviroment and can hold data like file paths , system preferance or sensitive information such as api keys  and password"
     );
@@ -1061,6 +1060,8 @@ export const demoProduct2 = async (req, res, next) => {
     console.log(
       "$match: Filters documents (like WHERE in SQL).$group: Groups documents by a specified field and applies aggregate functions (e.g., SUM, AVG).$project: Shapes the documents, selecting specific fields or creating computed fields.$sort: Orders the documents.$limit and $skip: Control the number of documents.$lookup: the $lookup stage is used to perform a left outer join between two collections. It allows you to combine data from two collections into a single result set.Aggregate Functions: Functions like sum, avg, min, max, and count can be applied within certain stages, such as $group."
     );
+
+    res.status(500).json({ message: "", status: false });
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: "Internal Server Error", status: false });
@@ -1068,6 +1069,8 @@ export const demoProduct2 = async (req, res, next) => {
 };
 
 /*
+discourage->   himmat todna , relevant -> upyukt , construct-> nirman karna , make up -.pura karna ,serve -> seva karna , participle -> kradant , corresponding-> sangat , awareness-> jagrukta , faulty -> kharab,timeline-> es samay , summarize-> sanshipt karna
+
 
 
 
