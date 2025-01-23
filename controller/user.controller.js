@@ -210,8 +210,8 @@ export const UpdateUser = async (req, res, next) => {
       if (req.body.role.length > 0) {
         req.body.role = JSON.parse(req.body.role);
       }
-      console.log("rolename", req.body.rolename.roleName, req.body.rolename);
-      if (req.body.rolename.roleName === "Labour") {
+      console.log("rolename", req.body.rolename);
+      if (req.body.rolename === "667ea3c79dbfb80858724c36") {
         const assignedNumbers = new Set();
 
         function generateUniqueSixDigitNumber() {
