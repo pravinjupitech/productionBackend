@@ -1067,8 +1067,13 @@ export const demoProduct2 = async (req, res, next) => {
     res.status(500).json({ error: "Internal Server Error", status: false });
   }
 };
-/*
 
+
+
+
+
+/*
+exist-> astitav , reproduce-> punh pesh ,hesitate-> sankoch karna ,external-> bahari ,resource->  sansadhan ,perfection-> purntah , confrontation-> aamana samana ,vocol-> swar ,strange-> ajib , literature-> sahitya,edge -> kinara ,     
 
 
 

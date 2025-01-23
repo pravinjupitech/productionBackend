@@ -46,6 +46,9 @@ const UserSchema = new mongoose.Schema(
     rolename: {
       type: String,
     },
+    pakerId: {
+      type: String,
+    },
     status: {
       type: String,
       default: "Active",

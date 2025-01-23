@@ -64,6 +64,22 @@ export const SaveUser = async (req, res, next) => {
     if (req.body.role.length > 0) {
       req.body.role = JSON.parse(req.body.role);
     }
+    console.log("rolename", req.body.rolename.roleName);
+    if (req.body.rolename.roleName === "Labour") {
+      const assignedNumbers = new Set();
+
+      function generateUniqueSixDigitNumber() {
+        let uniqueNumber;
+        do {
+          uniqueNumber = Math.floor(100000 + Math.random() * 900000);
+        } while (assignedNumbers.has(uniqueNumber));
+        assignedNumbers.add(uniqueNumber);
+        return uniqueNumber;
+      }
+      const pakerId = generateUniqueSixDigitNumber();
+      console.log("pakerId", pakerId);
+      req.body.pakerId = pakerId;
+    }
     const user = await User.create(req.body);
     if (req.body.warehouse) {
       await assingWarehouse(user.warehouse, user._id);
@@ -193,6 +209,22 @@ export const UpdateUser = async (req, res, next) => {
       }
       if (req.body.role.length > 0) {
         req.body.role = JSON.parse(req.body.role);
+      }
+      console.log("rolename", req.body.rolename.roleName);
+      if (req.body.rolename.roleName === "Labour") {
+        const assignedNumbers = new Set();
+
+        function generateUniqueSixDigitNumber() {
+          let uniqueNumber;
+          do {
+            uniqueNumber = Math.floor(100000 + Math.random() * 900000);
+          } while (assignedNumbers.has(uniqueNumber));
+          assignedNumbers.add(uniqueNumber);
+          return uniqueNumber;
+        }
+        const pakerId = generateUniqueSixDigitNumber();
+        console.log("pakerId", pakerId);
+        req.body.pakerId = pakerId;
       }
       if (req.body.subscriptionPlan) {
         const sub = await Subscription.findById({
