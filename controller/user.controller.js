@@ -18,7 +18,7 @@ import { WorkingHours } from "../model/workingHours.model.js";
 import { UserBranch } from "../model/userBranch.model.js";
 import { LoginVerificationMail } from "../service/sendmail.js";
 dotenv.config();
-const assignedNumbers = new Set();
+
 export const SaveUser = async (req, res, next) => {
   try {
     if (req.body.id) {
@@ -66,14 +66,6 @@ export const SaveUser = async (req, res, next) => {
     }
     const findRole = await Role.findById(req.body.rolename);
     if (findRole.roleName === "Labour") {
-      function generateUniqueSixDigitNumber() {
-        const uniqueNumber = Math.floor(100000 + Math.random() * 900000);
-        if (assignedNumbers.has(uniqueNumber)) {
-          return generateUniqueSixDigitNumber();
-        }
-        assignedNumbers.add(uniqueNumber);
-        return uniqueNumber;
-      }
       const pakerId = generateUniqueSixDigitNumber();
       req.body.pakerId = pakerId;
     }
@@ -209,14 +201,6 @@ export const UpdateUser = async (req, res, next) => {
       }
       const findRole = await Role.findById(req.body.rolename);
       if (findRole.roleName === "Labour" && !existingUser.pakerId) {
-        function generateUniqueSixDigitNumber() {
-          const uniqueNumber = Math.floor(100000 + Math.random() * 900000);
-          if (assignedNumbers.has(uniqueNumber)) {
-            return generateUniqueSixDigitNumber();
-          }
-          assignedNumbers.add(uniqueNumber);
-          return uniqueNumber;
-        }
         const pakerId = generateUniqueSixDigitNumber();
         req.body.pakerId = pakerId;
       }
@@ -1290,4 +1274,14 @@ export const customId = async (req, res, next) => {
       .status(500)
       .json({ message: "Internal Server Error", status: false });
   }
+};
+
+const assignedNumbers = new Set();
+export const generateUniqueSixDigitNumber = () => {
+  const uniqueNumber = Math.floor(100000 + Math.random() * 900000);
+  if (assignedNumbers.has(uniqueNumber)) {
+    return generateUniqueSixDigitNumber();
+  }
+  assignedNumbers.add(uniqueNumber);
+  return uniqueNumber;
 };
