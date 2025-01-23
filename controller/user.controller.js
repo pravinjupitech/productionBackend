@@ -18,7 +18,7 @@ import { WorkingHours } from "../model/workingHours.model.js";
 import { UserBranch } from "../model/userBranch.model.js";
 import { LoginVerificationMail } from "../service/sendmail.js";
 dotenv.config();
-
+const assignedNumbers = new Set();
 export const SaveUser = async (req, res, next) => {
   try {
     if (req.body.id) {
@@ -66,7 +66,6 @@ export const SaveUser = async (req, res, next) => {
     }
     const findRole = await Role.findById(req.body.rolename);
     if (findRole.roleName === "Labour") {
-      const assignedNumbers = new Set();
       function generateUniqueSixDigitNumber() {
         let uniqueNumber;
         do {
@@ -210,7 +209,6 @@ export const UpdateUser = async (req, res, next) => {
       }
       const findRole = await Role.findById(req.body.rolename);
       if (findRole.roleName === "Labour" && !existingUser.pakerId) {
-        const assignedNumbers = new Set();
         function generateUniqueSixDigitNumber() {
           let uniqueNumber;
           do {
