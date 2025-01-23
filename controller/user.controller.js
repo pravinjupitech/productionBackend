@@ -210,7 +210,7 @@ export const UpdateUser = async (req, res, next) => {
       if (req.body.role.length > 0) {
         req.body.role = JSON.parse(req.body.role);
       }
-      console.log("rolename", req.body.rolename.roleName);
+      console.log("rolename", req.body.rolename.roleName, req.body.rolename);
       if (req.body.rolename.roleName === "Labour") {
         const assignedNumbers = new Set();
 
