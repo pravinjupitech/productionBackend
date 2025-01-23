@@ -64,10 +64,9 @@ export const SaveUser = async (req, res, next) => {
     if (req.body.role.length > 0) {
       req.body.role = JSON.parse(req.body.role);
     }
-    console.log("rolename", req.body.rolename.roleName);
-    if (req.body.rolename.roleName === "Labour") {
+    const findRole = await Role.findById(req.body.rolename);
+    if (findRole.roleName === "Labour") {
       const assignedNumbers = new Set();
-
       function generateUniqueSixDigitNumber() {
         let uniqueNumber;
         do {
@@ -77,7 +76,6 @@ export const SaveUser = async (req, res, next) => {
         return uniqueNumber;
       }
       const pakerId = generateUniqueSixDigitNumber();
-      console.log("pakerId", pakerId);
       req.body.pakerId = pakerId;
     }
     const user = await User.create(req.body);
@@ -211,7 +209,6 @@ export const UpdateUser = async (req, res, next) => {
         req.body.role = JSON.parse(req.body.role);
       }
       const findRole = await Role.findById(req.body.rolename);
-      console.log("findRole", findRole.roleName, findRole);
       if (findRole.roleName === "Labour") {
         const assignedNumbers = new Set();
         function generateUniqueSixDigitNumber() {
@@ -224,7 +221,6 @@ export const UpdateUser = async (req, res, next) => {
         }
         const pakerId = generateUniqueSixDigitNumber();
         req.body.pakerId = pakerId;
-        console.log("pakerId", pakerId);
       }
       if (req.body.subscriptionPlan) {
         const sub = await Subscription.findById({
