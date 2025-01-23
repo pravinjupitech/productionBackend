@@ -209,7 +209,7 @@ export const UpdateUser = async (req, res, next) => {
         req.body.role = JSON.parse(req.body.role);
       }
       const findRole = await Role.findById(req.body.rolename);
-      if (findRole.roleName === "Labour") {
+      if (findRole.roleName === "Labour" && !existingUser.pakerId) {
         const assignedNumbers = new Set();
         function generateUniqueSixDigitNumber() {
           let uniqueNumber;
