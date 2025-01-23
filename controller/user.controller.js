@@ -67,10 +67,10 @@ export const SaveUser = async (req, res, next) => {
     const findRole = await Role.findById(req.body.rolename);
     if (findRole.roleName === "Labour") {
       function generateUniqueSixDigitNumber() {
-        let uniqueNumber;
-        do {
-          uniqueNumber = Math.floor(100000 + Math.random() * 900000);
-        } while (assignedNumbers.has(uniqueNumber));
+        const uniqueNumber = Math.floor(100000 + Math.random() * 900000);
+        if (assignedNumbers.has(uniqueNumber)) {
+          return generateUniqueSixDigitNumber();
+        }
         assignedNumbers.add(uniqueNumber);
         return uniqueNumber;
       }
@@ -210,16 +210,17 @@ export const UpdateUser = async (req, res, next) => {
       const findRole = await Role.findById(req.body.rolename);
       if (findRole.roleName === "Labour" && !existingUser.pakerId) {
         function generateUniqueSixDigitNumber() {
-          let uniqueNumber;
-          do {
-            uniqueNumber = Math.floor(100000 + Math.random() * 900000);
-          } while (assignedNumbers.has(uniqueNumber));
+          const uniqueNumber = Math.floor(100000 + Math.random() * 900000);
+          if (assignedNumbers.has(uniqueNumber)) {
+            return generateUniqueSixDigitNumber();
+          }
           assignedNumbers.add(uniqueNumber);
           return uniqueNumber;
         }
         const pakerId = generateUniqueSixDigitNumber();
         req.body.pakerId = pakerId;
       }
+
       if (req.body.subscriptionPlan) {
         const sub = await Subscription.findById({
           _id: req.body.subscriptionPlan,
