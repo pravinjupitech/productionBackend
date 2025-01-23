@@ -1000,6 +1000,16 @@ export const deleteProducted = async (req, res, next) => {
   }
 };
 
+const assignedNumbers = new Set();
+const gerernatesixDigitNumber = () => {
+  const uniqueNumber = Math.floor(100000 + Math.random() * 900000);
+  if (assignedNumbers.has(uniqueNumber)) {
+    return gerernatesixDigitNumber();
+  }
+  assignedNumbers.add(uniqueNumber);
+  return uniqueNumber;
+};
+
 //window.history.back()
 export const demoProduct = async (req, res, next) => {
   try {
