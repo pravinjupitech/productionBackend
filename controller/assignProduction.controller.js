@@ -871,6 +871,7 @@ export const deleteProducted = async (req, res, next) => {
         .status(404)
         .json({ message: "Proccess Not Found", status: "false" });
     }
+
     if (productsteps.steps[0]._id.toString() === Productfind.currentStep) {
       Productfind.product_details.forEach(async (item) => {
         if (item.rProduct_name.length > 0 && item.rProduct_name) {
