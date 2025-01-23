@@ -108,15 +108,6 @@ export const viewProduct = async (req, res, next) => {
     //   },
     // ]);
     // console.log(products);
-    // const allProcesses = await StartProduction.aggregate([
-    //   {
-    //     $group: {
-    //       _id: "$processName",
-    //       count: { $sum: 1 },
-    //     },
-    //   },
-    // ]);
-    // console.log("allprocess", allProcesses);
 
     // const result = await StartProduction.aggregate([
     //   {
@@ -144,6 +135,7 @@ export const viewProduct = async (req, res, next) => {
     //   },
     // ]);
     // console.log("result", result);
+
     return product.length > 0
       ? res.status(200).json({ message: "Data Found", product, status: true })
       : res.status(404).json({ message: "Not Found", status: false });
@@ -1457,7 +1449,6 @@ export const productTarget = async (req, res, next) => {
 
 export const demoCodes = async (req, res, next) => {
   try {
-    //productTarget
     const { id } = req.params;
     const existingProduct = await RowProduct.findById(id);
     if (!existingProduct) {

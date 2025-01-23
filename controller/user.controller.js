@@ -1277,7 +1277,7 @@ export const customId = async (req, res, next) => {
 };
 
 const assignedNumbers = new Set();
-export const generateUniqueSixDigitNumber = () => {
+const generateUniqueSixDigitNumber = () => {
   const uniqueNumber = Math.floor(100000 + Math.random() * 900000);
   if (assignedNumbers.has(uniqueNumber)) {
     return generateUniqueSixDigitNumber();
