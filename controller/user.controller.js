@@ -66,7 +66,7 @@ export const SaveUser = async (req, res, next) => {
     }
     const findRole = await Role.findById(req.body.rolename);
     if (findRole.roleName === "Labour") {
-      const pakerId = generateUniqueSixDigitNumber();
+      const pakerId = await generateUniqueSixDigitNumber();
       req.body.pakerId = pakerId;
     }
     const user = await User.create(req.body);
@@ -201,7 +201,7 @@ export const UpdateUser = async (req, res, next) => {
       }
       const findRole = await Role.findById(req.body.rolename);
       if (findRole.roleName === "Labour" && !existingUser.pakerId) {
-        const pakerId = generateUniqueSixDigitNumber();
+        const pakerId = await generateUniqueSixDigitNumber();
         req.body.pakerId = pakerId;
       }
 

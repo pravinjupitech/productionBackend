@@ -176,7 +176,7 @@ app.use("/production-step", StepsRouter);
 app.use("/production-assign", AssignProductionRouter);
 app.use("/rowProduct", RowProductRouter);
 app.use("/production-steps", StartProductionRouter);
-app.use("/product-target",RawProductTargetRouter);
+app.use("/product-target", RawProductTargetRouter);
 mongoose
   .connect(process.env.DATABASE_URL, {
     useUnifiedTopology: true,
