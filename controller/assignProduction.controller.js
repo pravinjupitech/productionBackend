@@ -1001,16 +1001,6 @@ export const deleteProducted = async (req, res, next) => {
   }
 };
 
-const assignedNumbers = new Set();
-const gerernatesixDigitNumber = () => {
-  const uniqueNumber = Math.floor(100000 + Math.random() * 900000);
-  if (assignedNumbers.has(uniqueNumber)) {
-    return gerernatesixDigitNumber();
-  }
-  assignedNumbers.add(uniqueNumber);
-  return uniqueNumber;
-};
-
 //window.history.back()
 export const demoProduct = async (req, res, next) => {
   try {
@@ -1098,7 +1088,7 @@ Aggregate Functions: Functions like sum, avg, min, max, and count can be applied
 
 
 
-Ques->why should we are hired?
+Ques->Why should we hire you ?
  answer-> because I am a hard worker who wants to help your company succeed. I have the skills and experience needed for the job, and I am eager to learn and grow with your team
 
 Ques->why are you change the job?
